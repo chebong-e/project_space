@@ -22,7 +22,8 @@ public class EventManager : MonoBehaviour
 
     public void Slide_Open()
     {
-        BuildSlide buildslide = EventSystem.current.currentSelectedGameObject.GetComponent<BuildSlide>();
+        
+        BuildSlide buildslide = EventSystem.current.currentSelectedGameObject.GetComponentInParent<BuildSlide>();
         if (buildslide.anims[0] != null)
         {
             if(open == false)
