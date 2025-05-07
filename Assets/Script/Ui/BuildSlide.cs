@@ -9,6 +9,7 @@ public class BuildSlide : MonoBehaviour
 
     Material grayMat;
     Material colorMat;
+    public bool open;
 
     void Start()
     {
@@ -32,13 +33,13 @@ public class BuildSlide : MonoBehaviour
         myImage.material = colorMat;
     }
 
-    void SetGray(Image img, float grayAmount)
+    /*void SetGray(Image img, float grayAmount)
     {
         Material templateMat = Resources.Load<Material>("GrayscaleMaterial");
         Material newMat = new Material(templateMat);
         newMat.SetFloat("_GrayAmount", grayAmount);
         img.material = newMat;
-    }
+    }*/
 
     public void ImageClick()
     {
@@ -52,5 +53,43 @@ public class BuildSlide : MonoBehaviour
         {
             myImage.material = colorMat;
         }
+    }
+
+    public void Sliding()
+    {
+        if (!open)
+        {
+            foreach (Animator anim in anims)
+            {
+                anim.SetTrigger("Open");
+            }
+            open = true;
+        }
+        else
+        {
+            foreach (Animator anim in anims)
+            {
+                anim.SetTrigger("Close");
+            }
+            open = false;
+        }
+    }
+
+    public void Sliding_Open()
+    {
+        foreach (Animator anim in anims)
+        {
+            anim.SetTrigger("Open");
+        }
+        open = true;
+    }
+
+    public void Sliding_Close()
+    {
+        foreach (Animator anim in anims)
+        {
+            anim.SetTrigger("Close");
+        }
+        open = false;
     }
 }

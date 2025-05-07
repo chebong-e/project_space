@@ -6,12 +6,25 @@ public class EventManager : MonoBehaviour
     public int eventTriggered;
     public DropDown dropDown;
 
+    public GameObject content;
+    public BuildSlide[] buildSlides;
+
     public float build_Timer1;
     public float build_Timer2;
     public float build_Timer3;
     public float total_Timer;
 
     bool open;
+
+    void Start()
+    {
+        int num = content.transform.childCount;
+        buildSlides = new BuildSlide[num];
+        for (int i = 0; i < num; i++)
+        {
+            buildSlides[i] = content.transform.GetChild(i).GetComponent<BuildSlide>();
+        }
+    }
 
     public void Add_Event()
     {
@@ -24,27 +37,62 @@ public class EventManager : MonoBehaviour
     {
         
         BuildSlide buildslide = EventSystem.current.currentSelectedGameObject.GetComponentInParent<BuildSlide>();
-        if (buildslide.anims[0] != null)
+
+
+        /*if (open)
         {
-            if(open == false)
+            int num = 0;
+            for (int i = 0; i < buildSlides.Length; i++)
             {
-                foreach (Animator anim in buildslide.anims)
+                if (buildslide == buildSlides[i])
                 {
-                    anim.SetTrigger("Open");
+                    num = i;
+                    return;
                 }
-                open = true;
+            }
+            for (int i = 0; i < buildSlides.Length; i++)
+            {
+                if (i == num)
+                {
+                    continue;
+                }
+                else
+                {
+                    buildSlides[i].Sliding_Close();
+                }
+            }
+            open = false;
+            buildSlides[num].Sliding();
+        }
+        else
+        {
+            buildslide.Sliding();
+            open = true;
+        }*/
+        int num = 0;
+        for (int i = 0; i < buildSlides.Length; i++)
+        {
+            if (buildslide == buildSlides[i])
+            {
+                num = i;
+                Debug.Log(num);
+                break;
+            }
+        }
+        for (int i = 0; i < buildSlides.Length; i++)
+        {
+            if (i == num)
+            {
+                continue;
             }
             else
             {
-                foreach (Animator anim in buildslide.anims)
-                {
-                    anim.SetTrigger("Close");
-                }
-                open = false;
+                if (buildSlides[i].open)
+                    buildSlides[i].Sliding_Close();
             }
-            
         }
 
+        buildslide.Sliding_Open();
 
     }
     
