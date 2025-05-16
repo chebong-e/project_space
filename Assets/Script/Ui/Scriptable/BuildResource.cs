@@ -4,10 +4,16 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Building", menuName = "Scriptble Object/Building Substance")]
 public class BuildResource : ScriptableObject
 {
-    public enum BuildingType { Mineral, Cristal, Gas, Electric_Energy, population }
+    public enum Build_Category { Resource_Factory, General_Factory, Research, ContorolCenter }
+    public enum Factory_Category { Metal, Cristal, Gas, Energy, 
+        Metal_Repasitory, Cristal_Repasitory, Gas_Repasitory, Recycling_Factory }
+
+
+    /*public enum BuildingType { Mineral, Cristal, Gas, Electric_Energy, population }*/
 
     [Header("# Main Info")]
-    public BuildingType buildType;
+    public Build_Category build_Category;
+    public Factory_Category factory_Category;
 
     [Header("# Level Data")]
     public int[] building_Time; // 건설 시간

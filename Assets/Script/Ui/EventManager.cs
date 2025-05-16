@@ -14,7 +14,6 @@ public class EventManager : MonoBehaviour
     public int eventTriggered;
     public DropDown dropDown;
 
-    public GameObject content;
     public GameObject[] contents;
 
 
@@ -32,22 +31,23 @@ public class EventManager : MonoBehaviour
 
     void Start()
     {
-        /*int num = content.transform.childCount;
-        buildSlides = new BuildSlide[num];
-        for (int i = 0; i < num; i++)
-        {
-            buildSlides[i] = content.transform.GetChild(i).GetComponent<BuildSlide>();
-        }*/
         buildSliderGroup = new List<BuildSliderGroup>();
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < contents.Length; i++)
         {
             BuildSliderGroup group = new BuildSliderGroup();
             buildSliderGroup.Add(group);
+
+            for (int sec_i = 0; sec_i < contents[i].transform.childCount; sec_i++)
+            {
+                buildSliderGroup[i].buildSlide.Add(contents[i].transform.GetChild(sec_i).GetComponent<BuildSlide>());
+            }
         }
 
 
-        for (int i = 0; i < contents[0].transform.childCount; i++)
+        
+
+        /*for (int i = 0; i < contents[0].transform.childCount; i++)
         {
             buildSliderGroup[0].buildSlide.Add(contents[0].transform.GetChild(i).GetComponent<BuildSlide>());
         }
@@ -60,7 +60,7 @@ public class EventManager : MonoBehaviour
         for (int i = 0; i < contents[2].transform.childCount; i++)
         {
             buildSliderGroup[2].buildSlide.Add(contents[2].transform.GetChild(i).GetComponent<BuildSlide>());
-        }
+        }*/
     }
 
     public void Add_Event()
@@ -74,6 +74,7 @@ public class EventManager : MonoBehaviour
     {
         
         BuildSlide buildslide = EventSystem.current.currentSelectedGameObject.GetComponentInParent<BuildSlide>();
+        Debug.Log(EventSystem.current.currentSelectedGameObject.name);
 
         if (curBuild == null || curBuild != buildslide)
         {
