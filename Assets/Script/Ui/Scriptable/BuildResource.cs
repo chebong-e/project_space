@@ -9,18 +9,22 @@ public class BuildResource : ScriptableObject
         Metal_Repasitory, Cristal_Repasitory, Gas_Repasitory, Recycling_Factory }
 
 
-    /*public enum BuildingType { Mineral, Cristal, Gas, Electric_Energy, population }*/
-
     [Header("# Main Info")]
     public Build_Category build_Category;
     public Factory_Category factory_Category;
 
+    [Header("Upgrade Data")]
+    public int[] init_Needs;
+    public int[] cur_Needs;
     [Header("# Level Data")]
+    public int level;
     public int[] building_Time; // 건설 시간
-    public Dictionary<int, int>[] testValue;
-    public float[] build_require; // 건설 요구 재화
+    public float[] build_require;
     public float[] build_result; // 건설 후 능력치
     [TextArea]
     public string require_condition; // 건설 특정 요구 조건
+
+    [Header("String Data")]
+    public string Lv_Title;
 
 }
