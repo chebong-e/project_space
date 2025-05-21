@@ -4,13 +4,15 @@ using UnityEngine.UI;
 
 public class SelfRegistration : MonoBehaviour
 {
-    public enum TitleType { Title, Resource, TimeSlide }
+    public enum TitleType { Title, Resource, TimeSlide, Button }
     public enum SubType0 { Name, Time }
     public enum SubType1 { Metal, Cristal, Gas }
+    public enum SubType2 { Confirm, Cancle }
     public TitleType titleType;
     public SubType0 subType0;
     public SubType1 subType1;
-    void Start()
+    public SubType2 subType2;
+    void Awake()
     {
         Infomations info = GetComponentInParent<Infomations>();
 
@@ -27,10 +29,21 @@ public class SelfRegistration : MonoBehaviour
             {
                 info.resources[(int)subType1] = GetComponentInChildren<TextMeshProUGUI>();
             }
-            else
+            else if (titleType == TitleType.TimeSlide)
             {
                 info.slider = GetComponent<Slider>();
                 info.timeText = transform.GetChild(3).GetComponent<TextMeshProUGUI>();
+            }
+            else
+            {
+                if (subType2 == 0)
+                {
+                    info.btns[0] = GetComponent<Button>();
+                }
+                else
+                {
+                    info.btns[1] = GetComponent<Button>();
+                }
             }
             
         }

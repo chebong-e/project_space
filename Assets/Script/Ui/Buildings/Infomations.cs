@@ -19,23 +19,23 @@ public class Infomations : MonoBehaviour
     public Slider slider;
     public TextMeshProUGUI timeText;
     public BuildDetailMatter buildDetailMatter;
+    public Button[] btns = new Button[2];
 
     void Start()
     {
-        
+        if (buildResource != null)
+            titles["name"].text = string.Format(buildResource.Lv_Title, buildResource.level);
     }
 
     public void Upgrade()
     {
         int curLv = buildResource.level;
 
-        int metal = Mathf.FloorToInt(buildResource.init_Needs[0] * buildResource.build_require[1]);
-        int cristal = Mathf.FloorToInt(buildResource.init_Needs[1] * buildResource.build_require[1]);
-        int gas = Mathf.FloorToInt(buildResource.init_Needs[2] * buildResource.build_require[1]);
-
-        resources[0].text = metal.ToString();
-        resources[1].text = cristal.ToString();
-        resources[2].text = gas.ToString();
+        for (int i = 0; i < buildResource.cur_Needs.Length; i++)
+        {
+            buildResource.cur_Needs[i] = Mathf.FloorToInt(buildResource.cur_Needs[i] * buildResource.build_require[buildResource.level]);
+            resources[i].text = buildResource.cur_Needs[i].ToString();
+        }
 
         curLv += 1;
         buildResource.level = curLv;

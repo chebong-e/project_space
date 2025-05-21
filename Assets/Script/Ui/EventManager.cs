@@ -4,23 +4,24 @@ using System.Collections.Generic;
 
 
 [System.Serializable]
-public class BuildSliderGroup
+public class ImageSliderGroup
 {
-    public List<BuildSlide> buildSlide = new List<BuildSlide>();
+    public List<ImageSlide> buildSlide = new List<ImageSlide>();
 }
 
 public class EventManager : MonoBehaviour
 {
+    public static EventManager instance;
     public int eventTriggered;
     public DropDown dropDown;
 
     public GameObject[] contents;
 
 
-    public List<BuildSliderGroup> buildSliderGroup;
-    public BuildSlide[] buildSlides;
+    public List<ImageSliderGroup> imageSliderGroup;
+    public ImageSlide[] buildSlides;
 
-    BuildSlide curBuild;
+    ImageSlide curBuild;
 
     public float build_Timer1;
     public float build_Timer2;
@@ -29,38 +30,30 @@ public class EventManager : MonoBehaviour
 
     bool open;
 
-    void Start()
+    void Awake()
     {
-        buildSliderGroup = new List<BuildSliderGroup>();
+        if (instance != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+
+        imageSliderGroup = new List<ImageSliderGroup>();
 
         for (int i = 0; i < contents.Length; i++)
         {
-            BuildSliderGroup group = new BuildSliderGroup();
-            buildSliderGroup.Add(group);
+            ImageSliderGroup group = new ImageSliderGroup();
+            imageSliderGroup.Add(group);
 
             for (int sec_i = 0; sec_i < contents[i].transform.childCount; sec_i++)
             {
-                buildSliderGroup[i].buildSlide.Add(contents[i].transform.GetChild(sec_i).GetComponent<BuildSlide>());
+                imageSliderGroup[i].buildSlide.Add(contents[i].transform.GetChild(sec_i).GetComponent<ImageSlide>());
             }
         }
-
-
-        
-
-        /*for (int i = 0; i < contents[0].transform.childCount; i++)
-        {
-            buildSliderGroup[0].buildSlide.Add(contents[0].transform.GetChild(i).GetComponent<BuildSlide>());
-        }
-
-        for (int i = 0; i < contents[1].transform.childCount; i++)
-        {
-            buildSliderGroup[1].buildSlide.Add(contents[1].transform.GetChild(i).GetComponent<BuildSlide>());
-        }
-
-        for (int i = 0; i < contents[2].transform.childCount; i++)
-        {
-            buildSliderGroup[2].buildSlide.Add(contents[2].transform.GetChild(i).GetComponent<BuildSlide>());
-        }*/
     }
 
     public void Add_Event()
@@ -73,8 +66,7 @@ public class EventManager : MonoBehaviour
     public void Slide_Open()
     {
         
-        BuildSlide buildslide = EventSystem.current.currentSelectedGameObject.GetComponentInParent<BuildSlide>();
-        Debug.Log(EventSystem.current.currentSelectedGameObject.name);
+        ImageSlide buildslide = EventSystem.current.currentSelectedGameObject.GetComponentInParent<ImageSlide>();
 
         if (curBuild == null || curBuild != buildslide)
         {
@@ -92,26 +84,16 @@ public class EventManager : MonoBehaviour
             }
         }
 
-        int num = 0;
-        for (int i = 0; i < buildSlides.Length; i++)
+        foreach (ImageSlide img in imageSliderGroup[7].buildSlide)
         {
-            if (buildslide == buildSlides[i])
-            {
-                num = i;
-                Debug.Log(num);
-                break;
-            }
-        }
-        for (int i = 0; i < buildSlides.Length; i++)
-        {
-            if (i == num)
+            if (img == buildslide)
             {
                 continue;
             }
             else
             {
-                if (buildSlides[i].open)
-                    buildSlides[i].Sliding_Close();
+                if (img.open)
+                    img.Sliding_Close();
             }
         }
 
