@@ -6,6 +6,7 @@ public class ImageSlide : MonoBehaviour
 {
     public Animator[] anims;
     Image myImage;
+    BuildDetailMatter buildDetailMatter;
     int grayscaleCount = 0;
 
     Material grayMat;
@@ -17,12 +18,30 @@ public class ImageSlide : MonoBehaviour
     {
         anims = new Animator[2];
         anims = GetComponentsInChildren<Animator>();
-        myImage = transform.GetChild(1).GetComponent<Image>();
-
-        Set_Material();
+        
     }
 
-    void Set_Material() // 머티리얼 복사 및 할당 관련
+    public void ColorSetting(bool unlock)
+    {
+        if (unlock)
+            myImage.material = colorMat;
+    }
+
+    public void Init_Setting() // 머티리얼 복사 및 할당 관련
+    {
+        buildDetailMatter = GetComponent<BuildDetailMatter>();
+        myImage = transform.GetChild(1).GetComponent<Image>();
+        Material baseMat = Resources.Load<Material>("GrayscaleMaterial");
+        
+        colorMat = new Material(baseMat);
+        colorMat.SetFloat("_GrayAmount", 0f);
+
+        grayMat = new Material(baseMat);
+        grayMat.SetFloat("_GrayAmount", 1f);
+
+        myImage.material = grayMat;
+    }
+    /*void Set_Material() // 머티리얼 복사 및 할당 관련
     {
         Material baseMat = Resources.Load<Material>("GrayscaleMaterial");
 
@@ -32,8 +51,8 @@ public class ImageSlide : MonoBehaviour
         grayMat = new Material(baseMat);
         grayMat.SetFloat("_GrayAmount", 1f);
 
-        myImage.material = colorMat;
-    }
+        myImage.material = grayMat;
+    }*/
 
     public void ImageClick()
     {
@@ -49,8 +68,10 @@ public class ImageSlide : MonoBehaviour
         }
     }
 
+    // 버튼 잠금 및 비활성화 처리
     public void ImageChange_toUpgrade()
     {
+        // 임시로 그룹 7지정
         List<ImageSlide> img_s = EventManager.instance.imageSliderGroup[7].buildSlide;
 
         confirm = !confirm;
@@ -61,7 +82,11 @@ public class ImageSlide : MonoBehaviour
                 continue;
             }
 
-            img.ImageClick();
+            if (img.buildDetailMatter.infos.unLock)
+            {
+                img.ImageClick();
+            }
+            
             img.transform.GetChild(1).GetComponent<Button>().enabled = confirm ? false : true;
         }
     }

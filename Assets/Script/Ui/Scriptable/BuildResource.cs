@@ -15,7 +15,7 @@ public class BuildResource : ScriptableObject
 
     [Header("Upgrade Data")]
     public int[] init_Needs;
-    public int[] cur_Needs;
+    public int AllowableBuild;
     [Header("# Level Data")]
     public int level;
     public int[] building_Time; // 건설 시간

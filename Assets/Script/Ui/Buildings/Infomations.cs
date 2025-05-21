@@ -14,32 +14,140 @@ public class Infomations : MonoBehaviour
         2:
     
      */
-    public TextMeshProUGUI[] resources = new TextMeshProUGUI[3];
+    public TextMeshProUGUI[] resources;
     public BuildResource buildResource;
     public Slider slider;
     public TextMeshProUGUI timeText;
     public BuildDetailMatter buildDetailMatter;
     public Button[] btns = new Button[2];
+    ImageSlide imgSlide;
 
-    void Start()
+    // 추후 서버 데이터를 연결한 이후 데이터 연동 확인 작업 후 본인의 계정의
+    // 정보를 불러오기 앞서, 현재는 연동 데이터가 없으므로 항상 레벨 1로 초기화하는데 필요한 bool값
+    public bool data = false;
+    public bool unLock = false;
+
+    void Awake()
     {
-        if (buildResource != null)
-            titles["name"].text = string.Format(buildResource.Lv_Title, buildResource.level);
+        resources = new TextMeshProUGUI[4];
+
+        SelfRegistration[] selfs = GetComponentsInChildren<SelfRegistration>();
+
+        foreach (SelfRegistration self in selfs)
+        {
+            self.Init_Setting();
+        }
+
+        // 여기서 이미지슬라이드 인잇세팅을 해주는게 좋을듯
+        imgSlide = GetComponentInParent<ImageSlide>();
+        imgSlide.Init_Setting();
+
+        Init_Setting();
     }
+
+    void Init_Setting()
+    {
+        // 추후 서버 데이터를 연결한 이후 데이터 연동 확인 작업 후 본인의 계정의
+        // 정보를 불러오기 앞서, 현재는 연동 데이터가 없으므로 항상 레벨 1로 초기화하는데 필요한 bool값
+        if (!data)
+        {
+            buildResource.level = 0;
+            buildResource.AllowableBuild = (int)buildResource.build_result[buildResource.level];
+        }
+
+        int metal = buildResource.init_Needs[0];
+        int cristal = buildResource.init_Needs[1];
+        int gas = buildResource.init_Needs[2];
+        for (int i = 0; i < buildResource.level; i++)
+        {
+            metal = Mathf.FloorToInt(metal * buildResource.build_require[i]);
+            cristal = Mathf.FloorToInt(cristal * buildResource.build_require[i]);
+            gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
+        }
+
+        // 임시 추가가능대수 변수
+        int addnum = 0;
+        resources[0].text = $"{metal}";
+        resources[1].text = $"{cristal}";
+        resources[2].text = $"{gas}";
+        resources[3].text = $"{buildResource.AllowableBuild} (+{addnum})";
+
+        string timeStr = "";
+        int time = buildResource.building_Time[buildResource.level];
+        if (time >= 3600)
+        {
+            int hours = time / 3600;
+            int minutes = (time % 3600) / 60;
+            int seconds = time % 60;
+            timeStr = string.Format("{0}시간 {1}분 {2}초", hours, minutes, seconds);
+        }
+        else if (time >= 60)
+        {
+            int minutes = time / 60;
+            int seconds = time % 60;
+            timeStr = string.Format("{0}분 {1}초", minutes, seconds);
+        }
+        else
+        {
+            timeStr = string.Format("{0}초", time);
+        }
+
+        timeText.text = $"{timeStr}";
+
+
+
+
+
+        if (buildResource != null)
+        {
+            titles["name"].text = $"Lv.{buildResource.level} {buildResource.name}";
+        }
+
+        // 해금 상태 확인여부 하여 버튼 잠금 확인 로직
+        UnLockCheck(unLock);
+    }
+
+    public void UnLockCheck(bool unlock) // 해금 상태에 따른 로직 처리
+    {
+        unLock = unlock;
+        imgSlide.ColorSetting(unLock);
+        btns[0].enabled = unLock;
+    }
+
 
     public void Upgrade()
     {
         int curLv = buildResource.level;
 
-        for (int i = 0; i < buildResource.cur_Needs.Length; i++)
+
+        /*for (int i = 0; i < buildResource.cur_Needs.Length; i++)
         {
             buildResource.cur_Needs[i] = Mathf.FloorToInt(buildResource.cur_Needs[i] * buildResource.build_require[buildResource.level]);
             resources[i].text = buildResource.cur_Needs[i].ToString();
-        }
+        }*/
 
         curLv += 1;
         buildResource.level = curLv;
         titles["name"].text = $"Lv. {curLv} {buildResource.name}";
+
+
+
+
+        int metal = buildResource.init_Needs[0];
+        int cristal = buildResource.init_Needs[1];
+        int gas = buildResource.init_Needs[2];
+        int allowableBuild = (int)buildResource.build_result[buildResource.level];
+        for (int i = 0; i < buildResource.level; i++)
+        {
+            metal = Mathf.FloorToInt(metal * buildResource.build_require[i]);
+            cristal = Mathf.FloorToInt(cristal * buildResource.build_require[i]);
+            gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
+        }
+
+        resources[0].text = $"{metal}";
+        resources[1].text = $"{cristal}";
+        resources[2].text = $"{gas}";
+        resources[3].text = $"{allowableBuild}";
     }
 
 

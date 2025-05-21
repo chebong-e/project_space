@@ -16,19 +16,9 @@ public class BuildDetailMatter : MonoBehaviour
 
     Coroutine coroutine;
 
-    // 추후 서버 데이터를 연결한 이후 데이터 연동 확인 작업 후 본인의 계정의
-    // 정보를 불러오기 앞서, 현재는 연동 데이터가 없으므로 항상 레벨 1로 초기화하는데 필요한 bool값
-    public bool data = false;
-
-
     void Awake()
     {
         infos = transform.GetChild(2).GetComponent<Infomations>();
-    }
-
-    void Start()
-    {
-        
     }
 
     IEnumerator Timer()
@@ -51,17 +41,17 @@ public class BuildDetailMatter : MonoBehaviour
                 int hours = curTime / 3600;
                 int minutes = (curTime % 3600) / 60;
                 int seconds = curTime % 60;
-                timeStr = string.Format("{0:D2}시간 {1:D2}분 {2:D2}초", hours, minutes, seconds);
+                timeStr = string.Format("{0}시간 {1}분 {2}초", hours, minutes, seconds);
             }
             else if (curTime >= 60)
             {
                 int minutes = curTime / 60;
                 int seconds = curTime % 60;
-                timeStr = string.Format("{0:D2}분 {1:D2}초", minutes, seconds);
+                timeStr = string.Format("{0}분 {1}초", minutes, seconds);
             }
             else
             {
-                timeStr = string.Format("{0:D2}초", curTime);
+                timeStr = string.Format("{0}초", curTime);
             }
 
             infos.timeText.text = timeStr;
@@ -86,8 +76,14 @@ public class BuildDetailMatter : MonoBehaviour
         confirm = !confirm;
         if (confirm) // 업그레이드 시작
         {
-            targetTimer = infos.buildResource.building_Time[infos.buildResource.level - 1];
+            targetTimer = infos.buildResource.building_Time[infos.buildResource.level];
 
+
+            if (infos.unLock)
+            {
+
+            }
+            
             //이미지 흑백 처리 및 해당 버튼 외의 다른 버튼 비활성화 처리
             GetComponent<ImageSlide>().ImageChange_toUpgrade();
 
@@ -99,10 +95,14 @@ public class BuildDetailMatter : MonoBehaviour
         }
         else // 업그레이드 중지
         {
+            if (infos.unLock)
+            {
+                
+            }
             GetComponent<ImageSlide>().ImageChange_toUpgrade();
             StopCoroutine(coroutine);
             infos.slider.value = 0f;
-            infos.timeText.text = $"{infos.buildResource.building_Time[infos.buildResource.level - 1]}초";
+            infos.timeText.text = $"{infos.buildResource.building_Time[infos.buildResource.level]}초";
             buildTimer = 0f;
         }
         
