@@ -1,14 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using static UnityEditor.PlayerSettings;
 
 public class ImageSlide : MonoBehaviour
 {
     public Animator[] anims;
-    Image myImage;
+    EventManager eventManager;
     BuildDetailMatter buildDetailMatter;
     int grayscaleCount = 0;
 
+    Image myImage;
     Material grayMat;
     Material colorMat;
     public bool open;
@@ -41,18 +43,6 @@ public class ImageSlide : MonoBehaviour
 
         myImage.material = grayMat;
     }
-    /*void Set_Material() // 머티리얼 복사 및 할당 관련
-    {
-        Material baseMat = Resources.Load<Material>("GrayscaleMaterial");
-
-        colorMat = new Material(baseMat);
-        colorMat.SetFloat("_GrayAmount", 0f);
-
-        grayMat = new Material(baseMat);
-        grayMat.SetFloat("_GrayAmount", 1f);
-
-        myImage.material = grayMat;
-    }*/
 
     public void ImageClick()
     {
@@ -68,11 +58,28 @@ public class ImageSlide : MonoBehaviour
         }
     }
 
-    // 버튼 잠금 및 비활성화 처리
-    public void ImageChange_toUpgrade()
+    int Active_Check()
     {
+        int index = 0;
+        for (int i = 0; i < EventManager.instance.contents.Length; i++)
+        {
+            if (EventManager.instance.contents[i].gameObject.activeInHierarchy)
+            {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    // 버튼 잠금 및 비활성화 처리
+    public void ImageChange_toUpgrade() // 업그레이드 중일때 해당 버튼 외 다른 버튼 흑백 및 잠금 처리
+    {
+        int index = 0;
+        index = Active_Check();
+        Debug.Log(Active_Check());
         // 임시로 그룹 7지정
-        List<ImageSlide> img_s = EventManager.instance.imageSliderGroup[7].buildSlide;
+        List<ImageSlide> img_s = EventManager.instance.imageSliderGroup[index].imageSlide;
 
         confirm = !confirm;
         foreach (ImageSlide img in img_s)
@@ -98,14 +105,23 @@ public class ImageSlide : MonoBehaviour
             anim.SetTrigger("Open");
         }
         open = true;
+        SliderOn_Off();
+    }
+
+    public void SliderOn_Off()
+    {
+        if (buildDetailMatter.confirm) // 업그레이드 중이라면
+        {
+            buildDetailMatter.infos.slider[0].gameObject.SetActive(!open);
+        }
     }
 
     public void Sliding_Close()
     {
+        open = false;
         foreach (Animator anim in anims)
         {
             anim.SetTrigger("Close");
         }
-        open = false;
     }
 }

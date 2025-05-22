@@ -6,7 +6,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public class ImageSliderGroup
 {
-    public List<ImageSlide> buildSlide = new List<ImageSlide>();
+    public List<ImageSlide> imageSlide = new List<ImageSlide>();
 }
 
 public class EventManager : MonoBehaviour
@@ -51,7 +51,7 @@ public class EventManager : MonoBehaviour
 
             for (int sec_i = 0; sec_i < contents[i].transform.childCount; sec_i++)
             {
-                imageSliderGroup[i].buildSlide.Add(contents[i].transform.GetChild(sec_i).GetComponent<ImageSlide>());
+                imageSliderGroup[i].imageSlide.Add(contents[i].transform.GetChild(sec_i).GetComponent<ImageSlide>());
             }
         }
     }
@@ -84,7 +84,7 @@ public class EventManager : MonoBehaviour
             }
         }
 
-        foreach (ImageSlide img in imageSliderGroup[7].buildSlide)
+        foreach (ImageSlide img in imageSliderGroup[7].imageSlide)
         {
             if (img == buildslide)
             {
