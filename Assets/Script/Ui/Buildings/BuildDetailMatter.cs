@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using TMPro;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class values : SerializableDictionary<string, GameObject> { };
@@ -65,6 +66,13 @@ public class BuildDetailMatter : MonoBehaviour
 
     IEnumerator Timer()
     {
+        Sprite sp = transform.GetChild(1).GetComponent<Image>().sprite;
+        GameObject con = EventManager.instance.controlCenter.Upgrading(sp, true);
+        Slider sl = con.GetComponentInChildren<Slider>();
+        TextMeshProUGUI ExText = con.GetComponentInChildren<TextMeshProUGUI>();
+        sl.maxValue = targetTimer;
+
+
         infos.slider[0].maxValue = targetTimer;
         infos.slider[1].maxValue = targetTimer;
         buildTimer = 0f;
@@ -75,7 +83,7 @@ public class BuildDetailMatter : MonoBehaviour
             float remainingTime = Mathf.Clamp(targetTimer - buildTimer, 0f, targetTimer);
             infos.slider[1].value = buildTimer;
             infos.slider[0].value = buildTimer; // 중복이 필요할까... 나중에 보고 지워버리던지.....
-
+            sl.value = buildTimer;
 
             int curTime = Mathf.CeilToInt(remainingTime);
 
@@ -102,6 +110,7 @@ public class BuildDetailMatter : MonoBehaviour
             foreach (TextMeshProUGUI tt in infos.timeText)
             {
                 tt.text = timeStr;
+                ExText.text = timeStr;
             }
 
             yield return null;
