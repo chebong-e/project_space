@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using static UnityEditor.PlayerSettings;
 
 public class ImageSlide : MonoBehaviour
 {
@@ -44,7 +43,7 @@ public class ImageSlide : MonoBehaviour
         myImage.material = grayMat;
     }
 
-    public void ImageClick()
+    public void ColorChange()
     {
         grayscaleCount = 1 - grayscaleCount; // 0 <-> 1 전환
 
@@ -61,37 +60,43 @@ public class ImageSlide : MonoBehaviour
     int Active_Check()
     {
         int index = 0;
-        for (int i = 0; i < EventManager.instance.contents.Length; i++)
+        for (int i = 0; i < EventManager.instance.imageSliderGroup.Count; i++)
         {
-            if (EventManager.instance.contents[i].gameObject.activeInHierarchy)
+            List<ImageSlide> img_s = EventManager.instance.imageSliderGroup[i].imageSlide;
+            foreach (ImageSlide img in img_s)
             {
-                index = i;
-                break;
+                if (img.gameObject == gameObject)//GetComponentInParent<ImageSlide>()
+                {
+                    index = i;
+                    break;
+                }
             }
         }
         return index;
     }
+
+
+
 
     // 버튼 잠금 및 비활성화 처리
     public void ImageChange_toUpgrade() // 업그레이드 중일때 해당 버튼 외 다른 버튼 흑백 및 잠금 처리
     {
         int index = 0;
         index = Active_Check();
-        Debug.Log(Active_Check());
         // 임시로 그룹 7지정
         List<ImageSlide> img_s = EventManager.instance.imageSliderGroup[index].imageSlide;
 
         confirm = !confirm;
         foreach (ImageSlide img in img_s)
         {
-            if (img == GetComponentInParent<ImageSlide>())
+            if (img.gameObject == gameObject)
             {
                 continue;
             }
 
             if (img.buildDetailMatter.infos.unLock)
             {
-                img.ImageClick();
+                img.ColorChange();
             }
             
             img.transform.GetChild(1).GetComponent<Button>().enabled = confirm ? false : true;

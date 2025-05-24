@@ -27,40 +27,7 @@ public class BuildDetailMatter : MonoBehaviour
     public void Upgrade()
     {
         confirm = !confirm;
-        if (confirm) // 업그레이드 시작
-        {
-            targetTimer = infos.buildResource.building_Time[infos.buildResource.level];
-
-
-            if (infos.unLock)
-            {
-
-            }
-            // 슬라이드 시간표시 처리
-            coroutine = StartCoroutine(Timer());
-
-            // 업그레이드 정보 표시
-            // 이것은 업그레이드 완료시 처리되어야 함.
-        }
-        else // 업그레이드 중지
-        {
-            if (infos.unLock)
-            {
-                
-            }
-            StopCoroutine(coroutine);
-
-            for (int i = 0; i < 2; i++)
-            {
-                infos.slider[i].value = 0f;
-                infos.timeText[i].text = $"{infos.buildResource.building_Time[infos.buildResource.level]}초";
-            }
-            
-            buildTimer = 0f;
-        }
-        //이미지 흑백 처리 및 해당 버튼 외의 다른 버튼 비활성화 처리
-        imgSlide.ImageChange_toUpgrade();
-
+        BuildManager.instance.ControlCenter_Upgrade(transform.GetChild(1).GetComponent<Image>().sprite, infos, imgSlide, confirm);
     }
 
 
