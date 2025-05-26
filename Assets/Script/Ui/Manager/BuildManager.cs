@@ -26,9 +26,28 @@ public class BuildManager : MonoBehaviour
 
     }
 
+    public int Check()
+    {
+        int index = 0;
+        for (int i = 0; i < EventManager.instance.imageSliderGroup.Count; i++)
+        {
+            List<ImageSlide> img_s = EventManager.instance.imageSliderGroup[i].imageSlide;
+            foreach (ImageSlide img in img_s)
+            {
+               if (img.gameObject.activeInHierarchy)
+                {
+                    index = i;
+                    break;
+                }
+            }
+        }
+        return index;
+    }
+
     public void ExClose()
     {
-        List<ImageSlide> img_s = EventManager.instance.imageSliderGroup[7].imageSlide;
+        int num = Check();
+        List<ImageSlide> img_s = EventManager.instance.imageSliderGroup[num].imageSlide;
 
         foreach (ImageSlide img in img_s)
         {

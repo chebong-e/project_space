@@ -20,7 +20,7 @@ public class EventManager : MonoBehaviour
 
     public List<ImageSliderGroup> imageSliderGroup;
     public ImageSlide[] buildSlides;
-    public ControlCenter controlCenter;
+    /*public ControlCenter controlCenter;*/
 
     ImageSlide curBuild;
 
