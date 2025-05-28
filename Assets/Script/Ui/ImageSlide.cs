@@ -43,7 +43,7 @@ public class ImageSlide : MonoBehaviour
         myImage.material = grayMat;
     }
 
-    public void ColorChange()
+    public void ColorChange() //컬러 <-> 흑백 전환
     {
         grayscaleCount = 1 - grayscaleCount; // 0 <-> 1 전환
 
@@ -57,12 +57,27 @@ public class ImageSlide : MonoBehaviour
         }
     }
 
-    int Active_Check()
+    /*public int AllWindow_Active_IndexCheck()
     {
         int index = 0;
         for (int i = 0; i < EventManager.instance.imageSliderGroup.Count; i++)
         {
             List<ImageSlide> img_s = EventManager.instance.imageSliderGroup[i].imageSlide;
+            if (img_s[0].gameObject.activeInHierarchy)
+            {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }*/
+
+     int ControlCenter_Active_IndexCheck()
+    {
+        int index = 0;
+        for (int i = 0; i < BuildManager.instance.controlCenter_ImageSliderGroup.Count; i++)
+        {
+            List<ImageSlide> img_s = BuildManager.instance.controlCenter_ImageSliderGroup[i].imageSlide;
             foreach (ImageSlide img in img_s)
             {
                 if (img.gameObject == gameObject)//GetComponentInParent<ImageSlide>()
@@ -76,33 +91,51 @@ public class ImageSlide : MonoBehaviour
     }
 
 
-
-
     // 버튼 잠금 및 비활성화 처리
     public void ImageChange_toUpgrade() // 업그레이드 중일때 해당 버튼 외 다른 버튼 흑백 및 잠금 처리
     {
-        int index = 0;
-        index = Active_Check();
-        // 임시로 그룹 7지정
-        List<ImageSlide> img_s = EventManager.instance.imageSliderGroup[index].imageSlide;
-
+        // 활성화 인덱스를 가져와서 
         confirm = !confirm;
-        foreach (ImageSlide img in img_s)
-        {
-            if (img.gameObject == gameObject)
-            {
-                continue;
-            }
+        int active_index = ControlCenter_Active_IndexCheck();
 
-            if (img.buildDetailMatter.infos.unLock)
+        for (int i = 0; i < 5; i++)
+        {
+            List<ImageSlide> active_imgGroup = BuildManager.instance.controlCenter_ImageSliderGroup[i].imageSlide;
+            if (i == active_index)
             {
-                img.ColorChange();
+
+                foreach (ImageSlide img in active_imgGroup)
+                {
+                    if (img.gameObject == gameObject)
+                    {
+                        continue;
+                    }
+
+                    if (img.buildDetailMatter.infos.unLock)
+                    {
+                        img.ColorChange();
+                    }
+
+                    img.transform.GetChild(1).GetComponent<Button>().enabled = confirm ? false : true;
+                }
             }
-            
-            img.transform.GetChild(1).GetComponent<Button>().enabled = confirm ? false : true;
+            else
+            {
+                foreach (ImageSlide img in active_imgGroup)
+                {
+
+                    if (img.buildDetailMatter.infos.unLock)
+                    {
+                        img.ColorChange();
+                    }
+
+                    img.transform.GetChild(1).GetComponent<Button>().enabled = confirm ? false : true;
+                }
+            }
         }
     }
 
+    //애니메이션 동작 여부
     public void Sliding_Open()
     {
         foreach (Animator anim in anims)
@@ -113,14 +146,6 @@ public class ImageSlide : MonoBehaviour
         SliderOn_Off();
     }
 
-    public void SliderOn_Off()
-    {
-        if (buildDetailMatter.confirm) // 업그레이드 중이라면
-        {
-            buildDetailMatter.infos.slider[0].gameObject.SetActive(!open);
-        }
-    }
-
     public void Sliding_Close()
     {
         open = false;
@@ -129,4 +154,14 @@ public class ImageSlide : MonoBehaviour
             anim.SetTrigger("Close");
         }
     }
+
+    public void SliderOn_Off() // 오픈은 항상 한 버튼만 유지하기 위함
+    {
+        if (buildDetailMatter.confirm) // 업그레이드 중이라면
+        {
+            buildDetailMatter.infos.timeSlider[0].gameObject.SetActive(!open);
+        }
+    }
+
+    
 }

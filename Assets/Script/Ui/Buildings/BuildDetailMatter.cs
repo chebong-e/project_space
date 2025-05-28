@@ -19,6 +19,7 @@ public class BuildDetailMatter : MonoBehaviour
     {
         infos = transform.GetChild(2).GetComponent<Infomations>();
         imgSlide = GetComponent<ImageSlide>();
+
     }
 
     
@@ -27,6 +28,8 @@ public class BuildDetailMatter : MonoBehaviour
     public void Upgrade()
     {
         confirm = !confirm;
+        BuildManager.instance.upgraing = confirm;
+
         BuildManager.instance.ControlCenter_Upgrade(transform.GetChild(1).GetComponent<Image>().sprite, infos, imgSlide, confirm);
     }
 

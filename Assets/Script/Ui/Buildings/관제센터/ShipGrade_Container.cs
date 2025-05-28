@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class ShipGrade_Container : MonoBehaviour
@@ -17,9 +18,31 @@ public class ShipGrade_Container : MonoBehaviour
             int capturedIndex = i;
             shipGrade[i].GetComponent<Button>().onClick.AddListener(() => SelfObject_Check(shipGrade[capturedIndex]));*/
         }
+    }
+
+    void Start()
+    {
+        for (int i = 1; i < shipGrade_Window.Length; i++)
+        {
+            shipGrade_Window[i].SetActive(false);
+        }
+    }
+
+
+    void OnEnable()
+    {
+        int index = shipGrade_Window.Length;
+        for (int i = 0; i < index; i++)
+        {
+            if (shipGrade_Window[i].activeInHierarchy)
+            {
+                Button_SelectedColor(i);
+                EventSystem.current.SetSelectedGameObject(shipGrade_Btns[i].gameObject);
+                break;
+            }
+        }
 
         
-
     }
 
     void SelfObject_Check(GameObject caller)
@@ -35,10 +58,30 @@ public class ShipGrade_Container : MonoBehaviour
             if (num == i)
             {
                 shipGrade_Window[i].gameObject.SetActive(true);
+                if (BuildManager.instance.upgraing) // 업그레이드가 진행중이라면
+                {
+                    //업그레이드 진행중인 화면 외의 다른 윈도우의 하위 그룹들의 이미지를 모두 흑백처리 및 버튼의 enable을 false처리 해야 함
+
+                    //업그레이드 진행 중인 카테고리 인덱스 가져오기
+
+                    //그리고 업그레이드가 비진행 중이라면 모든 윈도우의 하위 그룹의 이미지를 컬러전환 하고 버튼의 enable를 true처리
+                }
             }
             else
             {
                 shipGrade_Window[i].gameObject.SetActive(false);
+                ScrollRect scroll = shipGrade_Window[i].GetComponent<ScrollRect>();
+                int index = scroll.content.transform.childCount;
+                for (int ii = 0; ii < index; ii++)
+                {
+                    ImageSlide imgsl = scroll.content.GetChild(ii).GetComponent<ImageSlide>();
+                    if (imgsl.open)
+                    {
+                        imgsl.open = false;
+                        imgsl.SliderOn_Off();
+                    }
+                }
+                
             }
         }
         Button_SelectedColor(num);
@@ -56,7 +99,7 @@ public class ShipGrade_Container : MonoBehaviour
 
             if (num == i)
             {
-                cb.normalColor = Color.white;
+                cb.normalColor = Color.yellow;
                 cb.highlightedColor = Color.white;
                 cb.selectedColor = Color.yellow;
                 cb.pressedColor = Color.gray;

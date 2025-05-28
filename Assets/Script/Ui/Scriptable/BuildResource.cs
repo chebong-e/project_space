@@ -4,7 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Building", menuName = "Scriptble Object/Building Substance")]
 public class BuildResource : ScriptableObject
 {
-    public enum Build_Category { Resource_Factory, General_Factory, Research, ContorolCenter }
+    public enum Build_Category { Resource_Factory, General_Factory, Research, ContorolCenter, BuildShip }
     public enum Factory_Category { Metal, Cristal, Gas, Energy, 
         Metal_Repasitory, Cristal_Repasitory, Gas_Repasitory, Recycling_Factory }
 
@@ -12,6 +12,7 @@ public class BuildResource : ScriptableObject
     [Header("# Main Info")]
     public Build_Category build_Category;
     public Factory_Category factory_Category;
+    public int grade;
 
     [Header("Upgrade Data")]
     public int[] init_Needs;

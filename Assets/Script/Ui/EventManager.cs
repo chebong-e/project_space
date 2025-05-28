@@ -1,13 +1,8 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using static SelfRegistration;
 
-
-[System.Serializable]
-public class ImageSliderGroup
-{
-    public List<ImageSlide> imageSlide = new List<ImageSlide>();
-}
 
 public class EventManager : MonoBehaviour
 {
@@ -17,19 +12,14 @@ public class EventManager : MonoBehaviour
 
     public GameObject[] contents;
 
-
     public List<ImageSliderGroup> imageSliderGroup;
-    public ImageSlide[] buildSlides;
-    /*public ControlCenter controlCenter;*/
-
-    ImageSlide curBuild;
+    ImageSlide curImgSlide;
 
     public float build_Timer1;
     public float build_Timer2;
     public float build_Timer3;
     public float total_Timer;
 
-    bool open;
 
     void Awake()
     {
@@ -55,6 +45,8 @@ public class EventManager : MonoBehaviour
                 imageSliderGroup[i].imageSlide.Add(contents[i].transform.GetChild(sec_i).GetComponent<ImageSlide>());
             }
         }
+
+
     }
 
     public void Add_Event()
@@ -64,30 +56,32 @@ public class EventManager : MonoBehaviour
         dropDown.triggered_event = eventTriggered;
     }
 
+
+    // 버튼은 항상 하나만 열리게 하는 동작
     public void Slide_Open()
     {
         
-        ImageSlide buildslide = EventSystem.current.currentSelectedGameObject.GetComponentInParent<ImageSlide>();
+        ImageSlide imgslide = EventSystem.current.currentSelectedGameObject.GetComponentInParent<ImageSlide>();
 
-        if (curBuild == null || curBuild != buildslide)
+        if (curImgSlide == null || curImgSlide != imgslide)
         {
-            curBuild = buildslide;
+            curImgSlide = imgslide;
         }
         else
         {
-            if (curBuild == buildslide)
+            if (curImgSlide == imgslide)
             {
-                if (buildslide.open)
-                    buildslide.Sliding_Close();
+                if (imgslide.open)
+                    imgslide.Sliding_Close();
                 else
-                    buildslide.Sliding_Open();
+                    imgslide.Sliding_Open();
                 return;
             }
         }
 
-        foreach (ImageSlide img in imageSliderGroup[7].imageSlide)
+        foreach (ImageSlide img in imageSliderGroup[BuildManager.instance.AllWindow_Active_IndexCheck()].imageSlide)
         {
-            if (img == buildslide)
+            if (img == imgslide)
             {
                 continue;
             }
@@ -98,8 +92,7 @@ public class EventManager : MonoBehaviour
             }
         }
 
-        buildslide.Sliding_Open();
+        imgslide.Sliding_Open();
 
     }
-    
 }

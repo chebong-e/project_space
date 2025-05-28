@@ -11,9 +11,13 @@ public class Infomations : MonoBehaviour
     public TextMeshProUGUI[] infos;
 
     public TextMeshProUGUI[] resources;
-    public BuildResource buildResource;
-    public Slider[] slider;
     public TextMeshProUGUI[] timeText;
+    public TextMeshProUGUI[] amount_Text;
+
+    public BuildResource buildResource;
+    public Slider[] timeSlider;
+    public Slider amountSlider;
+    
     public BuildDetailMatter buildDetailMatter;
     public Button[] btns;
     ImageSlide imgSlide;
@@ -26,9 +30,12 @@ public class Infomations : MonoBehaviour
     void Awake()
     {
         btns = new Button[2];
-        resources = new TextMeshProUGUI[4];
-        slider = new Slider[2];
+        resources = new TextMeshProUGUI[5];
         timeText = new TextMeshProUGUI[2];
+        amount_Text = new TextMeshProUGUI[2];
+
+        timeSlider = new Slider[2];
+        
 
         SelfRegistration[] selfs = GetComponentsInChildren<SelfRegistration>();
         buildDetailMatter = GetComponentInParent<BuildDetailMatter>();
@@ -70,7 +77,15 @@ public class Infomations : MonoBehaviour
         resources[0].text = $"{metal}";
         resources[1].text = $"{cristal}";
         resources[2].text = $"{gas}";
-        resources[3].text = $"{buildResource.AllowableBuild} (+{addnum})";
+        if (buildResource.build_Category == BuildResource.Build_Category.ContorolCenter)
+        {
+            resources[3].text = $"{buildResource.AllowableBuild} (+{addnum})";
+
+            // case로 구현하는게 좋으려나??
+            resources[4].text = $"생산 가능 {buildResource.name}"; // 생산 가능 함선 종류
+        }
+        
+
 
         string timeStr = "";
         int time = buildResource.building_Time[buildResource.level];
@@ -92,19 +107,27 @@ public class Infomations : MonoBehaviour
             timeStr = string.Format("{0}초", time);
         }
 
-        foreach (TextMeshProUGUI tt in timeText)
+        if (buildResource.build_Category == BuildResource.Build_Category.ContorolCenter)
         {
-            tt.text = $"{timeStr}";
+            foreach (TextMeshProUGUI tt in timeText)
+            {
+                tt.text = $"{timeStr}";
+            }
         }
+        else
+        {
+            timeText[0].text = $"{timeStr}";
+        }
+            
 
         if (buildResource != null)
         {
-            titles["name"].text = $"Lv.{buildResource.level} {buildResource.name}";
+            titles["name"].text = $"Lv.{buildResource.level} {buildResource.name} 관제센터";
         }
 
 
         btns[1].gameObject.SetActive(false);
-        slider[0].gameObject.SetActive(false);
+        timeSlider[0].gameObject.SetActive(false);
 
         // 해금 상태 확인여부 하여 버튼 잠금 확인 로직
         UnLockCheck(unLock);
