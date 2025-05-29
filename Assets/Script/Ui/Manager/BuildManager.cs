@@ -18,7 +18,8 @@ public class BuildManager : MonoBehaviour
     public GameObject[] controlCenter_contents;
     public List<ImageSliderGroup> controlCenter_ImageSliderGroup;
 
-
+    //실험 확인용, 강제 할당중이니 추후 삭제후 유연하게 처리
+    public ShipBuildSlider shipBuildSlider;
 
 
     void Awake()
@@ -173,6 +174,17 @@ public class BuildManager : MonoBehaviour
         info.btns[1].gameObject.SetActive(false);
         info.btns[0].gameObject.SetActive(true);
         controlCenter.Upgrading(null, false, null);
+
+
+
+
+        // 함선생산 탭의 해당 함선에도 업그레이드 정보 표시해주어야 함.
+        // 아래는 우선 예시
+        shipBuildSlider.ships.maxShip_Amount = info.buildResource.AllowableBuild;
+        shipBuildSlider.ControlCenterUpgrade_for_Ship(info.buildResource.AllowableBuild);
+        // 0 을 넘겨주는것을 수정해야함
+
+
     }
 
 }

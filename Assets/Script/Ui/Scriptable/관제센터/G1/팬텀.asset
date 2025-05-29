@@ -16,9 +16,9 @@ MonoBehaviour:
   factory_Category: 0
   grade: 0
   init_Needs: 140000000a00000005000000
-  AllowableBuild: 0
-  level: 0
-  building_Time: 05000000070000000a0000003c000000960000009001000020030000dc050000b80b0000581b0000
+  AllowableBuild: 30
+  level: 3
+  building_Time: 05000000070000000a00000005000000960000009001000020030000dc050000b80b0000581b0000
   build_require:
   - 1
   - 2
@@ -32,14 +32,14 @@ MonoBehaviour:
   - 2
   build_result:
   - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
+  - 10
+  - 10
+  - 10
+  - 20
+  - 20
+  - 20
+  - 20
+  - 20
+  - 50
   require_condition: "\uD2B9\uC815 \uC694\uAD6C\uC870\uAC74 \uC791\uC131"
   Lv_Title: "Lv.{0} \uC544\uB9C8\uAC9F\uB3C8 \uAD00\uC81C\uC13C\uD130"

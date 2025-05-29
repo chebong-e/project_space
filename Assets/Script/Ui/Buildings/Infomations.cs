@@ -7,6 +7,13 @@ public class Titles : SerializableDictionary<string, TextMeshProUGUI> { };
 
 public class Infomations : MonoBehaviour
 {
+    // 5.29일 예제로 우선 해보는것
+    public Init_SettingScriptable init_SettingScriptable;
+    public ShipBuildSlider shipBuildSlider;
+    //위쪽까지가 예제임
+
+
+
     public Titles titles;
     public TextMeshProUGUI[] infos;
 
@@ -87,8 +94,8 @@ public class Infomations : MonoBehaviour
         
 
 
-        string timeStr = "";
-        int time = buildResource.building_Time[buildResource.level];
+        string timeStr = TimerTexting(buildResource.building_Time[buildResource.level]);
+        /*int time = buildResource.building_Time[buildResource.level];
         if (time >= 3600)
         {
             int hours = time / 3600;
@@ -105,7 +112,7 @@ public class Infomations : MonoBehaviour
         else
         {
             timeStr = string.Format("{0}초", time);
-        }
+        }*/
 
         if (buildResource.build_Category == BuildResource.Build_Category.ContorolCenter)
         {
@@ -132,6 +139,7 @@ public class Infomations : MonoBehaviour
         // 해금 상태 확인여부 하여 버튼 잠금 확인 로직
         UnLockCheck(unLock);
     }
+
 
     public void UnLockCheck(bool unlock) // 해금 상태에 따른 로직 처리
     {
@@ -168,13 +176,42 @@ public class Infomations : MonoBehaviour
         resources[1].text = $"{cristal}";
         resources[2].text = $"{gas}";
         resources[3].text = $"{allowableBuild}";
+        buildResource.AllowableBuild = allowableBuild;
 
 
         // 임시 사항. 나중에 로직으로 빼두던지 해야할듯
         // 윗열 슬라이더 시간 텍스트 표시 관련임 
 
+        string timeStr = TimerTexting(buildResource.building_Time[buildResource.level]);
+        /*int time = buildResource.building_Time[buildResource.level];
+        if (time >= 3600)
+        {
+            int hours = time / 3600;
+            int minutes = (time % 3600) / 60;
+            int seconds = time % 60;
+            timeStr = string.Format("{0}시간 {1}분 {2}초", hours, minutes, seconds);
+        }
+        else if (time >= 60)
+        {
+            int minutes = time / 60;
+            int seconds = time % 60;
+            timeStr = string.Format("{0}분 {1}초", minutes, seconds);
+        }
+        else
+        {
+            timeStr = string.Format("{0}초", time);
+        }*/
+
+        foreach (TextMeshProUGUI tt in timeText)
+        {
+            tt.text = $"{timeStr}";
+        }
+    }
+
+    public string TimerTexting(int timer)
+    {
         string timeStr = "";
-        int time = buildResource.building_Time[buildResource.level];
+        int time = timer;
         if (time >= 3600)
         {
             int hours = time / 3600;
@@ -193,11 +230,6 @@ public class Infomations : MonoBehaviour
             timeStr = string.Format("{0}초", time);
         }
 
-        foreach (TextMeshProUGUI tt in timeText)
-        {
-            tt.text = $"{timeStr}";
-        }
+        return timeStr;
     }
-
-
 }

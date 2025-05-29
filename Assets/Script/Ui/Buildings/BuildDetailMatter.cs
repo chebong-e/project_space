@@ -15,6 +15,10 @@ public class BuildDetailMatter : MonoBehaviour
 
     Coroutine coroutine;
 
+    //아래로는 함선생산 관련 변수
+
+
+
     void Awake()
     {
         infos = transform.GetChild(2).GetComponent<Infomations>();
