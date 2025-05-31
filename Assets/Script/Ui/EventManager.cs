@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
-using static SelfRegistration;
-
+using UnityEngine.UI;
+using TMPro;
 
 public class EventManager : MonoBehaviour
 {
@@ -10,10 +10,15 @@ public class EventManager : MonoBehaviour
     public int eventTriggered;
     public DropDown dropDown;
 
+    //확인용
+    public GameObject[] Ex_contentsCheck;
+
+
+
     public GameObject[] contents;
+    public GameObject[] TabContainer;
 
     public List<ImageSliderGroup> imageSliderGroup;
-    ImageSlide curImgSlide;
 
     public float build_Timer1;
     public float build_Timer2;
@@ -47,6 +52,21 @@ public class EventManager : MonoBehaviour
         }
 
 
+        /*// 확인용
+        for (int i = 0; i < TabContainer.Length; i++)
+        {
+            scrRectGroup group = new scrRectGroup();
+            group.scrolls = TabContainer[i].GetComponentsInChildren<ScrollRect>(true);
+            
+            containers[TabContainer[i]] = group;
+
+
+        }*/
+    }
+
+    void Start()
+    {
+        IndexCheck();
     }
 
     public void Add_Event()
@@ -56,43 +76,28 @@ public class EventManager : MonoBehaviour
         dropDown.triggered_event = eventTriggered;
     }
 
-
-    // 버튼은 항상 하나만 열리게 하는 동작
-    public void Slide_Open()
+    void IndexCheck()
     {
+        int num = 0;
+        for (int i = 0; i < TabContainer.Length; i++)
+        {
+            num += TabContainer[i].transform.GetComponentsInChildren<ScrollRect>(true).Length;
+        }
+
         
-        ImageSlide imgslide = EventSystem.current.currentSelectedGameObject.GetComponentInParent<ImageSlide>();
+        Ex_contentsCheck = new GameObject[num];
 
-        if (curImgSlide == null || curImgSlide != imgslide)
+        for (int i = 0; i < TabContainer.Length; i++)
         {
-            curImgSlide = imgslide;
-        }
-        else
-        {
-            if (curImgSlide == imgslide)
+            if (TabContainer[i].transform.GetComponentsInChildren<ScrollRect>(true).Length > 1)
             {
-                if (imgslide.open)
-                    imgslide.Sliding_Close();
-                else
-                    imgslide.Sliding_Open();
-                return;
+                GameObject[] objs = TabContainer[i].transform.GetComponentsInChildren<ScrollRect>(true);
+            }
+            for (int ii = 0; ii < TabContainer[i].transform.GetComponentsInChildren<ScrollRect>(true).Length; ii++)
+            {
+                Ex_contentsCheck[ii] = TabContainer[i].transform.GetComponentInChildren<ScrollRect>().gameObject;
             }
         }
-
-        foreach (ImageSlide img in imageSliderGroup[BuildManager.instance.AllWindow_Active_IndexCheck()].imageSlide)
-        {
-            if (img == imgslide)
-            {
-                continue;
-            }
-            else
-            {
-                if (img.open)
-                    img.Sliding_Close();
-            }
-        }
-
-        imgslide.Sliding_Open();
-
+        Debug.Log(num);
     }
 }

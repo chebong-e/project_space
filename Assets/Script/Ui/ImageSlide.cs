@@ -14,12 +14,18 @@ public class ImageSlide : MonoBehaviour
     Material colorMat;
     public bool open;
     bool confirm;
+    Button imgBtn;
+
+
+    ImageSlide curImgSlide;
 
     void Awake()
     {
         anims = new Animator[2];
         anims = GetComponentsInChildren<Animator>();
-        
+        imgBtn = transform.GetChild(1).GetComponent<Button>();
+
+        imgBtn.onClick.AddListener(ImageSlide_Open_Close);
     }
 
     public void ColorSetting(bool unlock)
@@ -163,5 +169,27 @@ public class ImageSlide : MonoBehaviour
         }
     }
 
+    public void ImageSlide_Open_Close() // 이것으로 대체
+    {
+        ImageSlide imgslide = GetComponent<ImageSlide>();
+
+        if (imgslide.open)
+            imgslide.Sliding_Close();
+        else
+            imgslide.Sliding_Open();
+
+        foreach (ImageSlide img in EventManager.instance.imageSliderGroup[BuildManager.instance.AllWindow_Active_IndexCheck()].imageSlide)
+        {
+            if (img == imgslide)
+            {
+                continue;
+            }
+            else
+            {
+                if (img.open)
+                    img.Sliding_Close();
+            }
+        }
+    }
     
 }

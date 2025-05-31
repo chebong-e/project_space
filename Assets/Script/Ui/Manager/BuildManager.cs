@@ -177,11 +177,26 @@ public class BuildManager : MonoBehaviour
 
 
 
+        //////////////////////////////////////// 부모의 1번째 자식 오브젝트 찾는방법
+        Transform current = info.transform; ;
+        Transform root = info.transform.root;
+
+        while (current.parent != null && current.parent != root)
+        {
+            current = current.parent;
+        }
+        Debug.Log($"네임: {current.name}");
+
+        
 
         // 함선생산 탭의 해당 함선에도 업그레이드 정보 표시해주어야 함.
         // 아래는 우선 예시
-        shipBuildSlider.ships.maxShip_Amount = info.buildResource.AllowableBuild;
-        shipBuildSlider.ControlCenterUpgrade_for_Ship(info.buildResource.AllowableBuild);
+        /*for (int i = 0; i < EventManager.instance.containers.Count; i++)
+        {
+            EventManager.instance.containers[]
+        }*/
+
+        info.shipBuildSlider.ControlCenterUpgrade_for_Ship(info.buildResource.AllowableBuild);
         // 0 을 넘겨주는것을 수정해야함
 
 
