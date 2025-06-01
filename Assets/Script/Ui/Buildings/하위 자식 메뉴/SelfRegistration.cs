@@ -64,56 +64,6 @@ public class SelfRegistration : MonoBehaviour
                 break;
             case GrateTitle.ControlCenterTab:
                 ExSwitch(titleType, info);
-                /*switch (titleType)
-                {
-                    case TitleType.Title:
-                        TextMeshProUGUI titleText = GetComponent<TextMeshProUGUI>();
-                        if (subType0 == SubType0.Name)
-                        {
-                            info.titles["name"] = titleText;
-                        }
-                        else if (subType0 == SubType0.UpTime)
-                        {
-                            info.titles["up_upgradeTime"] = titleText;
-                        }
-                        else
-                        {
-                            info.titles["down_upgradeTime"] = titleText;
-                        }
-                        break;
-
-                    case TitleType.Resource:
-                        info.resources[(int)subType1] = GetComponentInChildren<TextMeshProUGUI>();
-                        if (subType1 == SubType1.Allowable)
-                        {
-                            info.resources[(int)subType1 + 1] = transform.parent.GetChild(0).GetComponent<TextMeshProUGUI>();
-                        }
-                        break;
-                    case TitleType.TimeSlide:
-                        info.timeSlider[(int)subType2] = GetComponent<Slider>();
-                        if (subType2 != SubType2.UpSlider)
-                        {
-                            info.timeText[1] = transform.GetChild(3).GetComponent<TextMeshProUGUI>();
-                        }
-                        else
-                        {
-                            info.timeText[0] = transform.GetChild(2).GetComponent<TextMeshProUGUI>();
-                        }
-                        break;
-                    case TitleType.Button:
-                        Button btn = GetComponent<Button>();
-                        if (subType3 == SubType3.Confirm)
-                        {
-                            info.btns[0] = btn;
-                            info.btns[0].gameObject.SetActive(!upgrading);
-                        }
-                        else
-                        {
-                            info.btns[1] = btn;
-                            info.btns[1].gameObject.SetActive(upgrading);
-                        }
-                        break;
-                }*/
                 break;
             case GrateTitle.FleetMision:
 

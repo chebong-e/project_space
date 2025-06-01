@@ -11,7 +11,7 @@ public class BuildManager : MonoBehaviour
     public ControlCenter controlCenter;
     Coroutine coroutine;
 
-    public bool upgraing;
+    public bool upgrading;
     public ShipGrade_Container shipGrade_Container;
 
 
@@ -55,11 +55,15 @@ public class BuildManager : MonoBehaviour
         for (int i = 0; i < EventManager.instance.imageSliderGroup.Count; i++)
         {
             List<ImageSlide> img_s = EventManager.instance.imageSliderGroup[i].imageSlide;
-            if (img_s[0].gameObject.activeInHierarchy)
+            if (img_s[0] != null)
             {
-                index = i;
-                break;
+                if (img_s[0].gameObject.activeInHierarchy)
+                {
+                    index = i;
+                    break;
+                }
             }
+            
         }
         return index;
     }
@@ -163,11 +167,11 @@ public class BuildManager : MonoBehaviour
         // 취소버튼 비활성화 및 업그레이드 버튼 활성화
         // 해당 버튼 외 버튼 컬러처리 및 모두활성화
         // 다음 레벨 필요 자원 표시
-        info.Upgrade();
+        info.Upgrade_to_Infomation();
         imgSlide.ImageChange_toUpgrade();
 
         // 업그레이드 완료
-        info.buildDetailMatter.confirm = false;
+        info.confirm = false;
         info.timeSlider[0].value = 0f;
         info.timeSlider[1].value = 0f;
         info.timeSlider[0].gameObject.SetActive(false);

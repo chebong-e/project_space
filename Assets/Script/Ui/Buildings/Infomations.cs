@@ -7,6 +7,8 @@ public class Titles : SerializableDictionary<string, TextMeshProUGUI> { };
 
 public class Infomations : MonoBehaviour
 {
+
+    public enum Types { ControlCenter, Tab3 }
     // 5.29일 예제로 우선 해보는것
     public Init_SettingScriptable init_SettingScriptable;
     public ShipBuildSlider shipBuildSlider;
@@ -15,7 +17,7 @@ public class Infomations : MonoBehaviour
 
 
     public Titles titles;
-    public TextMeshProUGUI[] infos;
+    /*public TextMeshProUGUI[] infos;*/
 
     public TextMeshProUGUI[] resources;
     public TextMeshProUGUI[] timeText;
@@ -25,7 +27,6 @@ public class Infomations : MonoBehaviour
     public Slider[] timeSlider;
     public Slider amountSlider;
     
-    public BuildDetailMatter buildDetailMatter;
     public Button[] btns;
     ImageSlide imgSlide;
 
@@ -33,6 +34,7 @@ public class Infomations : MonoBehaviour
     // 정보를 불러오기 앞서, 현재는 연동 데이터가 없으므로 항상 레벨 0로 초기화하는데 필요한 bool값
     public bool data = false;
     public bool unLock = false;
+    public bool confirm;
 
     void Awake()
     {
@@ -40,27 +42,31 @@ public class Infomations : MonoBehaviour
         resources = new TextMeshProUGUI[5];
         timeText = new TextMeshProUGUI[2];
         amount_Text = new TextMeshProUGUI[2];
-
         timeSlider = new Slider[2];
-        
+        imgSlide = GetComponentInParent<ImageSlide>();
+
 
         SelfRegistration[] selfs = GetComponentsInChildren<SelfRegistration>();
-        buildDetailMatter = GetComponentInParent<BuildDetailMatter>();
-
         foreach (SelfRegistration self in selfs)
         {
             self.Init_Setting();
         }
 
-        // 여기서 이미지슬라이드 인잇세팅을 해주는게 좋을듯
-        imgSlide = GetComponentInParent<ImageSlide>();
         imgSlide.Init_Setting();
 
         Init_Setting();
     }
 
-    void Init_Setting()
-    {
+    public void Init_Setting()
+    {       
+        /*SelfRegistration[] selfs = GetComponentsInChildren<SelfRegistration>();
+        foreach (SelfRegistration self in selfs)
+        {
+            self.Init_Setting();
+        }
+
+        imgSlide.Init_Setting();*/
+
         // 추후 서버 데이터를 연결한 이후 데이터 연동 확인 작업 후 본인의 계정의
         // 정보를 불러오기 앞서, 현재는 연동 데이터가 없으므로 항상 레벨 1로 초기화하는데 필요한 bool값
         if (!data)
@@ -87,32 +93,10 @@ public class Infomations : MonoBehaviour
         if (buildResource.build_Category == BuildResource.Build_Category.ContorolCenter)
         {
             resources[3].text = $"{buildResource.AllowableBuild} (+{addnum})";
-
-            // case로 구현하는게 좋으려나??
             resources[4].text = $"생산 가능 {buildResource.name}"; // 생산 가능 함선 종류
         }
-        
-
 
         string timeStr = TimerTexting(buildResource.building_Time[buildResource.level]);
-        /*int time = buildResource.building_Time[buildResource.level];
-        if (time >= 3600)
-        {
-            int hours = time / 3600;
-            int minutes = (time % 3600) / 60;
-            int seconds = time % 60;
-            timeStr = string.Format("{0}시간 {1}분 {2}초", hours, minutes, seconds);
-        }
-        else if (time >= 60)
-        {
-            int minutes = time / 60;
-            int seconds = time % 60;
-            timeStr = string.Format("{0}분 {1}초", minutes, seconds);
-        }
-        else
-        {
-            timeStr = string.Format("{0}초", time);
-        }*/
 
         if (buildResource.build_Category == BuildResource.Build_Category.ContorolCenter)
         {
@@ -124,14 +108,20 @@ public class Infomations : MonoBehaviour
         else
         {
             timeText[0].text = $"{timeStr}";
-        }
-            
+        }     
 
         if (buildResource != null)
         {
-            titles["name"].text = $"Lv.{buildResource.level} {buildResource.name} 관제센터";
+            switch (buildResource.build_Category)
+            {
+                case BuildResource.Build_Category.ContorolCenter:
+                    titles["name"].text = $"Lv.{buildResource.level} {buildResource.name} 관제센터";
+                    break;
+                case BuildResource.Build_Category.BuildShip:
+                    titles["name"].text = $"Lv.{buildResource.level} {buildResource.name}";
+                    break;
+            }
         }
-
 
         btns[1].gameObject.SetActive(false);
         timeSlider[0].gameObject.SetActive(false);
@@ -149,16 +139,24 @@ public class Infomations : MonoBehaviour
     }
 
 
-    public void Upgrade()
+    public void Upgrade_to_Infomation()
     {
         int curLv = buildResource.level;
 
         curLv += 1;
         buildResource.level = curLv;
-        titles["name"].text = $"Lv. {curLv} {buildResource.name}";
+        /*titles["name"].text = $"Lv. {curLv} {buildResource.name}";*/
 
 
-
+        switch (buildResource.build_Category)
+        {
+            case BuildResource.Build_Category.ContorolCenter:
+                titles["name"].text = $"Lv.{buildResource.level} {buildResource.name} 관제센터";
+                break;
+            case BuildResource.Build_Category.BuildShip:
+                titles["name"].text = $"Lv.{buildResource.level} {buildResource.name}";
+                break;
+        }
 
         int metal = buildResource.init_Needs[0];
         int cristal = buildResource.init_Needs[1];
@@ -183,24 +181,6 @@ public class Infomations : MonoBehaviour
         // 윗열 슬라이더 시간 텍스트 표시 관련임 
 
         string timeStr = TimerTexting(buildResource.building_Time[buildResource.level]);
-        /*int time = buildResource.building_Time[buildResource.level];
-        if (time >= 3600)
-        {
-            int hours = time / 3600;
-            int minutes = (time % 3600) / 60;
-            int seconds = time % 60;
-            timeStr = string.Format("{0}시간 {1}분 {2}초", hours, minutes, seconds);
-        }
-        else if (time >= 60)
-        {
-            int minutes = time / 60;
-            int seconds = time % 60;
-            timeStr = string.Format("{0}분 {1}초", minutes, seconds);
-        }
-        else
-        {
-            timeStr = string.Format("{0}초", time);
-        }*/
 
         foreach (TextMeshProUGUI tt in timeText)
         {
@@ -232,4 +212,13 @@ public class Infomations : MonoBehaviour
 
         return timeStr;
     }
+
+    public void UpgradeStart_or_Cancle()
+    {
+        confirm = !confirm;
+        BuildManager.instance.upgrading = confirm;
+
+        BuildManager.instance.ControlCenter_Upgrade(transform.GetChild(1).GetComponent<Image>().sprite, this, imgSlide, confirm);
+    }
+
 }

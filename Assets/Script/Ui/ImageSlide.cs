@@ -6,7 +6,6 @@ public class ImageSlide : MonoBehaviour
 {
     public Animator[] anims;
     EventManager eventManager;
-    BuildDetailMatter buildDetailMatter;
     int grayscaleCount = 0;
 
     Image myImage;
@@ -15,7 +14,7 @@ public class ImageSlide : MonoBehaviour
     public bool open;
     bool confirm;
     Button imgBtn;
-
+    Infomations info;
 
     ImageSlide curImgSlide;
 
@@ -24,6 +23,7 @@ public class ImageSlide : MonoBehaviour
         anims = new Animator[2];
         anims = GetComponentsInChildren<Animator>();
         imgBtn = transform.GetChild(1).GetComponent<Button>();
+        info = GetComponent<Infomations>();
 
         imgBtn.onClick.AddListener(ImageSlide_Open_Close);
     }
@@ -36,7 +36,6 @@ public class ImageSlide : MonoBehaviour
 
     public void Init_Setting() // 머티리얼 복사 및 할당 관련
     {
-        buildDetailMatter = GetComponent<BuildDetailMatter>();
         myImage = transform.GetChild(1).GetComponent<Image>();
         Material baseMat = Resources.Load<Material>("GrayscaleMaterial");
         
@@ -63,22 +62,7 @@ public class ImageSlide : MonoBehaviour
         }
     }
 
-    /*public int AllWindow_Active_IndexCheck()
-    {
-        int index = 0;
-        for (int i = 0; i < EventManager.instance.imageSliderGroup.Count; i++)
-        {
-            List<ImageSlide> img_s = EventManager.instance.imageSliderGroup[i].imageSlide;
-            if (img_s[0].gameObject.activeInHierarchy)
-            {
-                index = i;
-                break;
-            }
-        }
-        return index;
-    }*/
-
-     int ControlCenter_Active_IndexCheck()
+    int ControlCenter_Active_IndexCheck()
     {
         int index = 0;
         for (int i = 0; i < BuildManager.instance.controlCenter_ImageSliderGroup.Count; i++)
@@ -117,7 +101,7 @@ public class ImageSlide : MonoBehaviour
                         continue;
                     }
 
-                    if (img.buildDetailMatter.infos.unLock)
+                    if (img.info.unLock)
                     {
                         img.ColorChange();
                     }
@@ -130,7 +114,7 @@ public class ImageSlide : MonoBehaviour
                 foreach (ImageSlide img in active_imgGroup)
                 {
 
-                    if (img.buildDetailMatter.infos.unLock)
+                    if (img.info.unLock)
                     {
                         img.ColorChange();
                     }
@@ -163,9 +147,9 @@ public class ImageSlide : MonoBehaviour
 
     public void SliderOn_Off() // 오픈은 항상 한 버튼만 유지하기 위함
     {
-        if (buildDetailMatter.confirm) // 업그레이드 중이라면
+        if (info.confirm) // 업그레이드 중이라면
         {
-            buildDetailMatter.infos.timeSlider[0].gameObject.SetActive(!open);
+            info.timeSlider[0].gameObject.SetActive(!open);
         }
     }
 

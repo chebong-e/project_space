@@ -32,7 +32,7 @@ public class ShipBuildSlider : MonoBehaviour
     public void ControlCenterUpgrade_for_Ship(int amount) // amount값은 allowble변수로 넘기기
     {
         slider.maxValue = amount;
-        ships.maxShip_Amount = amount;
+        ships.maxHaveShip_Amount = amount;
         building_Amount.text = $"<       {slider.value}     /     {amount}       >";
         if (this.gameObject.activeInHierarchy)
             UpgradeInfomation();
@@ -41,11 +41,11 @@ public class ShipBuildSlider : MonoBehaviour
 
     void UpgradeInfomation()
     {
-        int amount = ships.maxShip_Amount - ships.have_CurrentShip;
+        int amount = ships.maxHaveShip_Amount - ships.currentHave_Ship;
         building_Amount.text = $"<       {slider.value}     /     {amount}       >";
 
         string timeStr = "";
-        int time = (int)slider.value * (int)ships.shipBuild_Time;
+        int time = (int)slider.value * (int)ships.shipMaking_Time;
         if (time >= 3600)
         {
             int hours = time / 3600;

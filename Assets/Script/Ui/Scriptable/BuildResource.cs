@@ -20,12 +20,14 @@ public class BuildResource : ScriptableObject
     [Header("# Level Data")]
     public int level;
     public int[] building_Time; // 건설 시간
-    public float[] build_require;
-    public float[] build_result; // 건설 후 능력치
+    public float[] build_require; // 업그레이드시 필요 자원
+    public float[] build_result; // 건설 후 능력치 또는 함선보유수량
     [TextArea]
     public string require_condition; // 건설 특정 요구 조건
 
     [Header("String Data")]
     public string Lv_Title;
 
+    [Header("Datas")]
+    public Sprite img;
 }

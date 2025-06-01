@@ -16,13 +16,21 @@ public class Init_Matching : MonoBehaviour
     public GameObject[] buildShip_Content;
 
     // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-    public BuildDetailMatter[] control_Container;
+    public Infomations[] control_Container;
     public ShipBuildSlider[] ship_Container;
+
+
+
 
 
     void Start()
     {
+
+        // 인포메이션 init을 해준 뒤에 여기 init을 실행해야함.
+
+
         Init();
+
     }
 
 
@@ -32,12 +40,12 @@ public class Init_Matching : MonoBehaviour
         {
             ScrollRect control_scr = controlCenter_Content[i].GetComponent<ScrollRect>();
             ScrollRect build_scr = buildShip_Content[i].GetComponent<ScrollRect>();
-            control_Container = control_scr.content.GetComponentsInChildren<BuildDetailMatter>(true);
+            control_Container = control_scr.content.GetComponentsInChildren<Infomations>(true);
             ship_Container = build_scr.content.GetComponentsInChildren<ShipBuildSlider>(true);
             int index = control_scr.content.childCount;
             for (int ii = 0; ii < index; ii++)
             {
-                control_Container[ii].infos.shipBuildSlider = ship_Container[ii];
+                control_Container[ii].shipBuildSlider = ship_Container[ii];
             }
         }
     }

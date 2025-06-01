@@ -58,7 +58,7 @@ public class ShipGrade_Container : MonoBehaviour
             if (num == i)
             {
                 shipGrade_Window[i].gameObject.SetActive(true);
-                if (BuildManager.instance.upgraing) // 업그레이드가 진행중이라면
+                if (BuildManager.instance.upgrading) // 업그레이드가 진행중이라면
                 {
                     //업그레이드 진행중인 화면 외의 다른 윈도우의 하위 그룹들의 이미지를 모두 흑백처리 및 버튼의 enable을 false처리 해야 함
 

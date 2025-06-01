@@ -12,10 +12,10 @@ public class EventManager : MonoBehaviour
 
     //È®ÀÎ¿ë
     public GameObject[] Ex_contentsCheck;
+    public GameObject canvas;
 
 
-
-    public GameObject[] contents;
+    public ScrollRect[] contents;
     public GameObject[] TabContainer;
 
     public List<ImageSliderGroup> imageSliderGroup;
@@ -39,15 +39,16 @@ public class EventManager : MonoBehaviour
         }
 
         imageSliderGroup = new List<ImageSliderGroup>();
+        contents = canvas.GetComponentsInChildren<ScrollRect>();
 
         for (int i = 0; i < contents.Length; i++)
         {
             ImageSliderGroup group = new ImageSliderGroup();
             imageSliderGroup.Add(group);
 
-            for (int sec_i = 0; sec_i < contents[i].transform.childCount; sec_i++)
+            for (int sec_i = 0; sec_i < contents[i].content.transform.childCount; sec_i++)
             {
-                imageSliderGroup[i].imageSlide.Add(contents[i].transform.GetChild(sec_i).GetComponent<ImageSlide>());
+                imageSliderGroup[i].imageSlide.Add(contents[i].content.transform.GetChild(sec_i).GetComponent<ImageSlide>());
             }
         }
 
@@ -91,7 +92,7 @@ public class EventManager : MonoBehaviour
         {
             if (TabContainer[i].transform.GetComponentsInChildren<ScrollRect>(true).Length > 1)
             {
-                GameObject[] objs = TabContainer[i].transform.GetComponentsInChildren<ScrollRect>(true);
+                ScrollRect[] objs = TabContainer[i].transform.GetComponentsInChildren<ScrollRect>(true);
             }
             for (int ii = 0; ii < TabContainer[i].transform.GetComponentsInChildren<ScrollRect>(true).Length; ii++)
             {
