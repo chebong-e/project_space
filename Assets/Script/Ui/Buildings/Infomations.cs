@@ -9,6 +9,7 @@ public class Infomations : MonoBehaviour
 {
 
     public enum Types { ControlCenter, Tab3 }
+    public Types info_types;
     // 5.29일 예제로 우선 해보는것
     public Init_SettingScriptable init_SettingScriptable;
     public ShipBuildSlider shipBuildSlider;
@@ -24,6 +25,7 @@ public class Infomations : MonoBehaviour
     public TextMeshProUGUI[] amount_Text;
 
     public BuildResource buildResource;
+    public Ships ships;
     public Slider[] timeSlider;
     public Slider amountSlider;
     
@@ -35,19 +37,19 @@ public class Infomations : MonoBehaviour
     public bool data = false;
     public bool unLock = false;
     public bool confirm;
+    public bool ship_confirm;
 
     void Awake()
     {
         btns = new Button[2];
         resources = new TextMeshProUGUI[5];
         timeText = new TextMeshProUGUI[2];
-        amount_Text = new TextMeshProUGUI[2];
+        /*amount_Text = new TextMeshProUGUI[2];*/
         timeSlider = new Slider[2];
         imgSlide = GetComponentInParent<ImageSlide>();
 
 
-        SelfRegistration[] selfs = GetComponentsInChildren<SelfRegistration>();
-        foreach (SelfRegistration self in selfs)
+        foreach (SelfRegistration self in GetComponentsInChildren<SelfRegistration>())
         {
             self.Init_Setting();
         }
@@ -58,59 +60,83 @@ public class Infomations : MonoBehaviour
     }
 
     public void Init_Setting()
-    {       
-        /*SelfRegistration[] selfs = GetComponentsInChildren<SelfRegistration>();
-        foreach (SelfRegistration self in selfs)
-        {
-            self.Init_Setting();
-        }
-
-        imgSlide.Init_Setting();*/
+    {
+        int metal = info_types == Types.ControlCenter ? buildResource.init_Needs[0] : ships.needs_Res[0];
+        int cristal = info_types == Types.ControlCenter ? buildResource.init_Needs[1] : ships.needs_Res[1];
+        int gas = info_types == Types.ControlCenter ? buildResource.init_Needs[2] : ships.needs_Res[2];
 
         // 추후 서버 데이터를 연결한 이후 데이터 연동 확인 작업 후 본인의 계정의
         // 정보를 불러오기 앞서, 현재는 연동 데이터가 없으므로 항상 레벨 1로 초기화하는데 필요한 bool값
         if (!data)
         {
-            buildResource.level = 0;
-            buildResource.AllowableBuild = (int)buildResource.build_result[buildResource.level];
+            if (info_types == Types.ControlCenter)
+            {
+                buildResource.level = 0;
+                buildResource.AllowableBuild = (int)buildResource.build_result[buildResource.level];
+                for (int i = 0; i < buildResource.level; i++)
+                {
+                    metal = Mathf.FloorToInt(metal * buildResource.build_require[i]);
+                    cristal = Mathf.FloorToInt(cristal * buildResource.build_require[i]);
+                    gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
+                }
+
+                // 임시 추가가능대수 변수
+                int addnum = 0;
+
+                resources[3].text = $"{buildResource.AllowableBuild} (+{addnum})";
+                resources[4].text = $"생산 가능 {buildResource.name}"; // 생산 가능 함선 종류
+
+
+                foreach (TextMeshProUGUI tt in timeText)
+                {
+                    tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
+                }
+                titles["name"].text = $"Lv.{buildResource.level} {buildResource.name} 관제센터";
+            }
+            else // 함선생산 Infomations
+            {
+                Debug.Log("ships참조");
+
+                timeText[0].text = $"{TimerTexting((int)ships.shipMaking_Time)}";
+                titles["name"].text = $"{ships.name}";
+            }
         }
 
-        int metal = buildResource.init_Needs[0];
+
+        
+
+
+        /*int metal = buildResource.init_Needs[0];
         int cristal = buildResource.init_Needs[1];
-        int gas = buildResource.init_Needs[2];
-        for (int i = 0; i < buildResource.level; i++)
-        {
-            metal = Mathf.FloorToInt(metal * buildResource.build_require[i]);
-            cristal = Mathf.FloorToInt(cristal * buildResource.build_require[i]);
-            gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
-        }
+        int gas = buildResource.init_Needs[2];*/
+        
 
         // 임시 추가가능대수 변수
-        int addnum = 0;
+        /*int addnum = 0;*/
         resources[0].text = $"{metal}";
         resources[1].text = $"{cristal}";
         resources[2].text = $"{gas}";
-        if (buildResource.build_Category == BuildResource.Build_Category.ContorolCenter)
+        /*if (buildResource.build_Category == BuildResource.Build_Category.ContorolCenter)
         {
             resources[3].text = $"{buildResource.AllowableBuild} (+{addnum})";
             resources[4].text = $"생산 가능 {buildResource.name}"; // 생산 가능 함선 종류
-        }
+        }*/
 
-        string timeStr = TimerTexting(buildResource.building_Time[buildResource.level]);
+        /*string timeStr = TimerTexting(buildResource.building_Time[buildResource.level]);
 
         if (buildResource.build_Category == BuildResource.Build_Category.ContorolCenter)
         {
             foreach (TextMeshProUGUI tt in timeText)
             {
-                tt.text = $"{timeStr}";
+                tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
             }
         }
         else
         {
-            timeText[0].text = $"{timeStr}";
-        }     
+            timeText[0].text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
+        }*/
 
-        if (buildResource != null)
+        /*if (buildResource != null)
         {
             switch (buildResource.build_Category)
             {
@@ -121,7 +147,7 @@ public class Infomations : MonoBehaviour
                     titles["name"].text = $"Lv.{buildResource.level} {buildResource.name}";
                     break;
             }
-        }
+        }*/
 
         btns[1].gameObject.SetActive(false);
         timeSlider[0].gameObject.SetActive(false);
@@ -190,10 +216,17 @@ public class Infomations : MonoBehaviour
 
     public string TimerTexting(int timer)
     {
-        string timeStr = "";
+        if (timer >= 3600)
+            return $"{timer / 3600}시간 {(timer % 3600) / 60}분 {timer % 60}초";
+        else if (timer >= 60)
+            return $"{timer / 60}분 {timer % 60}초";
+        else 
+            return $"{timer}초";
+        /*string timeStr = "";
         int time = timer;
         if (time >= 3600)
         {
+            $"{timer / 3600}시간 {(timer % 3600) / 60}분 {timer % 60}초";
             int hours = time / 3600;
             int minutes = (time % 3600) / 60;
             int seconds = time % 60;
@@ -210,15 +243,33 @@ public class Infomations : MonoBehaviour
             timeStr = string.Format("{0}초", time);
         }
 
-        return timeStr;
+        return timeStr;*/
     }
 
     public void UpgradeStart_or_Cancle()
     {
-        confirm = !confirm;
-        BuildManager.instance.upgrading = confirm;
+        if (info_types == Types.ControlCenter)
+        {
+            confirm = !confirm;
+            BuildManager.instance.upgrading = confirm;
 
-        BuildManager.instance.ControlCenter_Upgrade(transform.GetChild(1).GetComponent<Image>().sprite, this, imgSlide, confirm);
+            BuildManager.instance.ControlCenter_Upgrade(transform.GetChild(1).GetComponent<Image>().sprite,
+                this,
+                imgSlide,
+                confirm);
+        }
+        else
+        {
+            ship_confirm = !ship_confirm;
+            BuildManager.instance.buildShips = ship_confirm;
+
+            BuildManager.instance.BuildTab3_BuildShips(transform.GetChild(1).GetComponent<Image>().sprite,
+                shipBuildSlider.slider.value * ships.shipMaking_Time,
+                this,
+                imgSlide,
+                ship_confirm);
+        }
+        
     }
 
 }

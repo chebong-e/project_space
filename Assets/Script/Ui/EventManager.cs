@@ -15,10 +15,8 @@ public class EventManager : MonoBehaviour
     public GameObject canvas;
 
 
-    public ScrollRect[] contents;
     public GameObject[] TabContainer;
 
-    public List<ImageSliderGroup> imageSliderGroup;
 
     public float build_Timer1;
     public float build_Timer2;
@@ -38,8 +36,8 @@ public class EventManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
 
-        imageSliderGroup = new List<ImageSliderGroup>();
-        contents = canvas.GetComponentsInChildren<ScrollRect>();
+        /*imageSliderGroup = new List<ImageSliderGroup>();
+        contents = canvas.GetComponentsInChildren<ScrollRect>(true);
 
         for (int i = 0; i < contents.Length; i++)
         {
@@ -50,7 +48,7 @@ public class EventManager : MonoBehaviour
             {
                 imageSliderGroup[i].imageSlide.Add(contents[i].content.transform.GetChild(sec_i).GetComponent<ImageSlide>());
             }
-        }
+        }*/
 
 
         /*// 확인용
@@ -67,7 +65,7 @@ public class EventManager : MonoBehaviour
 
     void Start()
     {
-        IndexCheck();
+        
     }
 
     public void Add_Event()
@@ -77,7 +75,7 @@ public class EventManager : MonoBehaviour
         dropDown.triggered_event = eventTriggered;
     }
 
-    void IndexCheck()
+    void IndexCheck() // 필요없음
     {
         int num = 0;
         for (int i = 0; i < TabContainer.Length; i++)

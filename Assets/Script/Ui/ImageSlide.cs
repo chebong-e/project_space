@@ -62,39 +62,22 @@ public class ImageSlide : MonoBehaviour
         }
     }
 
-    int ControlCenter_Active_IndexCheck()
-    {
-        int index = 0;
-        for (int i = 0; i < BuildManager.instance.controlCenter_ImageSliderGroup.Count; i++)
-        {
-            List<ImageSlide> img_s = BuildManager.instance.controlCenter_ImageSliderGroup[i].imageSlide;
-            foreach (ImageSlide img in img_s)
-            {
-                if (img.gameObject == gameObject)//GetComponentInParent<ImageSlide>()
-                {
-                    index = i;
-                    break;
-                }
-            }
-        }
-        return index;
-    }
+
 
 
     // 버튼 잠금 및 비활성화 처리
-    public void ImageChange_toUpgrade() // 업그레이드 중일때 해당 버튼 외 다른 버튼 흑백 및 잠금 처리
+    public void ImageChange_toUpgrade(int index) // 업그레이드 중일때 해당 버튼 외 다른 버튼 흑백 및 잠금 처리
     {
         // 활성화 인덱스를 가져와서 
         confirm = !confirm;
-        int active_index = ControlCenter_Active_IndexCheck();
 
-        for (int i = 0; i < 5; i++)
+        // 예를 들어 관제센터에서 업그레이드를 했다면 관제센터의 자식 컨테이너 5종 모두의 컬러를 흑백 및 비활성화 해야함.
+        for (int i = 0; i < BuildManager.instance.TabContainer.Length; i++)
         {
-            List<ImageSlide> active_imgGroup = BuildManager.instance.controlCenter_ImageSliderGroup[i].imageSlide;
-            if (i == active_index)
+            List<ImageSlide> active_imgGroup = BuildManager.instance.GetTargetListByIndex(index);
+            if (i == index)
             {
-
-                foreach (ImageSlide img in active_imgGroup)
+                foreach(ImageSlide img in active_imgGroup)
                 {
                     if (img.gameObject == gameObject)
                     {
@@ -109,7 +92,7 @@ public class ImageSlide : MonoBehaviour
                     img.transform.GetChild(1).GetComponent<Button>().enabled = confirm ? false : true;
                 }
             }
-            else
+            /*else
             {
                 foreach (ImageSlide img in active_imgGroup)
                 {
@@ -121,7 +104,7 @@ public class ImageSlide : MonoBehaviour
 
                     img.transform.GetChild(1).GetComponent<Button>().enabled = confirm ? false : true;
                 }
-            }
+            }*/
         }
     }
 
@@ -162,7 +145,7 @@ public class ImageSlide : MonoBehaviour
         else
             imgslide.Sliding_Open();
 
-        foreach (ImageSlide img in EventManager.instance.imageSliderGroup[BuildManager.instance.AllWindow_Active_IndexCheck()].imageSlide)
+        foreach (ImageSlide img in BuildManager.instance.imageSliderGroup[BuildManager.instance.AllWindow_Active_IndexCheck()].imageSlide)
         {
             if (img == imgslide)
             {

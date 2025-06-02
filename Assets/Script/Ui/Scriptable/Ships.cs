@@ -22,4 +22,5 @@ public class Ships : ScriptableObject
     public float ship_Armor; // 장갑
     public float ship_Speed; // 이동속도
     public Ship_Engine ship_Engine;
+    public int[] needs_Res;
 }

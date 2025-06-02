@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class Init_Set : MonoBehaviour
 {
     public GameObject[] category_Windows;
+    public GameObject[] mainTab_Container;
     public GameObject[] build_tab1;
     public GameObject[] build_tab2;
     public GameObject[] build_tab3;
@@ -12,7 +13,7 @@ public class Init_Set : MonoBehaviour
 
     void Awake()
     {
-        foreach (GameObject obj in category_Windows)
+        /*foreach (GameObject obj in category_Windows)
         {
             obj.SetActive(true);
         }
@@ -20,7 +21,7 @@ public class Init_Set : MonoBehaviour
         foreach (GameObject obj in controlCenter_tab)
         {
             obj.SetActive(true);
-        }
+        }*/
 
 
 

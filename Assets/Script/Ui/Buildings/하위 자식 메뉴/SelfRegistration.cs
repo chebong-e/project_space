@@ -44,7 +44,7 @@ public class SelfRegistration : MonoBehaviour
                 break;
             case GrateTitle.BuildTab3:
                 ExSwitch(titleType, info);
-                switch (subType4)
+                /*switch (subType4)
                 {
                     case SubType4.Slider:
                         info.amountSlider = GetComponent<Slider>();
@@ -57,7 +57,7 @@ public class SelfRegistration : MonoBehaviour
                     default:
                         info.amount_Text[1] = GetComponent<TextMeshProUGUI>();
                         break;
-                }
+                }*/
                 break;
             case GrateTitle.ResearchTab:
 

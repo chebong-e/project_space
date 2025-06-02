@@ -22,3 +22,5 @@ MonoBehaviour:
   ship_Armor: 0
   ship_Speed: 0
   ship_Engine: 0
+  needs_Res: 140000000a00000005000000
+  making_Time: 0
