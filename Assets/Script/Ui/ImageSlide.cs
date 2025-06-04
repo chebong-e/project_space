@@ -79,6 +79,7 @@ public class ImageSlide : MonoBehaviour
             {
                 foreach(ImageSlide img in active_imgGroup)
                 {
+                    Debug.Log(img.gameObject.name);
                     if (img.gameObject == gameObject)
                     {
                         continue;
@@ -92,19 +93,6 @@ public class ImageSlide : MonoBehaviour
                     img.transform.GetChild(1).GetComponent<Button>().enabled = confirm ? false : true;
                 }
             }
-            /*else
-            {
-                foreach (ImageSlide img in active_imgGroup)
-                {
-
-                    if (img.info.unLock)
-                    {
-                        img.ColorChange();
-                    }
-
-                    img.transform.GetChild(1).GetComponent<Button>().enabled = confirm ? false : true;
-                }
-            }*/
         }
     }
 

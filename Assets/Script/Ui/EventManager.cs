@@ -36,36 +36,6 @@ public class EventManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
 
-        /*imageSliderGroup = new List<ImageSliderGroup>();
-        contents = canvas.GetComponentsInChildren<ScrollRect>(true);
-
-        for (int i = 0; i < contents.Length; i++)
-        {
-            ImageSliderGroup group = new ImageSliderGroup();
-            imageSliderGroup.Add(group);
-
-            for (int sec_i = 0; sec_i < contents[i].content.transform.childCount; sec_i++)
-            {
-                imageSliderGroup[i].imageSlide.Add(contents[i].content.transform.GetChild(sec_i).GetComponent<ImageSlide>());
-            }
-        }*/
-
-
-        /*// 확인용
-        for (int i = 0; i < TabContainer.Length; i++)
-        {
-            scrRectGroup group = new scrRectGroup();
-            group.scrolls = TabContainer[i].GetComponentsInChildren<ScrollRect>(true);
-            
-            containers[TabContainer[i]] = group;
-
-
-        }*/
-    }
-
-    void Start()
-    {
-        
     }
 
     public void Add_Event()
@@ -73,30 +43,5 @@ public class EventManager : MonoBehaviour
         eventTriggered++;
 
         dropDown.triggered_event = eventTriggered;
-    }
-
-    void IndexCheck() // 필요없음
-    {
-        int num = 0;
-        for (int i = 0; i < TabContainer.Length; i++)
-        {
-            num += TabContainer[i].transform.GetComponentsInChildren<ScrollRect>(true).Length;
-        }
-
-        
-        Ex_contentsCheck = new GameObject[num];
-
-        for (int i = 0; i < TabContainer.Length; i++)
-        {
-            if (TabContainer[i].transform.GetComponentsInChildren<ScrollRect>(true).Length > 1)
-            {
-                ScrollRect[] objs = TabContainer[i].transform.GetComponentsInChildren<ScrollRect>(true);
-            }
-            for (int ii = 0; ii < TabContainer[i].transform.GetComponentsInChildren<ScrollRect>(true).Length; ii++)
-            {
-                Ex_contentsCheck[ii] = TabContainer[i].transform.GetComponentInChildren<ScrollRect>().gameObject;
-            }
-        }
-        Debug.Log(num);
     }
 }

@@ -11,6 +11,7 @@ public class BuildManager : MonoBehaviour
     public static BuildManager instance;
     public MainTabCategory mainTabCategory;
     Coroutine coroutine;
+    Coroutine coroutine1;
 
     public bool upgrading;
     public bool buildShips;
@@ -30,7 +31,7 @@ public class BuildManager : MonoBehaviour
 
 
 
-
+    
     void Awake()
     {
         if (instance != null)
@@ -158,10 +159,26 @@ public class BuildManager : MonoBehaviour
             }
         }
         mainTabCategory = init_Set.mainTab_Container[index].GetComponent<MainTabCategory>();
+        if (upgrade)
+        {
 
+            coroutine1 = StartCoroutine(ShipsMaking_Timer(img, info, imgSlide, totalTime));
+        }
+        else
+        {
+            StopCoroutine(coroutine1);
+            for (int i = 0; i < 2; i++)
+            {
+                info.timeSlider[i].value = 0f;
+                info.timeText[i].text = $"{info.buildResource.building_Time[info.buildResource.level]}초";
+            }
+            mainTabCategory.Upgrading(null, false);
+        }
 
         //업그레이드 중인 버튼 외 흑백처리*/
-        imgSlide.ImageChange_toUpgrade(Active_TabContainer_Index());  
+        imgSlide.ImageChange_toUpgrade(Active_TabContainer_Index());
+        info.infoContainer.transform.GetChild(0).gameObject.SetActive(upgrade);
+        info.infoContainer.transform.GetChild(1).gameObject.SetActive(!upgrade);
     }
 
 
@@ -200,8 +217,68 @@ public class BuildManager : MonoBehaviour
         }
         //업그레이드 중인 버튼 외 흑백처리
         imgSlide.ImageChange_toUpgrade(Active_TabContainer_Index());
+        
     }
 
+
+
+    IEnumerator ShipsMaking_Timer(Sprite img, Infomations info, ImageSlide imgSlide, float targetTimer)
+    {
+        GameObject con = mainTabCategory.Upgrading(img, true);
+        Slider slder = con.GetComponentInChildren<Slider>();
+        TextMeshProUGUI[] ExText = con.GetComponentsInChildren<TextMeshProUGUI>();
+        ExText[0].text = info.titles["name"].text;
+        slder.maxValue = targetTimer;
+        info.timeSlider[0].maxValue = targetTimer;
+        info.timeSlider[1].maxValue = targetTimer;
+        info.infoContainer.transform.GetChild(0).gameObject.SetActive(true);
+        info.infoContainer.transform.GetChild(1).gameObject.SetActive(false);
+        float buildTimer = 0f;
+
+        while (buildTimer < targetTimer)
+        {
+            buildTimer += Time.deltaTime;
+            float remainingTime = Mathf.Clamp(targetTimer - buildTimer, 0f, targetTimer);
+            info.timeSlider[1].value = buildTimer;
+            info.timeSlider[0].value = buildTimer; // 중복이 필요할까... 나중에 보고 지워버리던지.....
+            slder.value = buildTimer;
+            int curTime = Mathf.CeilToInt(remainingTime);
+
+            string timeStr = "";
+
+            if (curTime >= 3600)
+                timeStr = $"{curTime / 3600}시간 {(curTime % 3600) / 60}분 {curTime % 60}초";
+            else if (curTime >= 60)
+                timeStr = $"{curTime / 60}분 {curTime % 60}초";
+            else
+                timeStr = $"{curTime}초";
+
+            foreach (TextMeshProUGUI tt in info.timeText)
+            {
+                tt.text = timeStr;
+                ExText[1].text = timeStr;
+            }
+
+            yield return null;
+        }
+
+        // 업그레이드 완료시 호출할 목록
+        // 취소버튼 비활성화 및 업그레이드 버튼 활성화
+        // 해당 버튼 외 버튼 컬러처리 및 모두활성화
+        // 다음 레벨 필요 자원 표시
+        info.Upgrade_to_Infomation(info.info_types);
+        imgSlide.ImageChange_toUpgrade(Active_TabContainer_Index());
+
+        // 업그레이드 완료
+        info.ship_confirm = false;
+        info.timeSlider[0].value = 0f;
+        info.timeSlider[1].value = 0f;
+        info.timeSlider[0].gameObject.SetActive(false);
+        info.btns[1].gameObject.SetActive(false);
+        info.btns[0].gameObject.SetActive(true);
+
+        mainTabCategory.Upgrading(null, false);
+    }
 
     IEnumerator ControlCenter_BuildingTimer(Sprite img, Infomations info, ImageSlide imgSlide, float targetTimer)
     {
@@ -262,7 +339,7 @@ public class BuildManager : MonoBehaviour
         // 취소버튼 비활성화 및 업그레이드 버튼 활성화
         // 해당 버튼 외 버튼 컬러처리 및 모두활성화
         // 다음 레벨 필요 자원 표시
-        info.Upgrade_to_Infomation();
+        info.Upgrade_to_Infomation(info.info_types);
         imgSlide.ImageChange_toUpgrade(index);
 
         // 업그레이드 완료

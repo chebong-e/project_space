@@ -39,6 +39,7 @@ public class Infomations : MonoBehaviour
     public bool confirm;
     public bool ship_confirm;
 
+    public GameObject infoContainer;
     void Awake()
     {
         btns = new Button[2];
@@ -47,7 +48,7 @@ public class Infomations : MonoBehaviour
         /*amount_Text = new TextMeshProUGUI[2];*/
         timeSlider = new Slider[2];
         imgSlide = GetComponentInParent<ImageSlide>();
-
+        
 
         foreach (SelfRegistration self in GetComponentsInChildren<SelfRegistration>())
         {
@@ -57,6 +58,20 @@ public class Infomations : MonoBehaviour
         imgSlide.Init_Setting();
 
         Init_Setting();
+
+        
+    }
+
+    void Start()
+    {
+        if (info_types == Types.Tab3)
+        {
+            infoContainer = shipBuildSlider.transform.parent.gameObject;
+            infoContainer.transform.GetChild(0).gameObject.SetActive(false);
+        }
+            
+
+        
     }
 
     public void Init_Setting()
@@ -165,26 +180,60 @@ public class Infomations : MonoBehaviour
     }
 
 
-    public void Upgrade_to_Infomation()
+    public void Upgrade_to_Infomation(Types types)
     {
-        int curLv = buildResource.level;
-
-        curLv += 1;
-        buildResource.level = curLv;
-        /*titles["name"].text = $"Lv. {curLv} {buildResource.name}";*/
-
-
-        switch (buildResource.build_Category)
+        switch (types)
         {
-            case BuildResource.Build_Category.ContorolCenter:
-                titles["name"].text = $"Lv.{buildResource.level} {buildResource.name} 관제센터";
+            case Types.Tab3:
+
                 break;
-            case BuildResource.Build_Category.BuildShip:
-                titles["name"].text = $"Lv.{buildResource.level} {buildResource.name}";
+            case Types.ControlCenter:
+                int curLv = buildResource.level;
+
+                curLv += 1;
+                buildResource.level = curLv;
+
+                titles["name"].text = $"Lv.{buildResource.level} {buildResource.name} 관제센터";
+
+                int metal = buildResource.init_Needs[0];
+                int cristal = buildResource.init_Needs[1];
+                int gas = buildResource.init_Needs[2];
+                int allowableBuild = 0;
+                for (int i = 0; i < buildResource.level + 1; i++) // 왜 1을 더 해줘야 할까 확인할것
+                {
+                    metal = Mathf.FloorToInt(metal * buildResource.build_require[i]);
+                    cristal = Mathf.FloorToInt(cristal * buildResource.build_require[i]);
+                    gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
+                    allowableBuild = allowableBuild + (int)buildResource.build_result[i];
+                }
+
+                resources[0].text = $"{metal}";
+                resources[1].text = $"{cristal}";
+                resources[2].text = $"{gas}";
+                resources[3].text = $"{allowableBuild}";
+                buildResource.AllowableBuild = allowableBuild;
+
+
+                // 임시 사항. 나중에 로직으로 빼두던지 해야할듯
+                // 윗열 슬라이더 시간 텍스트 표시 관련임 
+
+                string timeStr = TimerTexting(buildResource.building_Time[buildResource.level]);
+
+                foreach (TextMeshProUGUI tt in timeText)
+                {
+                    tt.text = $"{timeStr}";
+                }
                 break;
         }
 
-        int metal = buildResource.init_Needs[0];
+        /*int curLv = buildResource.level;
+
+        curLv += 1;
+        buildResource.level = curLv;*/
+        /*titles["name"].text = $"Lv. {curLv} {buildResource.name}";*/
+
+
+        /*int metal = buildResource.init_Needs[0];
         int cristal = buildResource.init_Needs[1];
         int gas = buildResource.init_Needs[2];
         int allowableBuild = 0;
@@ -211,7 +260,7 @@ public class Infomations : MonoBehaviour
         foreach (TextMeshProUGUI tt in timeText)
         {
             tt.text = $"{timeStr}";
-        }
+        }*/
     }
 
     public string TimerTexting(int timer)
@@ -222,33 +271,38 @@ public class Infomations : MonoBehaviour
             return $"{timer / 60}분 {timer % 60}초";
         else 
             return $"{timer}초";
-        /*string timeStr = "";
-        int time = timer;
-        if (time >= 3600)
-        {
-            $"{timer / 3600}시간 {(timer % 3600) / 60}분 {timer % 60}초";
-            int hours = time / 3600;
-            int minutes = (time % 3600) / 60;
-            int seconds = time % 60;
-            timeStr = string.Format("{0}시간 {1}분 {2}초", hours, minutes, seconds);
-        }
-        else if (time >= 60)
-        {
-            int minutes = time / 60;
-            int seconds = time % 60;
-            timeStr = string.Format("{0}분 {1}초", minutes, seconds);
-        }
-        else
-        {
-            timeStr = string.Format("{0}초", time);
-        }
-
-        return timeStr;*/
     }
 
     public void UpgradeStart_or_Cancle()
     {
-        if (info_types == Types.ControlCenter)
+        switch (info_types)
+        {
+            case Types.Tab3:
+                ship_confirm = !ship_confirm;
+                BuildManager.instance.buildShips = ship_confirm;
+
+                BuildManager.instance.BuildTab3_BuildShips(
+                    transform.GetChild(1).GetComponent<Image>().sprite,
+                    shipBuildSlider.slider.value * ships.shipMaking_Time,
+                    this,
+                    imgSlide,
+                    ship_confirm);
+                break;
+
+            case Types.ControlCenter:
+                confirm = !confirm;
+                BuildManager.instance.upgrading = confirm;
+
+                BuildManager.instance.ControlCenter_Upgrade(
+                    transform.GetChild(1).GetComponent<Image>().sprite,
+                    this,
+                    imgSlide,
+                    confirm);
+                break;
+        }
+
+
+        /*if (info_types == Types.ControlCenter)
         {
             confirm = !confirm;
             BuildManager.instance.upgrading = confirm;
@@ -268,8 +322,7 @@ public class Infomations : MonoBehaviour
                 this,
                 imgSlide,
                 ship_confirm);
-        }
-        
+        }*/
     }
 
 }

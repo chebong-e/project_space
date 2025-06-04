@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,4 +10,5 @@ public class ContentCheck : MonoBehaviour
     {
         contents = GetComponentsInChildren<ScrollRect>(true);
     }
+
 }

@@ -5,14 +5,14 @@ public class MainTabCategory : MonoBehaviour
 {
     public enum Category { Planet, Building, Reserch, Ship_Building, ControlCenter }
     public Category category;
-    public GameObject upgraing_Image;
+    public GameObject upgrading_Image;
     public GameObject iconContainer;
     public GameObject sliderContainer;
     public BuildResource buildResource; // private으로 나중 교체
 
     void Awake()
     {
-        upgraing_Image = transform.GetChild(0).GetChild(0).GetChild(1).gameObject;
+        upgrading_Image = transform.GetChild(0).GetChild(0).GetChild(1).gameObject;
         iconContainer = transform.GetChild(1).GetChild(0).gameObject;
         sliderContainer = transform.GetChild(1).GetChild(1).gameObject;
     }
@@ -23,8 +23,8 @@ public class MainTabCategory : MonoBehaviour
         if (upgrading)
         {
             //이미지 받아오는걸로 메인 탭의 upgrading_Image 변경하고 오브젝트 활성화
-            upgraing_Image.SetActive(true);
-            upgraing_Image.GetComponent<Image>().sprite = img;
+            upgrading_Image.SetActive(true);
+            upgrading_Image.GetComponent<Image>().sprite = img;
 
             //슬라이드 컨테이너 표시하고 슬라이드 값 반환을 통해 밸류값 조절
             sliderContainer.SetActive(true);
@@ -37,7 +37,7 @@ public class MainTabCategory : MonoBehaviour
         else
         {
             //이미지 받아오는걸로 upgrading_Image 변경하고 오브젝트 활성화
-            upgraing_Image.SetActive(false);
+            upgrading_Image.SetActive(false);
 
             //슬라이드 컨테이너 표시하고 슬라이드 값 반환을 통해 밸류값 조절
             sliderContainer.SetActive(false);
