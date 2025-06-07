@@ -76,9 +76,9 @@ public class Infomations : MonoBehaviour
 
     public void Init_Setting()
     {
-        int metal = info_types == Types.ControlCenter ? buildResource.init_Needs[0] : ships.needs_Res[0];
-        int cristal = info_types == Types.ControlCenter ? buildResource.init_Needs[1] : ships.needs_Res[1];
-        int gas = info_types == Types.ControlCenter ? buildResource.init_Needs[2] : ships.needs_Res[2];
+        int metal = info_types == Types.ControlCenter ? buildResource.init_Needs[0] : ships.shipMake_Cost[0];
+        int cristal = info_types == Types.ControlCenter ? buildResource.init_Needs[1] : ships.shipMake_Cost[1];
+        int gas = info_types == Types.ControlCenter ? buildResource.init_Needs[2] : ships.shipMake_Cost[2];
 
         // 추후 서버 데이터를 연결한 이후 데이터 연동 확인 작업 후 본인의 계정의
         // 정보를 불러오기 앞서, 현재는 연동 데이터가 없으므로 항상 레벨 1로 초기화하는데 필요한 bool값
@@ -131,38 +131,7 @@ public class Infomations : MonoBehaviour
         resources[0].text = $"{metal}";
         resources[1].text = $"{cristal}";
         resources[2].text = $"{gas}";
-        /*if (buildResource.build_Category == BuildResource.Build_Category.ContorolCenter)
-        {
-            resources[3].text = $"{buildResource.AllowableBuild} (+{addnum})";
-            resources[4].text = $"생산 가능 {buildResource.name}"; // 생산 가능 함선 종류
-        }*/
-
-        /*string timeStr = TimerTexting(buildResource.building_Time[buildResource.level]);
-
-        if (buildResource.build_Category == BuildResource.Build_Category.ContorolCenter)
-        {
-            foreach (TextMeshProUGUI tt in timeText)
-            {
-                tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
-            }
-        }
-        else
-        {
-            timeText[0].text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
-        }*/
-
-        /*if (buildResource != null)
-        {
-            switch (buildResource.build_Category)
-            {
-                case BuildResource.Build_Category.ContorolCenter:
-                    titles["name"].text = $"Lv.{buildResource.level} {buildResource.name} 관제센터";
-                    break;
-                case BuildResource.Build_Category.BuildShip:
-                    titles["name"].text = $"Lv.{buildResource.level} {buildResource.name}";
-                    break;
-            }
-        }*/
+        
 
         btns[1].gameObject.SetActive(false);
         timeSlider[0].gameObject.SetActive(false);

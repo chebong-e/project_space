@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,8 +9,12 @@ public class Build_Manager : MonoBehaviour
 {
     public static Build_Manager instance;
     public ImageSetting_Group ImageSetting_Group;
+    public MainTabCategory mainTabCategory;
+    public GameObject[] TabContainer, mainTab_Container;
 
-    public GameObject[] TabContainer;
+    Coroutine controllCenter_coroutine, makingShip_coroutine;
+
+    public bool upgrading, makingShips, building, reserching;
 
     void Awake()
     {
@@ -56,7 +62,7 @@ public class Build_Manager : MonoBehaviour
     }
 
     // 활성화 상태 추적을 위한 로직
-    // 활성화 상태 추적하여 해당 카테고리병 이미지 전환 유도
+    // 활성화 상태 추적하여 해당 카테고리별 이미지 전환 유도
     public int Active_TabContainerIndex()
     {
         int index = 0;
@@ -70,6 +76,56 @@ public class Build_Manager : MonoBehaviour
         }
         return index;
     }
+
+    // 열려있는 탭을 확인하여 그 중 선택되어 슬라이드 되어있는 컨테이너가 있다면
+    // 컨테이너를 슬라이드 닫기처리
+    public void TabWindow_Close()
+    {
+        foreach (ContainerSlide img in GetTargetListByIndex(Active_TabContainerIndex()))
+        {
+            if (img.imgOpen)
+            {
+                img.imgOpen = false;
+                img.Slide_Close();
+
+            }
+        }
+    }
+
+    public void ControlCenter_Upgrade(Sprite img, Con_Infomation info, bool upgrade)
+    {
+        mainTabCategory = mainTab_Container[Active_TabContainerIndex()].GetComponent<MainTabCategory>();
+
+
+
+        if (upgrade)
+        {
+            float targetTimer = info.buildResource.building_Time[info.buildResource.level];
+            controllCenter_coroutine = StartCoroutine(ControlCenter_BuildingTimer(img, info, targetTimer));
+        }
+        else
+        {
+            StopCoroutine(controllCenter_coroutine);
+            for (int i = 0; i < 2; i++)
+            {
+                info.timeSlider[i].value = 0f;
+                info.timeText[i].text = $"{info.buildResource.building_Time[info.buildResource.level]}초";
+            }
+            mainTabCategory.Upgrading(null, false);
+        }
+        //업그레이드 중인 버튼 외 흑백처리
+        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
+    }
+
+    IEnumerator ControlCenter_BuildingTimer(Sprite img, Con_Infomation info, float targetTimer)
+    {
+        // 6.7일자까지 수정한 사항이고 이후부터 계속 수정작업 시행
+        // Con_Infomation의 160번 줄 예외처리 다시 복귀하고 같이 수정진행
+
+        yield return null;
+    }
+
+
 }
 
 [System.Serializable]

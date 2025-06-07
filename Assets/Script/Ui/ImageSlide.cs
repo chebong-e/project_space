@@ -28,12 +28,6 @@ public class ImageSlide : MonoBehaviour
         imgBtn.onClick.AddListener(ImageSlide_Open_Close);
     }
 
-    public void ColorSetting(bool unlock)
-    {
-        if (unlock)
-            myImage.material = colorMat;
-    }
-
     public void Init_Setting() // 머티리얼 복사 및 할당 관련
     {
         myImage = transform.GetChild(1).GetComponent<Image>();
@@ -46,6 +40,12 @@ public class ImageSlide : MonoBehaviour
         grayMat.SetFloat("_GrayAmount", 1f);
 
         myImage.material = grayMat;
+    }
+
+    public void ColorSetting(bool unlock)
+    {
+        if (unlock)
+            myImage.material = colorMat;
     }
 
     public void ColorChange() //컬러 <-> 흑백 전환

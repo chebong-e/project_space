@@ -15,12 +15,11 @@ public class Ships : ScriptableObject
     public int maxHaveShip_Amount; // 최고 보유 가능 수량
     public int currentHave_Ship; // 현재 보유 수량
     public float shipMaking_Time; // 함선 1대당 생산 시간
-    public int shipMake_Cost; // 함선 1대당 생산 비용
+    public int[] shipMake_Cost; // 함선 1대당 생산 비용
 
     [Header("Internal Ship Info")]
     public float ship_Damage; // 공격
     public float ship_Armor; // 장갑
     public float ship_Speed; // 이동속도
     public Ship_Engine ship_Engine;
-    public int[] needs_Res;
 }

@@ -85,9 +85,9 @@ public class ShipBuildSlider : MonoBehaviour
 
 
 
-        for (int i = 0; i < info.ships.needs_Res.Length; i++)
+        for (int i = 0; i < info.ships.shipMake_Cost.Length; i++)
         {
-            info.resources[i].text = $"{slider.value * info.ships.needs_Res[i]}";
+            info.resources[i].text = $"{slider.value * info.ships.shipMake_Cost[i]}";
         }
         
 

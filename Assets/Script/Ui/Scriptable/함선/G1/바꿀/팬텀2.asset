@@ -17,7 +17,7 @@ MonoBehaviour:
   maxHaveShip_Amount: 0
   currentHave_Ship: 0
   shipMaking_Time: 0
-  shipMake_Cost: 0
+  shipMake_Cost: 000000000000000000000000
   ship_Damage: 0
   ship_Armor: 0
   ship_Speed: 0
