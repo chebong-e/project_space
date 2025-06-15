@@ -22,3 +22,4 @@ MonoBehaviour:
   ship_Armor: 0
   ship_Speed: 0
   ship_Engine: 0
+  img: {fileID: 5507272479949770255, guid: 8e755d9ba59759643995a790a75a26b8, type: 3}
