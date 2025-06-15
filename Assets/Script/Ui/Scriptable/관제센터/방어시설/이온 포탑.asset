@@ -43,3 +43,4 @@ MonoBehaviour:
   - 0
   require_condition: "\uD2B9\uC815 \uC694\uAD6C\uC870\uAC74 \uC791\uC131"
   Lv_Title: "Lv.{0} \uB808\uC774\uC838 \uD3EC\uD0D1 \uAD00\uC81C\uC13C\uD130"
+  img: {fileID: -8401946680211367396, guid: 20f349a51e8926a4aa1eb2673673bff5, type: 3}

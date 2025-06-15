@@ -373,7 +373,7 @@ public class BuildManager : MonoBehaviour
             EventManager.instance.containers[]
         }*/
 
-        info.shipBuildSlider.ControlCenterUpgrade_for_Ship(info.buildResource.AllowableBuild);
+        /*info.shipBuildSlider.ControlCenterUpgrade_for_Ship(info.buildResource.AllowableBuild);*/
         // 0 을 넘겨주는것을 수정해야함
 
 

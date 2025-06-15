@@ -7,7 +7,7 @@ public class ShipBuildSlider : MonoBehaviour
     public Slider slider;
     public TextMeshProUGUI building_Amount;
     public TextMeshProUGUI building_Time;
-    Infomations info;
+    Con_Infomation info;
 
 
     void Awake()
@@ -15,7 +15,7 @@ public class ShipBuildSlider : MonoBehaviour
         slider = transform.GetChild(0).GetComponentInChildren<Slider>();
         building_Amount = transform.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
         building_Time = transform.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
-        info = GetComponentInParent<Infomations>();
+        info = GetComponentInParent<Con_Infomation>();
         info.shipBuildSlider = this;
         Init();
     }
@@ -36,7 +36,7 @@ public class ShipBuildSlider : MonoBehaviour
 
 
     // 관제센터 업그레이드시 함선생산 탭의 해당 함선에 대한 업그레이드 정보 표시
-    public void ControlCenterUpgrade_for_Ship(int amount) // amount값은 allowble변수로 넘기기
+    /*public void ControlCenterUpgrade_for_Ship(int amount) // amount값은 allowble변수로 넘기기
     {
         slider.maxValue = amount;
         info.ships.maxHaveShip_Amount = amount;
@@ -44,7 +44,7 @@ public class ShipBuildSlider : MonoBehaviour
         if (this.gameObject.activeInHierarchy)
             UpgradeInfomation();
 
-    }
+    }*/
 
     void UpgradeInfomation()
     {
@@ -53,7 +53,6 @@ public class ShipBuildSlider : MonoBehaviour
 
         
         int time = (int)slider.value * (int)info.ships.shipMaking_Time;
-        Debug.Log(slider.value);
         if (time >= 3600)
             building_Time.text = $"{time / 3600}시간 {(time % 3600) / 60}분 {time % 60}초";
         else if (time >= 60)
@@ -92,4 +91,21 @@ public class ShipBuildSlider : MonoBehaviour
         
 
     }
+
+
+
+
+
+
+
+    ///////////////////////////////////////////
+    public void Confirm()
+    {
+        
+    }
+
+
+
+
+
 }

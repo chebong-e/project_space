@@ -18,13 +18,12 @@ public class ContainerSlide : MonoBehaviour
     {
         anims = GetComponentsInChildren<Animator>(true);
         imgBtn = transform.GetChild(1).GetComponent<Button>();
-        con_Infomation = GetComponent<Con_Infomation>();
-
         imgBtn.onClick.AddListener(Container_Sliding);
     }
 
     public void Init_Setting() // 머티리얼 복사 및 할당 관련
     {
+        con_Infomation = GetComponent<Con_Infomation>();
         myImage = transform.GetChild(1).GetComponent<Image>();
         Material baseMat = Resources.Load<Material>("GrayscaleMaterial");
 
@@ -35,7 +34,18 @@ public class ContainerSlide : MonoBehaviour
         grayMat.SetFloat("_GrayAmount", 1f);
 
         myImage.material = grayMat;
+
+        switch (con_Infomation.info_types)
+        {
+            case Con_Infomation.Types.Tab3:
+                myImage.sprite = con_Infomation.ships.img;
+                break;
+            case Con_Infomation.Types.ControlCenter:
+                myImage.sprite = con_Infomation.buildResource.img;
+                break;
+        }
         
+
     }
 
     // 해금에 따른 컬러 효과전환

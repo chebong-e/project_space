@@ -11,7 +11,7 @@ public class SelfRegistration : MonoBehaviour
     public enum SubType1 { Metal, Cristal, Gas, Allowable }
     public enum SubType2 { UpSlider, DownSlider }
     public enum SubType3 { Confirm, Cancle }
-    public enum SubType4 { Slider, Build_Amount, Build_Time }
+    public enum SubType4 { Slider, Build_Amount, Build_Time, container }
     public GrateTitle grateTitle;
     public TitleType titleType;
     public SubType0 subType0;
@@ -121,7 +121,13 @@ public class SelfRegistration : MonoBehaviour
                     info.btns[1].gameObject.SetActive(upgrading);
                 }
                 break;
-
+            case TitleType.BuildShips:
+                if (subType4 == SubType4.container)
+                {
+                    info.child_InfoContainer = this.gameObject;
+                }
+                
+                break;
         }
     }
 }

@@ -86,6 +86,7 @@ public class Con_Infomation : MonoBehaviour
 
                     timeText[0].text = $"{TimerTexting((int)ships.shipMaking_Time)}";
                     title_Text["name"].text = $"{ships.name}";
+                    child_InfoContainer.transform.GetChild(0).gameObject.SetActive(false);
                     break;
             }
         }
@@ -115,7 +116,7 @@ public class Con_Infomation : MonoBehaviour
         switch (types)
         {
             case Types.Tab3:
-
+                
                 break;
             case Types.ControlCenter:
                 buildResource.level++;
@@ -145,6 +146,13 @@ public class Con_Infomation : MonoBehaviour
                 {
                     tt.text = $"{Build_Manager.instance.TimerTexting(buildResource.building_Time[buildResource.level])}";
                 }
+
+                // 함선생산 탭의 최대 함선 생산 수량 업데이트
+                ships.maxHaveShip_Amount = allowableBuild;
+                // 해당 인포메이션 스크립트에는 쉽빌드슬라이더 스크립트가 없으므로 참조 되지 않음
+                // 어차피 탭의 인덱스 값은 같으니 인덱스 값을 활용하여 업데이트 해주도록 하자.
+                shipBuildSlider.building_Amount.text = $"{ships.maxHaveShip_Amount}";
+                shipBuildSlider.slider.maxValue = ships.maxHaveShip_Amount;
                 break;
         }
     }
@@ -154,6 +162,8 @@ public class Con_Infomation : MonoBehaviour
         switch (info_types)
         {
             case Types.Tab3:
+                if (shipBuildSlider.slider.value < 1)
+                    return;
                 shipMaking_confirm = !shipMaking_confirm;
                 Build_Manager.instance.makingShips = shipMaking_confirm;
 

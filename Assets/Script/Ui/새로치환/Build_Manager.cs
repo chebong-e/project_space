@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -93,7 +91,7 @@ public class Build_Manager : MonoBehaviour
         }
     }
 
-    public void BuildTab3_MakingShips(Sprite img,float totalTime, Con_Infomation info, bool upgrade)
+    public void BuildTab3_MakingShips(Sprite img, float totalTime, Con_Infomation info, bool upgrade)
     {
         mainTabCategory = mainTab_Container[Active_TabContainerIndex()].GetComponent<MainTabCategory>();
 
@@ -120,6 +118,75 @@ public class Build_Manager : MonoBehaviour
         info.child_InfoContainer.transform.GetChild(0).gameObject.SetActive(upgrade);
         info.child_InfoContainer.transform.GetChild(1).gameObject.SetActive(!upgrade);
     }
+
+    //함선생산과 관제센터 업그레이드 함수 중복 정리 하여 간결하게 하기 위한 코드 정리 실험
+    public void Example_Confirm(Sprite img, float totalTime, Con_Infomation info, bool upgrade)
+    {
+        mainTabCategory = mainTab_Container[Active_TabContainerIndex()].GetComponent<MainTabCategory>();
+        if (upgrade)
+        {
+            switch (info.info_types)
+            {
+                case Con_Infomation.Types.Tab3:
+                    makingShip_coroutine = StartCoroutine(
+                        MakingShips_Timer(
+                            img,
+                            info,
+                            totalTime));
+                    break;
+                case Con_Infomation.Types.ControlCenter:
+                    controllCenter_coroutine = StartCoroutine(
+                        ControlCenter_BuildingTimer(
+                            img,
+                            info,
+                            info.buildResource.building_Time[info.buildResource.level]));
+                    break;
+            }
+        }
+        else
+        {
+            switch (info.info_types)
+            {
+                case Con_Infomation.Types.Tab3:
+                    StopCoroutine(makingShip_coroutine);
+                    info.child_InfoContainer.transform.GetChild(0).gameObject.SetActive(upgrade);
+                    info.child_InfoContainer.transform.GetChild(1).gameObject.SetActive(!upgrade);
+                    break;
+                case Con_Infomation.Types.ControlCenter:
+                    StopCoroutine(controllCenter_coroutine);
+                    mainTabCategory.Upgrading(null, false);
+                    break;
+            }
+            for (int i = 0; i < 2; i++)
+            {
+                info.timeSlider[i].value = 0f;
+                info.timeText[i].text = $"{info.buildResource.building_Time[info.buildResource.level]}초";
+            }
+            mainTabCategory.Upgrading(null, false);
+            info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public void ControlCenter_Upgrade(Sprite img, Con_Infomation info, bool upgrade)
     {
@@ -211,7 +278,7 @@ public class Build_Manager : MonoBehaviour
     {
         // 6.7일자까지 수정한 사항이고 이후부터 계속 수정작업 시행
         // Con_Infomation의 160번 줄 예외처리 다시 복귀하고 같이 수정진행
-
+        int activeIndex = Active_TabContainerIndex();
         GameObject maintab_container = mainTabCategory.Upgrading(img, true);
         Slider maintab_slider = maintab_container.GetComponentInChildren<Slider>();
         TextMeshProUGUI[] maintab_texts = maintab_container.GetComponentsInChildren<TextMeshProUGUI>();
@@ -250,7 +317,7 @@ public class Build_Manager : MonoBehaviour
         info.Upgrade_To_Infomation(info.info_types);
 
         // 이미지 컬러전환 및 버튼 활성화 처리
-        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
+        info.containerSlide.ColorChange_To_Upgrade(activeIndex);
 
         info.controlCenter_confirm = false;
         foreach (Slider slide in info.timeSlider)
