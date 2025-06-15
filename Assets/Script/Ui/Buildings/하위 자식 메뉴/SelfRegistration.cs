@@ -1,8 +1,7 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
-using static SelfRegistration;
+
 
 public class SelfRegistration : MonoBehaviour
 {
@@ -29,7 +28,7 @@ public class SelfRegistration : MonoBehaviour
 
     public void Init_Setting()
     {
-        Infomations info = GetComponentInParent<Infomations>();
+        Con_Infomation info = GetComponentInParent<Con_Infomation>();
 
         if (info == null)
             return;
@@ -71,7 +70,7 @@ public class SelfRegistration : MonoBehaviour
         }
     }
 
-    void ExSwitch(TitleType titleType, Infomations info)
+    void ExSwitch(TitleType titleType, Con_Infomation info)
     {
         switch (titleType)
         {
@@ -79,15 +78,15 @@ public class SelfRegistration : MonoBehaviour
                 TextMeshProUGUI titleText = GetComponent<TextMeshProUGUI>();
                 if (subType0 == SubType0.Name)
                 {
-                    info.titles["name"] = titleText;
+                    info.title_Text["name"] = titleText;
                 }
                 else if (subType0 == SubType0.UpTime)
                 {
-                    info.titles["up_upgradeTime"] = titleText;
+                    info.title_Text["up_upgradeTime"] = titleText;
                 }
                 else
                 {
-                    info.titles["down_upgradeTime"] = titleText;
+                    info.title_Text["down_upgradeTime"] = titleText;
                 }
                 break;
 

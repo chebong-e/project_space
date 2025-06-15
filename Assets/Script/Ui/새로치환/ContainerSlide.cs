@@ -7,8 +7,7 @@ public class ContainerSlide : MonoBehaviour
     public Animator[] anims;
     int grayscaleCount = 0;
     Image myImage;
-    Material grayMat;
-    Material colorMat;
+    Material grayMat, colorMat;
     Button imgBtn;
     Con_Infomation con_Infomation;
 
@@ -19,7 +18,6 @@ public class ContainerSlide : MonoBehaviour
     {
         anims = GetComponentsInChildren<Animator>(true);
         imgBtn = transform.GetChild(1).GetComponent<Button>();
-        myImage = transform.GetChild(1).GetComponent<Image>();
         con_Infomation = GetComponent<Con_Infomation>();
 
         imgBtn.onClick.AddListener(Container_Sliding);
@@ -27,6 +25,7 @@ public class ContainerSlide : MonoBehaviour
 
     public void Init_Setting() // 머티리얼 복사 및 할당 관련
     {
+        myImage = transform.GetChild(1).GetComponent<Image>();
         Material baseMat = Resources.Load<Material>("GrayscaleMaterial");
 
         colorMat = new Material(baseMat);
@@ -36,6 +35,7 @@ public class ContainerSlide : MonoBehaviour
         grayMat.SetFloat("_GrayAmount", 1f);
 
         myImage.material = grayMat;
+        
     }
 
     // 해금에 따른 컬러 효과전환
@@ -66,28 +66,23 @@ public class ContainerSlide : MonoBehaviour
         confirm = !confirm;
         /* 예를 들어 관제센터에서 업그레이드를 했다면 
             관제센터의 자식 컨테이너 5종 모두의 컬러를 흑백 및 비활성화 해야함.*/
-        for (int i = 0; i < Build_Manager.instance.TabContainer.Length; i++)
-        {
-            List<ContainerSlide> active_containerGroup = 
+
+        List<ContainerSlide> active_containerGroup =
                 Build_Manager.instance.GetTargetListByIndex(index);
 
-            if (i == index)
+        foreach (ContainerSlide con in active_containerGroup)
+        {
+            if (con == this)
             {
-                foreach (ContainerSlide con in active_containerGroup)
-                {
-                    if (con == this)
-                    {
-                        continue;
-                    }
-
-                    if (con.con_Infomation.unLock)
-                    {
-                        con.ColorChange();
-                    }
-
-                    con.transform.GetChild(1).GetComponent<Button>().enabled = confirm ? false : true;
-                }
+                continue;
             }
+
+            if (con.con_Infomation.unLock == true)
+            {
+                con.ColorChange();
+            }
+
+            con.transform.GetChild(1).GetComponent<Button>().enabled = confirm ? false : true;
         }
     }
 
@@ -139,6 +134,18 @@ public class ContainerSlide : MonoBehaviour
         {
             anim.SetTrigger("Open");
         }
+        //업그레이드 중이라면 윗쪽 슬라이더 활성화
+        Slider_On_Off();
+    }
+
+    // 이미지 슬라이드시 슬라이더 표시 관련
+    public void Slider_On_Off()
+    {
+        if (con_Infomation.controlCenter_confirm)
+        {
+            con_Infomation.timeSlider[0].gameObject.SetActive(!imgOpen);
+        }
+
     }
 
 }

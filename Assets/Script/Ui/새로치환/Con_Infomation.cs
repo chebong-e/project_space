@@ -19,14 +19,14 @@ public class Con_Infomation : MonoBehaviour
     public Slider[] timeSlider; // 경과시간에 따른 표시할 슬라이더
     public Slider amountSlider; // 생산할 함선 수량 관련
     public Button[] btns; // 업그레이드, 업그레이드 취소 버튼
-    public GameObject child_InfoCintainer;
+    public GameObject child_InfoContainer;
 
     public ContainerSlide containerSlide;
 
     /* 추후 서버 데이터를 연결한 이후 데이터 연동 확인 작업 후 본인의 계정의 정보를 불러오기 앞서,
      * 현재는 연동 데이터가 없으므로 항상 레벨 0로 초기화하는데 필요한 bool값*/
     public bool data = false;
-    public bool unLock = false;
+    public bool unLock;
     public bool controlCenter_confirm;
     public bool shipMaking_confirm;
 
@@ -44,7 +44,7 @@ public class Con_Infomation : MonoBehaviour
         }
 
         containerSlide.Init_Setting();
-
+        Init_Setting();
     }
 
     public void Init_Setting()
@@ -143,7 +143,7 @@ public class Con_Infomation : MonoBehaviour
                 // 윗열 슬라이더 시간 텍스트 표시 관련임 
                 foreach (TextMeshProUGUI tt in timeText)
                 {
-                    tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
+                    tt.text = $"{Build_Manager.instance.TimerTexting(buildResource.building_Time[buildResource.level])}";
                 }
                 break;
         }
@@ -157,22 +157,27 @@ public class Con_Infomation : MonoBehaviour
                 shipMaking_confirm = !shipMaking_confirm;
                 Build_Manager.instance.makingShips = shipMaking_confirm;
 
-                /*Build_Manager.instance.BuildTab3_BuildShips(
+                Build_Manager.instance.BuildTab3_MakingShips(
                     transform.GetChild(1).GetComponent<Image>().sprite,
                     shipBuildSlider.slider.value * ships.shipMaking_Time,
                     this,
-                    imgSlide,
-                    ship_confirm);*/
+                    shipMaking_confirm);
                 break;
 
             case Types.ControlCenter:
+                controlCenter_confirm = !controlCenter_confirm;
+                Build_Manager.instance.upgrading = controlCenter_confirm;
+
+                Build_Manager.instance.ControlCenter_Upgrade(
+                    transform.GetChild(1).GetComponent<Image>().sprite,
+                    this,
+                    controlCenter_confirm);
 
                 break;
         }
     }
 
-
-    public string TimerTexting(int timer)
+    string TimerTexting(int timer)
     {
         if (timer >= 3600)
             return $"{timer / 3600}시간 {(timer % 3600) / 60}분 {timer % 60}초";
