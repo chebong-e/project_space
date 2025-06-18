@@ -53,8 +53,8 @@ public class Build_Manager : MonoBehaviour
         {
             case 0: return ImageSetting_Group.build_Tab1;
             case 1: return ImageSetting_Group.build_Tab2;
-            case 2: return ImageSetting_Group.build_Tab3;
-            case 3: return ImageSetting_Group.reserch_Tab;
+            case 2: return ImageSetting_Group.build_Tab3; // 연구
+            case 3: return ImageSetting_Group.build_Tab4; // 함선생산
             case 4: return ImageSetting_Group.controlCenter_Tab;
             default: return null;
         }
@@ -255,7 +255,7 @@ public class Build_Manager : MonoBehaviour
         }
 
         // 업그레이드 성공 후 반영될 정보들 가시화
-        info.Upgrade_To_Infomation(info.info_types);
+        info.Upgrade_To_Infomation(info);
 
         // 이미지 컬러전환 및 버튼 활성화 처리
         info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
@@ -314,7 +314,7 @@ public class Build_Manager : MonoBehaviour
         }
 
         // 업그레이드 성공 후 반영될 정보들 가시화
-        info.Upgrade_To_Infomation(info.info_types);
+        info.Upgrade_To_Infomation(info);
 
         // 이미지 컬러전환 및 버튼 활성화 처리
         info.containerSlide.ColorChange_To_Upgrade(activeIndex);
@@ -336,81 +336,6 @@ public class Build_Manager : MonoBehaviour
         info.ships.maxHaveShip_Amount = info.buildResource.AllowableBuild;
     }
 
-
-    /*IEnumerator BuildTimerCoroutine(Sprite img, Con_Infomation info, float targetTimer, Action onComplete)
-    {
-        GameObject maintab_container = mainTabCategory.Upgrading(img, true);
-        Slider maintab_slider = maintab_container.GetComponentInChildren<Slider>();
-        TextMeshProUGUI[] maintab_texts = maintab_container.GetComponentsInChildren<TextMeshProUGUI>();
-        maintab_texts[0].text = info.title_Text["name"].text;
-
-        maintab_slider.maxValue = targetTimer;
-
-        foreach (Slider s in info.timeSlider)
-            s.maxValue = targetTimer;
-
-        if (info.child_InfoContainer != null)
-        {
-            info.child_InfoContainer.transform.GetChild(0).gameObject.SetActive(true);
-            info.child_InfoContainer.transform.GetChild(1).gameObject.SetActive(false);
-        }
-
-        float timer = 0f;
-
-        while (timer < targetTimer)
-        {
-            timer += Time.deltaTime;
-
-            foreach (Slider s in info.timeSlider)
-                s.value = timer;
-
-            maintab_slider.value = timer;
-
-            int remaining = Mathf.CeilToInt(Mathf.Clamp(targetTimer - timer, 0f, targetTimer));
-            string timeStr = TimerTexting(remaining);
-
-            foreach (TextMeshProUGUI tt in info.timeText)
-                tt.text = timeStr;
-
-            maintab_texts[1].text = timeStr;
-
-            yield return null;
-        }
-
-        info.Upgrade_To_Infomation(info.info_types);
-        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
-
-        // 공통 후처리
-        foreach (Slider s in info.timeSlider)
-            s.value = 0f;
-
-        info.timeSlider[0].gameObject.SetActive(false);
-        info.btns[1].gameObject.SetActive(false);
-        info.btns[0].gameObject.SetActive(true);
-
-        mainTabCategory.Upgrading(null, false);
-
-        onComplete?.Invoke(); // 타입에 따라 실행되는 후처리 콜백
-    }
-
-    IEnumerator MakingShips_Timer(Sprite img, Con_Infomation info, float timer)
-    {
-        yield return StartCoroutine(BuildTimerCoroutine(img, info, timer, () =>
-        {
-            info.shipMaking_confirm = false;
-        }));
-    }
-
-    IEnumerator ControlCenter_BuildingTimer(Sprite img, Con_Infomation info, float timer)
-    {
-        yield return StartCoroutine(BuildTimerCoroutine(img, info, timer, () =>
-        {
-            info.controlCenter_confirm = false;
-            info.ships.maxHaveShip_Amount = info.buildResource.AllowableBuild;
-        }));
-    }*/
-
-
     public string TimerTexting(int timer)
     {
         if (timer >= 3600)
@@ -428,7 +353,7 @@ public class ImageSetting_Group
     public List<ContainerSlide> build_Tab1;
     public List<ContainerSlide> build_Tab2;
     public List<ContainerSlide> build_Tab3;
-    public List<ContainerSlide> reserch_Tab;
+    public List<ContainerSlide> build_Tab4;
     public List<ContainerSlide> controlCenter_Tab;
 
 }

@@ -5,11 +5,12 @@ using UnityEngine.UI;
 public class ContainerSlide : MonoBehaviour
 {
     public Animator[] anims;
+    public Con_Infomation con_Infomation;
     int grayscaleCount = 0;
     Image myImage;
     Material grayMat, colorMat;
     Button imgBtn;
-    Con_Infomation con_Infomation;
+    
 
     public bool imgOpen;
     bool confirm;

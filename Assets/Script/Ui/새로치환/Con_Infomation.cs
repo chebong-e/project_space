@@ -111,9 +111,9 @@ public class Con_Infomation : MonoBehaviour
         btns[0].enabled = unLock;
     }
 
-    public void Upgrade_To_Infomation(Types types)
+    public void Upgrade_To_Infomation(Con_Infomation info)
     {
-        switch (types)
+        switch (info.info_types)
         {
             case Types.Tab3:
                 
@@ -149,10 +149,20 @@ public class Con_Infomation : MonoBehaviour
 
                 // 함선생산 탭의 최대 함선 생산 수량 업데이트
                 ships.maxHaveShip_Amount = allowableBuild;
-                // 해당 인포메이션 스크립트에는 쉽빌드슬라이더 스크립트가 없으므로 참조 되지 않음
-                // 어차피 탭의 인덱스 값은 같으니 인덱스 값을 활용하여 업데이트 해주도록 하자.
-                shipBuildSlider.building_Amount.text = $"{ships.maxHaveShip_Amount}";
-                shipBuildSlider.slider.maxValue = ships.maxHaveShip_Amount;
+                var imgGroup = Build_Manager.instance.ImageSetting_Group;
+                for (int i = 0; i < imgGroup.controlCenter_Tab.Count; i++)
+                {
+                    if (imgGroup.controlCenter_Tab[i] == info.containerSlide)
+                    {
+                        Debug.Log($"일치 넘버링:{i}");
+                        imgGroup.build_Tab4[i].con_Infomation.shipBuildSlider.
+                            building_Amount.text = 
+                            $"<       {imgGroup.build_Tab4[i].con_Infomation.shipBuildSlider.slider.value}     /     {ships.maxHaveShip_Amount}       >";
+                        imgGroup.build_Tab4[i].con_Infomation.shipBuildSlider.
+                            slider.maxValue = ships.maxHaveShip_Amount;
+                        break;
+                    }
+                }
                 break;
         }
     }

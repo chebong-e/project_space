@@ -32,15 +32,15 @@ MonoBehaviour:
   - 2
   build_result:
   - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
+  - 10
+  - 10
+  - 10
+  - 20
+  - 20
+  - 20
+  - 30
+  - 30
+  - 50
   require_condition: "\uD2B9\uC815 \uC694\uAD6C\uC870\uAC74 \uC791\uC131"
   Lv_Title: "Lv.{0} \uC544\uB9C8\uAC9F\uB3C8 \uAD00\uC81C\uC13C\uD130"
   img: {fileID: -4898925482898048664, guid: 858443c8a3cf8bf4187c69c6ff8156a9, type: 3}
