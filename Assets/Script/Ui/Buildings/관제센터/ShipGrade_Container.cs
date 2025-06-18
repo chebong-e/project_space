@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -18,14 +19,19 @@ public class ShipGrade_Container : MonoBehaviour
             int capturedIndex = i;
             shipGrade[i].GetComponent<Button>().onClick.AddListener(() => SelfObject_Check(shipGrade[capturedIndex]));*/
         }
+
     }
 
     void Start()
     {
-        for (int i = 1; i < shipGrade_Window.Length; i++)
+        Scriptable_Matching[] scriptable_Matchings = transform.parent.GetComponentsInChildren<Scriptable_Matching>();
+        foreach (Scriptable_Matching sc_mat in scriptable_Matchings)
         {
-            shipGrade_Window[i].SetActive(false);
+            sc_mat.Init();
         }
+
+
+        StartCoroutine(Init_WindowClose());
     }
 
 
@@ -45,10 +51,6 @@ public class ShipGrade_Container : MonoBehaviour
         
     }
 
-    void SelfObject_Check(GameObject caller)
-    {
-        Debug.Log(caller.transform.GetSiblingIndex());
-    }
 
 
     public void GradeSelect(int num)
@@ -119,5 +121,16 @@ public class ShipGrade_Container : MonoBehaviour
             }
         }
         
+    }
+
+    IEnumerator Init_WindowClose()
+    {
+        yield return new WaitForSeconds(0.01f);
+        for (int i = 1; i < shipGrade_Window.Length; i++)
+        {
+            shipGrade_Window[i].SetActive(false);
+        }
+        yield return new WaitForSeconds(0.01f);
+        Build_Manager.instance.Tab_Close();
     }
 }

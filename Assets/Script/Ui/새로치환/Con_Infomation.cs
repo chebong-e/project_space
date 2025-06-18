@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Title_Text : SerializableDictionary<string, TextMeshProUGUI> { };
 public class Con_Infomation : MonoBehaviour
 {
-    public enum Types { ControlCenter, Tab3 }
+    public enum Types { ControlCenter, Tab4 }
     public Types info_types;
 
     public ShipBuildSlider shipBuildSlider;
@@ -14,8 +14,9 @@ public class Con_Infomation : MonoBehaviour
     public TextMeshProUGUI[] resources; // 자원텍스트관련
     public TextMeshProUGUI[] timeText; // 경과시간 텍스트
     public TextMeshProUGUI[] amount_Text; // 생산 가능 수량
+    public TextMeshProUGUI haveShipCount;
     public BuildResource buildResource;
-    public Ships ships;
+    public Ship ship;
     public Slider[] timeSlider; // 경과시간에 따른 표시할 슬라이더
     public Slider amountSlider; // 생산할 함선 수량 관련
     public Button[] btns; // 업그레이드, 업그레이드 취소 버튼
@@ -36,7 +37,8 @@ public class Con_Infomation : MonoBehaviour
         resources = new TextMeshProUGUI[5];
         timeText = new TextMeshProUGUI[2];
         timeSlider = new Slider[2];
-        containerSlide = GetComponent<ContainerSlide>();
+
+        /*containerSlide = GetComponent<ContainerSlide>();
 
         foreach (SelfRegistration self in GetComponentsInChildren<SelfRegistration>())
         {
@@ -44,51 +46,62 @@ public class Con_Infomation : MonoBehaviour
         }
 
         containerSlide.Init_Setting();
-        Init_Setting();
+        Init_Setting();*/
     }
 
     public void Init_Setting()
     {
+        if (info_types == Types.Tab4)
+        {
+            shipBuildSlider = GetComponentInChildren<ShipBuildSlider>();
+            shipBuildSlider.Init();
+        }
+        
+        containerSlide = GetComponent<ContainerSlide>();
+
+        foreach (SelfRegistration self in GetComponentsInChildren<SelfRegistration>())
+        {
+            self.Init_Setting();
+        }
+        
+        containerSlide.Init_Setting();
+
+
         int[] costArray = info_types == Types.ControlCenter
             ? buildResource.init_Needs
-            : ships.shipMake_Cost;
+            : ship.shipMake_Cost;
 
         var (metal, cristal, gas) = (costArray[0], costArray[1], costArray[2]);
 
-        if (!data)
+        Debug.Log($"실행되었습니다.{gameObject.name}, 부모오브젝트{transform.parent.name}");
+        switch (info_types)
         {
-            switch (info_types)
-            {
-                case Types.ControlCenter:
-                    buildResource.level = 0;
-                    buildResource.AllowableBuild = (int)buildResource.build_result[buildResource.level];
-                    for (int i = 0; i < buildResource.level; i++)
-                    {
-                        metal = Mathf.FloorToInt(metal * buildResource.build_require[i]);
-                        cristal = Mathf.FloorToInt(cristal * buildResource.build_require[i]);
-                        gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
-                    }
+            case Types.ControlCenter:
+                buildResource.AllowableBuild = (int)buildResource.build_result[buildResource.level];
+                for (int i = 0; i < buildResource.level; i++)
+                {
+                    metal = Mathf.FloorToInt(metal * buildResource.build_require[i]);
+                    cristal = Mathf.FloorToInt(cristal * buildResource.build_require[i]);
+                    gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
+                }
 
-                    // 추가가능대수(보너스 및 연구 등) = 임시
-                    int plusAllowable = 0;
-                    resources[3].text = $"{buildResource.AllowableBuild} (+{plusAllowable})";
-                    resources[4].text = $"생산 가능 {buildResource.name}"; // 생산 가능 함선 종류
+                // 추가가능대수(보너스 및 연구 등) = 임시
+                int plusAllowable = 0;
+                resources[3].text = $"{buildResource.AllowableBuild} (+{plusAllowable})";
+                resources[4].text = $"생산 가능 {buildResource.name}"; // 생산 가능 함선 종류
 
-                    foreach (TextMeshProUGUI tt in timeText)
-                    {
-                        tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
-                    }
-                    title_Text["name"].text = $"Lv.{buildResource.level} {buildResource.name} 관제센터";
-                    break;
+                foreach (TextMeshProUGUI tt in timeText)
+                {
+                    tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
+                }
+                title_Text["name"].text = $"Lv.{buildResource.level} {buildResource.name} 관제센터";
+                break;
 
-                case Types.Tab3:
-                    Debug.Log("ships참조");
-
-                    timeText[0].text = $"{TimerTexting((int)ships.shipMaking_Time)}";
-                    title_Text["name"].text = $"{ships.name}";
-                    child_InfoContainer.transform.GetChild(0).gameObject.SetActive(false);
-                    break;
-            }
+            case Types.Tab4:
+                timeText[0].text = $"{TimerTexting((int)ship.shipMaking_Time)}";
+                title_Text["name"].text = $"{ship.name}";
+                child_InfoContainer.transform.GetChild(0).gameObject.SetActive(false);
+                break;
         }
 
         resources[0].text = $"{metal}";
@@ -115,8 +128,11 @@ public class Con_Infomation : MonoBehaviour
     {
         switch (info.info_types)
         {
-            case Types.Tab3:
-                
+            case Types.Tab4:
+                haveShipCount.text = $"보유 함선 수 : {ship.currentHave_Ship}";
+                shipBuildSlider.slider.maxValue = ship.maxHaveShip_Amount - ship.currentHave_Ship;
+                shipBuildSlider.slider.value = 0;
+                shipBuildSlider.building_Amount.text = $"<       {shipBuildSlider.slider.value}     /     {shipBuildSlider.slider.maxValue}       >";
                 break;
             case Types.ControlCenter:
                 buildResource.level++;
@@ -148,7 +164,7 @@ public class Con_Infomation : MonoBehaviour
                 }
 
                 // 함선생산 탭의 최대 함선 생산 수량 업데이트
-                ships.maxHaveShip_Amount = allowableBuild;
+                ship.maxHaveShip_Amount = allowableBuild;
                 var imgGroup = Build_Manager.instance.ImageSetting_Group;
                 for (int i = 0; i < imgGroup.controlCenter_Tab.Count; i++)
                 {
@@ -157,9 +173,9 @@ public class Con_Infomation : MonoBehaviour
                         Debug.Log($"일치 넘버링:{i}");
                         imgGroup.build_Tab4[i].con_Infomation.shipBuildSlider.
                             building_Amount.text = 
-                            $"<       {imgGroup.build_Tab4[i].con_Infomation.shipBuildSlider.slider.value}     /     {ships.maxHaveShip_Amount}       >";
+                            $"<       {imgGroup.build_Tab4[i].con_Infomation.shipBuildSlider.slider.value}     /     {ship.maxHaveShip_Amount}       >";
                         imgGroup.build_Tab4[i].con_Infomation.shipBuildSlider.
-                            slider.maxValue = ships.maxHaveShip_Amount;
+                            slider.maxValue = ship.maxHaveShip_Amount;
                         break;
                     }
                 }
@@ -171,7 +187,7 @@ public class Con_Infomation : MonoBehaviour
     {
         switch (info_types)
         {
-            case Types.Tab3:
+            case Types.Tab4:
                 if (shipBuildSlider.slider.value < 1)
                     return;
                 shipMaking_confirm = !shipMaking_confirm;
@@ -179,7 +195,7 @@ public class Con_Infomation : MonoBehaviour
 
                 Build_Manager.instance.BuildTab3_MakingShips(
                     transform.GetChild(1).GetComponent<Image>().sprite,
-                    shipBuildSlider.slider.value * ships.shipMaking_Time,
+                    (int)shipBuildSlider.slider.value,
                     this,
                     shipMaking_confirm);
                 break;
@@ -205,5 +221,11 @@ public class Con_Infomation : MonoBehaviour
             return $"{timer / 60}분 {timer % 60}초";
         else
             return $"{timer}초";
+    }
+
+    public void Init_DataReset()
+    {
+        buildResource.AllowableBuild = 0;
+        buildResource.level = 0;
     }
 }

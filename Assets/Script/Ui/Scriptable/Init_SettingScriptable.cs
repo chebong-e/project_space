@@ -9,6 +9,6 @@ public class Init_SettingScriptable : ScriptableObject
     public ShipBuildSlider shipBuildSlider;
 
     [Header("ScriptableObject")]
-    public Ships ships;
+    public Ship ship;
     public BuildResource buildResource;
 }

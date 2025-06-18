@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 0
   shipName: "\uD32C\uD140"
-  maxHaveShip_Amount: 10
+  maxHaveShip_Amount: 0
   currentHave_Ship: 0
   shipMaking_Time: 5
   shipMake_Cost: 140000000a00000005000000

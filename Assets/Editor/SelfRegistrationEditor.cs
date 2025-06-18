@@ -28,10 +28,10 @@ public class SelfRegistrationEditor : Editor
             case SelfRegistration.GrateTitle.BuildTab3:
                 
                 break;
-            case SelfRegistration.GrateTitle.ResearchTab:
+            case SelfRegistration.GrateTitle.BuildTab4:
 
                 break;
-            case SelfRegistration.GrateTitle.ControlCenterTab:
+            case SelfRegistration.GrateTitle.BuildTab5:
 
                 break;
             case SelfRegistration.GrateTitle.FleetMision:

@@ -9,7 +9,7 @@ public class ContainerSlide : MonoBehaviour
     int grayscaleCount = 0;
     Image myImage;
     Material grayMat, colorMat;
-    Button imgBtn;
+    public Button imgBtn;
     
 
     public bool imgOpen;
@@ -38,8 +38,8 @@ public class ContainerSlide : MonoBehaviour
 
         switch (con_Infomation.info_types)
         {
-            case Con_Infomation.Types.Tab3:
-                myImage.sprite = con_Infomation.ships.img;
+            case Con_Infomation.Types.Tab4:
+                myImage.sprite = con_Infomation.ship.img;
                 break;
             case Con_Infomation.Types.ControlCenter:
                 myImage.sprite = con_Infomation.buildResource.img;

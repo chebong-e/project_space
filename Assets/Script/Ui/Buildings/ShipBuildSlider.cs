@@ -16,14 +16,14 @@ public class ShipBuildSlider : MonoBehaviour
         building_Amount = transform.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
         building_Time = transform.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
         info = GetComponentInParent<Con_Infomation>();
-        info.shipBuildSlider = this;
-        Init();
+        /*info.shipBuildSlider = this;
+        Init();*/
     }
 
-    void Init()
+    public void Init()
     {
-        building_Amount.text = $"<       0     /     {info.ships.maxHaveShip_Amount}       >";
-        slider.maxValue = info.ships.maxHaveShip_Amount;
+        building_Amount.text = $"<       {slider.value}     /     {info.ship.maxHaveShip_Amount - info.ship.currentHave_Ship}       >";
+        slider.maxValue = info.ship.maxHaveShip_Amount;
     }
 
     public void OnSliderValueChanged()
@@ -48,11 +48,11 @@ public class ShipBuildSlider : MonoBehaviour
 
     void UpgradeInfomation()
     {
-        int amount = info.ships.maxHaveShip_Amount - info.ships.currentHave_Ship;
+        int amount = info.ship.maxHaveShip_Amount - info.ship.currentHave_Ship;
         building_Amount.text = $"<       {slider.value}     /     {amount}       >";
 
         
-        int time = (int)slider.value * (int)info.ships.shipMaking_Time;
+        int time = (int)slider.value * (int)info.ship.shipMaking_Time;
         if (time >= 3600)
             building_Time.text = $"{time / 3600}시간 {(time % 3600) / 60}분 {time % 60}초";
         else if (time >= 60)
@@ -84,9 +84,9 @@ public class ShipBuildSlider : MonoBehaviour
 
 
 
-        for (int i = 0; i < info.ships.shipMake_Cost.Length; i++)
+        for (int i = 0; i < info.ship.shipMake_Cost.Length; i++)
         {
-            info.resources[i].text = $"{slider.value * info.ships.shipMake_Cost[i]}";
+            info.resources[i].text = $"{slider.value * info.ship.shipMake_Cost[i]}";
         }
         
 

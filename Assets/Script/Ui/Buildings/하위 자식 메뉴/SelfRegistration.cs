@@ -5,13 +5,14 @@ using UnityEngine.UI;
 
 public class SelfRegistration : MonoBehaviour
 {
-    public enum GrateTitle { MainTab, BuildTab1, BuildTab2, BuildTab3, ResearchTab, ControlCenterTab, FleetMision }
-    public enum TitleType { Title, Resource, TimeSlide, Button, BuildShips }
+    public enum GrateTitle { MainTab, BuildTab1, BuildTab2, BuildTab3, BuildTab4, BuildTab5, FleetMision }
+    public enum TitleType { Title, Resource, TimeSlide, Button, BuildShips, HaveShipCount }
     public enum SubType0 { Name, UpTime, DownTime }
     public enum SubType1 { Metal, Cristal, Gas, Allowable }
     public enum SubType2 { UpSlider, DownSlider }
     public enum SubType3 { Confirm, Cancle }
     public enum SubType4 { Slider, Build_Amount, Build_Time, container }
+    
     public GrateTitle grateTitle;
     public TitleType titleType;
     public SubType0 subType0;
@@ -42,26 +43,12 @@ public class SelfRegistration : MonoBehaviour
 
                 break;
             case GrateTitle.BuildTab3:
+                
+                break;
+            case GrateTitle.BuildTab4:
                 ExSwitch(titleType, info);
-                /*switch (subType4)
-                {
-                    case SubType4.Slider:
-                        info.amountSlider = GetComponent<Slider>();
-                        break;
-
-                    case SubType4.Build_Amount:
-                        info.amount_Text[0] = GetComponent<TextMeshProUGUI>();
-                        break;
-
-                    default:
-                        info.amount_Text[1] = GetComponent<TextMeshProUGUI>();
-                        break;
-                }*/
                 break;
-            case GrateTitle.ResearchTab:
-
-                break;
-            case GrateTitle.ControlCenterTab:
+            case GrateTitle.BuildTab5:
                 ExSwitch(titleType, info);
                 break;
             case GrateTitle.FleetMision:
@@ -127,6 +114,10 @@ public class SelfRegistration : MonoBehaviour
                     info.child_InfoContainer = this.gameObject;
                 }
                 
+                break;
+            case TitleType.HaveShipCount:
+                info.haveShipCount = gameObject.GetComponent<TextMeshProUGUI>();
+                GetComponent<TextMeshProUGUI>().text = $"보유 함선 수 : {info.ship.currentHave_Ship}";
                 break;
         }
     }

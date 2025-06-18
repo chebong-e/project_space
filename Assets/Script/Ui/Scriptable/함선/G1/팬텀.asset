@@ -15,7 +15,7 @@ MonoBehaviour:
   category: 0
   shipName: "\uD32C\uD140"
   maxHaveShip_Amount: 10
-  currentHave_Ship: 0
+  currentHave_Ship: 3
   shipMaking_Time: 5
   shipMake_Cost: 140000000a00000005000000
   ship_Damage: 0

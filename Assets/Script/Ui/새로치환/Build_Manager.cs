@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class Build_Manager : MonoBehaviour
@@ -9,11 +10,13 @@ public class Build_Manager : MonoBehaviour
     public static Build_Manager instance;
     public ImageSetting_Group ImageSetting_Group;
     public MainTabCategory mainTabCategory;
-    public GameObject[] TabContainer, mainTab_Container;
+    public GameObject[] tabContainer, mainTab_Container;
 
     Coroutine controllCenter_coroutine, makingShip_coroutine;
+    Scriptable_Group scriptable_Group;
 
     public bool upgrading, makingShips, building, reserching;
+    bool datas;
 
     void Awake()
     {
@@ -28,13 +31,13 @@ public class Build_Manager : MonoBehaviour
         }
 
         // 컨테이너슬라이드를 메인탭 별로 분류하여 변수에 할당
-        for (int i = 0; i < TabContainer.Length; i++)
+        for (int i = 0; i < tabContainer.Length; i++)
         {
             List<ContainerSlide> targetContainer = GetTargetListByIndex(i);
 
             if (targetContainer == null) continue;
 
-            ScrollRect[] scrollRects = TabContainer[i].GetComponentsInChildren<ScrollRect>(true);
+            ScrollRect[] scrollRects = tabContainer[i].GetComponentsInChildren<ScrollRect>(true);
             foreach (ScrollRect scroll in scrollRects)
             {
                 for (int j = 0; j < scroll.content.childCount; j++)
@@ -45,7 +48,31 @@ public class Build_Manager : MonoBehaviour
                 }
             }
         }
+
+        scriptable_Group = GetComponent<Scriptable_Group>();
+        /*Data_CheckInit(datas);*/
     }
+
+    // 서버에서 계정의 데이터 확인하여 반영해주기 위한 초기 로직(임시)
+    /*void Data_CheckInit(bool data)
+    {
+        if (!data)
+        {
+            for (int i = 3; i < tabContainer.Length; i++)
+            {
+                Con_Infomation[] con_ = tabContainer[i].GetComponentsInChildren<Con_Infomation>(true);
+                for (int j = 0; j < con_.Length; j++)
+                {
+                    con_[j]
+                }
+            }
+        }
+
+
+    }*/
+
+
+    
 
     public List<ContainerSlide> GetTargetListByIndex(int index)
     {
@@ -65,9 +92,9 @@ public class Build_Manager : MonoBehaviour
     public int Active_TabContainerIndex()
     {
         int index = 0;
-        for (int i = 0; i < TabContainer.Length; i++)
+        for (int i = 0; i < tabContainer.Length; i++)
         {
-            if (TabContainer[i].activeInHierarchy)
+            if (tabContainer[i].activeInHierarchy)
             {
                 index = i;
                 break;
@@ -91,20 +118,22 @@ public class Build_Manager : MonoBehaviour
         }
     }
 
-    public void BuildTab3_MakingShips(Sprite img, float totalTime, Con_Infomation info, bool upgrade)
+    public void BuildTab3_MakingShips(Sprite img, int makeCount, Con_Infomation info, bool upgrade)
     {
         mainTabCategory = mainTab_Container[Active_TabContainerIndex()].GetComponent<MainTabCategory>();
 
         if (upgrade)
         {
+            info.containerSlide.imgBtn.enabled = false;
             makingShip_coroutine = StartCoroutine(
                 MakingShips_Timer(
                     img,
                     info,
-                    totalTime));
+                    makeCount));
         }
         else
         {
+            info.containerSlide.imgBtn.enabled = true;
             StopCoroutine(makingShip_coroutine);
             for (int i = 0; i < 2; i++)
             {
@@ -120,19 +149,19 @@ public class Build_Manager : MonoBehaviour
     }
 
     //함선생산과 관제센터 업그레이드 함수 중복 정리 하여 간결하게 하기 위한 코드 정리 실험
-    public void Example_Confirm(Sprite img, float totalTime, Con_Infomation info, bool upgrade)
+    public void Example_Confirm(Sprite img, int makeCount, Con_Infomation info, bool upgrade)
     {
         mainTabCategory = mainTab_Container[Active_TabContainerIndex()].GetComponent<MainTabCategory>();
         if (upgrade)
         {
             switch (info.info_types)
             {
-                case Con_Infomation.Types.Tab3:
+                case Con_Infomation.Types.Tab4:
                     makingShip_coroutine = StartCoroutine(
                         MakingShips_Timer(
                             img,
                             info,
-                            totalTime));
+                            makeCount));
                     break;
                 case Con_Infomation.Types.ControlCenter:
                     controllCenter_coroutine = StartCoroutine(
@@ -147,7 +176,7 @@ public class Build_Manager : MonoBehaviour
         {
             switch (info.info_types)
             {
-                case Con_Infomation.Types.Tab3:
+                case Con_Infomation.Types.Tab4:
                     StopCoroutine(makingShip_coroutine);
                     info.child_InfoContainer.transform.GetChild(0).gameObject.SetActive(upgrade);
                     info.child_InfoContainer.transform.GetChild(1).gameObject.SetActive(!upgrade);
@@ -167,25 +196,6 @@ public class Build_Manager : MonoBehaviour
         }
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     public void ControlCenter_Upgrade(Sprite img, Con_Infomation info, bool upgrade)
@@ -215,18 +225,19 @@ public class Build_Manager : MonoBehaviour
         info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
     }
 
-    IEnumerator MakingShips_Timer(Sprite img, Con_Infomation info, float targetTimer)
+    IEnumerator MakingShips_Timer(Sprite img, Con_Infomation info, int makeCount)
     {
         GameObject maintab_container = mainTabCategory.Upgrading(img, true);
         Slider maintab_slider = maintab_container.GetComponentInChildren<Slider>();
         TextMeshProUGUI[] maintab_texts = maintab_container.GetComponentsInChildren<TextMeshProUGUI>();
         maintab_texts[0].text = info.title_Text["name"].text;
 
-        maintab_slider.maxValue = targetTimer;
+        float totalMakeTime = makeCount * info.ship.shipMaking_Time;
+        maintab_slider.maxValue = totalMakeTime;
 
         foreach (Slider _slider in info.timeSlider)
         {
-            _slider.maxValue = targetTimer;
+            _slider.maxValue = totalMakeTime;
         }
 
         info.child_InfoContainer.transform.GetChild(0).gameObject.SetActive(true);
@@ -234,7 +245,7 @@ public class Build_Manager : MonoBehaviour
 
         float timer = 0f;
 
-        while (timer < targetTimer)
+        while (timer < totalMakeTime)
         {
             timer += Time.deltaTime;
             foreach (Slider slide in info.timeSlider)
@@ -244,7 +255,7 @@ public class Build_Manager : MonoBehaviour
             maintab_slider.value = timer;
 
             int remaining_curTime = Mathf.CeilToInt(
-                Mathf.Clamp(targetTimer - timer, 0f, targetTimer));
+                Mathf.Clamp(totalMakeTime - timer, 0f, totalMakeTime));
 
             foreach (TextMeshProUGUI tt in info.timeText)
             {
@@ -255,7 +266,9 @@ public class Build_Manager : MonoBehaviour
         }
 
         // 업그레이드 성공 후 반영될 정보들 가시화
+        info.ship.currentHave_Ship += makeCount;
         info.Upgrade_To_Infomation(info);
+        
 
         // 이미지 컬러전환 및 버튼 활성화 처리
         info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
@@ -266,7 +279,11 @@ public class Build_Manager : MonoBehaviour
         {
             slide.value = 0f;
         }
-        info.timeSlider[0].gameObject.SetActive(false);
+
+
+        info.child_InfoContainer.transform.GetChild(0).gameObject.SetActive(false);
+        info.child_InfoContainer.transform.GetChild(1).gameObject.SetActive(true);
+
         info.btns[1].gameObject.SetActive(false);
         info.btns[0].gameObject.SetActive(true);
 
@@ -333,7 +350,7 @@ public class Build_Manager : MonoBehaviour
 
         /*관제센터 업그레이드 후 생산가능 수량 업데이트 정보를
             함선생산 탭의 정보로 넘겨주기(현재는 infomation의 ships 정보를 수정하는 방향)*/
-        info.ships.maxHaveShip_Amount = info.buildResource.AllowableBuild;
+        info.ship.maxHaveShip_Amount = info.buildResource.AllowableBuild;
     }
 
     public string TimerTexting(int timer)
@@ -344,6 +361,15 @@ public class Build_Manager : MonoBehaviour
             return $"{timer / 60}분 {timer % 60}초";
         else
             return $"{timer}초";
+    }
+
+    // init과 관련(모든 탭 윈도우 비활성화)
+    public void Tab_Close()
+    {
+        foreach (GameObject tab in tabContainer)
+        {
+            tab.SetActive(false);
+        }
     }
 }
 

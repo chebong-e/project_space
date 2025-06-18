@@ -25,7 +25,7 @@ public class Infomations : MonoBehaviour
     public TextMeshProUGUI[] amount_Text;
 
     public BuildResource buildResource;
-    public Ships ships;
+    public Ship ship;
     public Slider[] timeSlider;
     public Slider amountSlider;
     
@@ -76,9 +76,9 @@ public class Infomations : MonoBehaviour
 
     public void Init_Setting()
     {
-        int metal = info_types == Types.ControlCenter ? buildResource.init_Needs[0] : ships.shipMake_Cost[0];
-        int cristal = info_types == Types.ControlCenter ? buildResource.init_Needs[1] : ships.shipMake_Cost[1];
-        int gas = info_types == Types.ControlCenter ? buildResource.init_Needs[2] : ships.shipMake_Cost[2];
+        int metal = info_types == Types.ControlCenter ? buildResource.init_Needs[0] : ship.shipMake_Cost[0];
+        int cristal = info_types == Types.ControlCenter ? buildResource.init_Needs[1] : ship.shipMake_Cost[1];
+        int gas = info_types == Types.ControlCenter ? buildResource.init_Needs[2] : ship.shipMake_Cost[2];
 
         // 추후 서버 데이터를 연결한 이후 데이터 연동 확인 작업 후 본인의 계정의
         // 정보를 불러오기 앞서, 현재는 연동 데이터가 없으므로 항상 레벨 1로 초기화하는데 필요한 bool값
@@ -112,8 +112,8 @@ public class Infomations : MonoBehaviour
             {
                 Debug.Log("ships참조");
 
-                timeText[0].text = $"{TimerTexting((int)ships.shipMaking_Time)}";
-                titles["name"].text = $"{ships.name}";
+                timeText[0].text = $"{TimerTexting((int)ship.shipMaking_Time)}";
+                titles["name"].text = $"{ship.name}";
             }
         }
 
@@ -252,7 +252,7 @@ public class Infomations : MonoBehaviour
 
                 BuildManager.instance.BuildTab3_BuildShips(
                     transform.GetChild(1).GetComponent<Image>().sprite,
-                    shipBuildSlider.slider.value * ships.shipMaking_Time,
+                    shipBuildSlider.slider.value * ship.shipMaking_Time,
                     this,
                     imgSlide,
                     ship_confirm);
