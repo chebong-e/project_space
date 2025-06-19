@@ -46,10 +46,11 @@ public class MainTabCategory : MonoBehaviour
             iconContainer.SetActive(true);
             return null;
         }
-        
-
-        
     }
 
+    public void Example_Window()
+    {
+
+    }
 
 }

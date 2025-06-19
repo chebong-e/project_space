@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class ShipGrade_Container : MonoBehaviour
 {
@@ -24,14 +25,14 @@ public class ShipGrade_Container : MonoBehaviour
 
     void Start()
     {
-        Scriptable_Matching[] scriptable_Matchings = transform.parent.GetComponentsInChildren<Scriptable_Matching>();
+        /*Scriptable_Matching[] scriptable_Matchings = transform.parent.GetComponentsInChildren<Scriptable_Matching>();
         foreach (Scriptable_Matching sc_mat in scriptable_Matchings)
         {
             sc_mat.Init();
         }
 
 
-        StartCoroutine(Init_WindowClose());
+        StartCoroutine(Init_WindowClose());*/
     }
 
 

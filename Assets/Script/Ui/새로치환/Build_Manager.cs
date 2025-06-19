@@ -50,7 +50,30 @@ public class Build_Manager : MonoBehaviour
         }
 
         scriptable_Group = GetComponent<Scriptable_Group>();
+
+
+        // 탭 별로 스크립터블매칭의 초기화를 한뒤 첫번째 화면만 놔두고 다른 탭 비활성화
+        for (int i = 3; i < tabContainer.Length; i++)
+        {
+            ShipGrade_Container shipGrade_Container = tabContainer[i].GetComponentInChildren<ShipGrade_Container>();
+
+            for (int j = 0; j < shipGrade_Container.shipGrade_Window.Length; j++)
+            {
+                shipGrade_Container.shipGrade_Window[j].transform
+                    .GetComponentInChildren<Scriptable_Matching>().Init();
+                if (j > 0)
+                {
+                    shipGrade_Container.shipGrade_Window[j].gameObject.SetActive(false);
+                }
+            }
+        }
+
         /*Data_CheckInit(datas);*/
+        foreach (GameObject obj in tabContainer)
+        {
+            obj.SetActive(false);
+        }
+
     }
 
     // 서버에서 계정의 데이터 확인하여 반영해주기 위한 초기 로직(임시)
@@ -71,8 +94,6 @@ public class Build_Manager : MonoBehaviour
 
     }*/
 
-
-    
 
     public List<ContainerSlide> GetTargetListByIndex(int index)
     {
@@ -107,6 +128,14 @@ public class Build_Manager : MonoBehaviour
     // 컨테이너를 슬라이드 닫기처리
     public void TabWindow_Close()
     {
+        Debug.Log(Active_TabContainerIndex());
+        if (3 == Active_TabContainerIndex())
+        {
+            
+            return;
+        }
+
+
         foreach (ContainerSlide img in GetTargetListByIndex(Active_TabContainerIndex()))
         {
             if (img.imgOpen)
@@ -118,13 +147,13 @@ public class Build_Manager : MonoBehaviour
         }
     }
 
-    public void BuildTab3_MakingShips(Sprite img, int makeCount, Con_Infomation info, bool upgrade)
+    public void BuildTab4_MakingShips(Sprite img, int makeCount, Con_Infomation info, bool upgrade)
     {
         mainTabCategory = mainTab_Container[Active_TabContainerIndex()].GetComponent<MainTabCategory>();
 
         if (upgrade)
         {
-            info.containerSlide.imgBtn.enabled = false;
+            /*info.containerSlide.imgBtn.enabled = false;*/
             makingShip_coroutine = StartCoroutine(
                 MakingShips_Timer(
                     img,
@@ -227,6 +256,7 @@ public class Build_Manager : MonoBehaviour
 
     IEnumerator MakingShips_Timer(Sprite img, Con_Infomation info, int makeCount)
     {
+        int activeIndex = Active_TabContainerIndex();
         GameObject maintab_container = mainTabCategory.Upgrading(img, true);
         Slider maintab_slider = maintab_container.GetComponentInChildren<Slider>();
         TextMeshProUGUI[] maintab_texts = maintab_container.GetComponentsInChildren<TextMeshProUGUI>();
@@ -271,7 +301,9 @@ public class Build_Manager : MonoBehaviour
         
 
         // 이미지 컬러전환 및 버튼 활성화 처리
-        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
+        info.containerSlide.ColorChange_To_Upgrade(activeIndex);
+        info.containerSlide.imgBtn.enabled = true;
+
 
         info.shipMaking_confirm = false;
 

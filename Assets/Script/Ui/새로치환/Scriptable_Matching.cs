@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static Scriptable_Matching;
@@ -39,32 +40,4 @@ public class Scriptable_Matching : MonoBehaviour
                 break;
         }
     }
-
-    /*public List<BuildResource> GetTargetListByBuildResource(int index)
-    {
-        Scriptable_Group scriptable_Group = Build_Manager.instance.GetComponent<Scriptable_Group>();
-        switch (index)
-        {
-            case 0: return scriptable_Group.b_G1;
-            case 1: return scriptable_Group.b_G2;
-            case 2: return scriptable_Group.b_G3;
-            case 3: return scriptable_Group.b_G4;
-            case 4: return scriptable_Group.b_G5;
-            default: return null;
-        }
-    }
-
-    public List<Ship> GetTargetListByShips(int index)
-    {
-        Scriptable_Group scriptable_Group = Build_Manager.instance.GetComponent<Scriptable_Group>();
-        switch (index)
-        {
-            case 0: return scriptable_Group.s_G1;
-            case 1: return scriptable_Group.s_G2;
-            case 2: return scriptable_Group.s_G3;
-            case 3: return scriptable_Group.s_G4;
-            case 4: return scriptable_Group.s_G5;
-            default: return null;
-        }
-    }*/
 }

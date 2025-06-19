@@ -12,26 +12,43 @@ public class ShipBuildSlider : MonoBehaviour
 
     void Awake()
     {
-        slider = transform.GetChild(0).GetComponentInChildren<Slider>();
+        /*slider = transform.GetChild(0).GetComponentInChildren<Slider>();
         building_Amount = transform.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
         building_Time = transform.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
-        info = GetComponentInParent<Con_Infomation>();
+        info = GetComponentInParent<Con_Infomation>();*/
         /*info.shipBuildSlider = this;
         Init();*/
     }
 
     public void Init()
     {
+        slider = transform.GetChild(0).GetComponentInChildren<Slider>();
+        building_Amount = transform.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
+        building_Time = transform.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
+        info = GetComponentInParent<Con_Infomation>();
+
         building_Amount.text = $"<       {slider.value}     /     {info.ship.maxHaveShip_Amount - info.ship.currentHave_Ship}       >";
-        slider.maxValue = info.ship.maxHaveShip_Amount;
+        slider.maxValue = info.ship.maxHaveShip_Amount - info.ship.currentHave_Ship;
     }
 
     public void OnSliderValueChanged()
     {
-        //building_Amount.text = $"<       {slider.value}     /     {ships.maxShip_Amount - ships.have_CurrentShip}       >";
+        int amount = info.ship.maxHaveShip_Amount - info.ship.currentHave_Ship;
+        building_Amount.text = $"<       {slider.value}     /     {amount}       >";
 
-        UpgradeInfomation();
 
+        int time = (int)slider.value * (int)info.ship.shipMaking_Time;
+        if (time >= 3600)
+            building_Time.text = $"{time / 3600}시간 {(time % 3600) / 60}분 {time % 60}초";
+        else if (time >= 60)
+            building_Time.text = $"{time / 60}분 {time % 60}초";
+        else
+            building_Time.text = $"{time}초";
+
+        for (int i = 0; i < info.ship.shipMake_Cost.Length; i++)
+        {
+            info.resources[i].text = $"{slider.value * info.ship.shipMake_Cost[i]}";
+        }
     }
 
 
@@ -46,58 +63,7 @@ public class ShipBuildSlider : MonoBehaviour
 
     }*/
 
-    void UpgradeInfomation()
-    {
-        int amount = info.ship.maxHaveShip_Amount - info.ship.currentHave_Ship;
-        building_Amount.text = $"<       {slider.value}     /     {amount}       >";
-
-        
-        int time = (int)slider.value * (int)info.ship.shipMaking_Time;
-        if (time >= 3600)
-            building_Time.text = $"{time / 3600}시간 {(time % 3600) / 60}분 {time % 60}초";
-        else if (time >= 60)
-            building_Time.text = $"{time / 60}분 {time % 60}초";
-        else
-            building_Time.text = $"{time}초";
-
-        /*string timeStr = "";
-        if (time >= 3600)
-        {
-            int hours = time / 3600;
-            int minutes = (time % 3600) / 60;
-            int seconds = time % 60;
-            timeStr = string.Format("{0}시간 {1}분 {2}초", hours, minutes, seconds);
-        }
-        else if (time >= 60)
-        {
-            int minutes = time / 60;
-            int seconds = time % 60;
-            timeStr = string.Format("{0}분 {1}초", minutes, seconds);
-        }
-        else
-        {
-            timeStr = string.Format("{0}초", time);
-        }
-        building_Time.text = $"{timeStr}";*/
-
-
-
-
-
-        for (int i = 0; i < info.ship.shipMake_Cost.Length; i++)
-        {
-            info.resources[i].text = $"{slider.value * info.ship.shipMake_Cost[i]}";
-        }
-        
-
-    }
-
-
-
-
-
-
-
+    
     ///////////////////////////////////////////
     public void Confirm()
     {

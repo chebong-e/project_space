@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,26 +32,21 @@ public class Con_Infomation : MonoBehaviour
     public bool controlCenter_confirm;
     public bool shipMaking_confirm;
 
-    void Awake()
+    public void Init_Setting()
     {
         btns = new Button[2];
         resources = new TextMeshProUGUI[5];
         timeText = new TextMeshProUGUI[2];
         timeSlider = new Slider[2];
 
-        /*containerSlide = GetComponent<ContainerSlide>();
-
-        foreach (SelfRegistration self in GetComponentsInChildren<SelfRegistration>())
+        // 서버데이터가 없음으로 처리
+        if (!data)
         {
-            self.Init_Setting();
+            buildResource.level = 0;
+            buildResource.AllowableBuild = (int)buildResource.build_result[buildResource.level];
         }
 
-        containerSlide.Init_Setting();
-        Init_Setting();*/
-    }
 
-    public void Init_Setting()
-    {
         if (info_types == Types.Tab4)
         {
             shipBuildSlider = GetComponentInChildren<ShipBuildSlider>();
@@ -73,7 +69,6 @@ public class Con_Infomation : MonoBehaviour
 
         var (metal, cristal, gas) = (costArray[0], costArray[1], costArray[2]);
 
-        Debug.Log($"실행되었습니다.{gameObject.name}, 부모오브젝트{transform.parent.name}");
         switch (info_types)
         {
             case Types.ControlCenter:
@@ -170,7 +165,6 @@ public class Con_Infomation : MonoBehaviour
                 {
                     if (imgGroup.controlCenter_Tab[i] == info.containerSlide)
                     {
-                        Debug.Log($"일치 넘버링:{i}");
                         imgGroup.build_Tab4[i].con_Infomation.shipBuildSlider.
                             building_Amount.text = 
                             $"<       {imgGroup.build_Tab4[i].con_Infomation.shipBuildSlider.slider.value}     /     {ship.maxHaveShip_Amount}       >";
@@ -193,7 +187,7 @@ public class Con_Infomation : MonoBehaviour
                 shipMaking_confirm = !shipMaking_confirm;
                 Build_Manager.instance.makingShips = shipMaking_confirm;
 
-                Build_Manager.instance.BuildTab3_MakingShips(
+                Build_Manager.instance.BuildTab4_MakingShips(
                     transform.GetChild(1).GetComponent<Image>().sprite,
                     (int)shipBuildSlider.slider.value,
                     this,
