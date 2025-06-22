@@ -10,16 +10,6 @@ public class ShipBuildSlider : MonoBehaviour
     Con_Infomation info;
 
 
-    void Awake()
-    {
-        /*slider = transform.GetChild(0).GetComponentInChildren<Slider>();
-        building_Amount = transform.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
-        building_Time = transform.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
-        info = GetComponentInParent<Con_Infomation>();*/
-        /*info.shipBuildSlider = this;
-        Init();*/
-    }
-
     public void Init()
     {
         slider = transform.GetChild(0).GetComponentInChildren<Slider>();
@@ -33,6 +23,9 @@ public class ShipBuildSlider : MonoBehaviour
 
     public void OnSliderValueChanged()
     {
+        if (!info)
+            return;
+
         int amount = info.ship.maxHaveShip_Amount - info.ship.currentHave_Ship;
         building_Amount.text = $"<       {slider.value}     /     {amount}       >";
 

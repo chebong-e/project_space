@@ -104,7 +104,15 @@ public class ContainerSlide : MonoBehaviour
         if (imgOpen)
             Slide_Close();
         else
+        {
             Slide_Open();
+
+            if (con_Infomation.info_types == Con_Infomation.Types.Tab4)
+            {
+                con_Infomation.shipBuildSlider.slider.value =
+                con_Infomation.ship.maxHaveShip_Amount - con_Infomation.ship.currentHave_Ship >= 1 ? 1 : 0;
+            }
+        }
 
         // 현재 클릭한 이미지만 열고 나머지는 다 닫기효과
         foreach (ContainerSlide cont in 

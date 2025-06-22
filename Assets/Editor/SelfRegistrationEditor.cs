@@ -59,6 +59,9 @@ public class SelfRegistrationEditor : Editor
             case SelfRegistration.TitleType.BuildShips:
                 selfRegistration.subType4 = (SelfRegistration.SubType4)EditorGUILayout.EnumPopup("SubType4", selfRegistration.subType4);
                 break;
+            case SelfRegistration.TitleType.Production:
+                selfRegistration.subType6 = (SelfRegistration.SubType6)EditorGUILayout.EnumPopup("SubType6", selfRegistration.subType6);
+                break;
         }
 
 

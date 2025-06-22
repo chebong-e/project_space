@@ -6,12 +6,13 @@ using UnityEngine.UI;
 public class SelfRegistration : MonoBehaviour
 {
     public enum GrateTitle { MainTab, BuildTab1, BuildTab2, BuildTab3, BuildTab4, BuildTab5, FleetMision }
-    public enum TitleType { Title, Resource, TimeSlide, Button, BuildShips, HaveShipCount }
+    public enum TitleType { Title, Resource, TimeSlide, Button, BuildShips, HaveShipCount, Production }
     public enum SubType0 { Name, UpTime, DownTime }
     public enum SubType1 { Metal, Cristal, Gas, Allowable }
     public enum SubType2 { UpSlider, DownSlider }
     public enum SubType3 { Confirm, Cancle }
     public enum SubType4 { Slider, Build_Amount, Build_Time, container }
+    public enum SubType6 { Output, ElectricityConsumption }
     
     public GrateTitle grateTitle;
     public TitleType titleType;
@@ -20,6 +21,7 @@ public class SelfRegistration : MonoBehaviour
     public SubType2 subType2;
     public SubType3 subType3;
     public SubType4 subType4;
+    public SubType6 subType6;
     bool upgrading;
 
 
@@ -46,8 +48,6 @@ public class SelfRegistration : MonoBehaviour
                 
                 break;
             case GrateTitle.BuildTab4:
-                ExSwitch(titleType, info);
-                break;
             case GrateTitle.BuildTab5:
                 ExSwitch(titleType, info);
                 break;

@@ -31,7 +31,7 @@ public class MainTabCategory : MonoBehaviour
 
             //아이콘 컨테이너 비활성화 처리하고
             iconContainer.SetActive(false);
-            return sliderContainer;
+            return gameObject;
         }
 
         else

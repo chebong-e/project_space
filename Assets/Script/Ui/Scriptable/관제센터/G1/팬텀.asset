@@ -16,8 +16,8 @@ MonoBehaviour:
   factory_Category: 0
   grade: 0
   init_Needs: 140000000a00000005000000
-  AllowableBuild: 20
-  level: 5
+  AllowableBuild: 0
+  level: 0
   building_Time: 05000000070000000a0000001e000000960000009001000020030000dc050000b80b0000581b0000
   build_require:
   - 1

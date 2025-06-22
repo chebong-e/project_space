@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class Title_Text : SerializableDictionary<string, TextMeshProUGUI> { };
 public class Con_Infomation : MonoBehaviour
 {
-    public enum Types { ControlCenter, Tab4 }
+    public enum Types { Tab1, Tab2, Tab3, Tab4, ControlCenter }
     public Types info_types;
 
     public ShipBuildSlider shipBuildSlider;
@@ -39,11 +39,13 @@ public class Con_Infomation : MonoBehaviour
         timeText = new TextMeshProUGUI[2];
         timeSlider = new Slider[2];
 
-        // 서버데이터가 없음으로 처리
+        // 서버데이터가 없음으로 처리로 완전 0부터 시작으로 초기화
         if (!data)
         {
             buildResource.level = 0;
             buildResource.AllowableBuild = (int)buildResource.build_result[buildResource.level];
+            ship.maxHaveShip_Amount = buildResource.AllowableBuild;
+            ship.currentHave_Ship = 0;
         }
 
 
@@ -116,7 +118,7 @@ public class Con_Infomation : MonoBehaviour
     {
         unLock = unlock;
         containerSlide.Init_ColorSetting(unLock);
-        btns[0].enabled = unLock;
+        btns[0].interactable = unLock;
     }
 
     public void Upgrade_To_Infomation(Con_Infomation info)
@@ -160,16 +162,18 @@ public class Con_Infomation : MonoBehaviour
 
                 // 함선생산 탭의 최대 함선 생산 수량 업데이트
                 ship.maxHaveShip_Amount = allowableBuild;
-                var imgGroup = Build_Manager.instance.ImageSetting_Group;
+                var imgGroup = Build_Manager.instance.containerSlide_Group;
                 for (int i = 0; i < imgGroup.controlCenter_Tab.Count; i++)
                 {
                     if (imgGroup.controlCenter_Tab[i] == info.containerSlide)
                     {
                         imgGroup.build_Tab4[i].con_Infomation.shipBuildSlider.
                             building_Amount.text = 
-                            $"<       {imgGroup.build_Tab4[i].con_Infomation.shipBuildSlider.slider.value}     /     {ship.maxHaveShip_Amount}       >";
+                            $"<       {imgGroup.build_Tab4[i].con_Infomation.shipBuildSlider.slider.value}     /     {ship.maxHaveShip_Amount - ship.currentHave_Ship}       >";
                         imgGroup.build_Tab4[i].con_Infomation.shipBuildSlider.
-                            slider.maxValue = ship.maxHaveShip_Amount;
+                            slider.maxValue = ship.maxHaveShip_Amount - ship.currentHave_Ship;
+                        imgGroup.build_Tab4[i].con_Infomation.shipBuildSlider.slider.value
+                            = ship.maxHaveShip_Amount - ship.currentHave_Ship >= 1 ? 1 : 0;
                         break;
                     }
                 }
@@ -182,29 +186,19 @@ public class Con_Infomation : MonoBehaviour
         switch (info_types)
         {
             case Types.Tab4:
-                if (shipBuildSlider.slider.value < 1)
-                    return;
                 shipMaking_confirm = !shipMaking_confirm;
-                Build_Manager.instance.makingShips = shipMaking_confirm;
-
-                Build_Manager.instance.BuildTab4_MakingShips(
-                    transform.GetChild(1).GetComponent<Image>().sprite,
-                    (int)shipBuildSlider.slider.value,
-                    this,
-                    shipMaking_confirm);
                 break;
-
             case Types.ControlCenter:
                 controlCenter_confirm = !controlCenter_confirm;
-                Build_Manager.instance.upgrading = controlCenter_confirm;
-
-                Build_Manager.instance.ControlCenter_Upgrade(
-                    transform.GetChild(1).GetComponent<Image>().sprite,
-                    this,
-                    controlCenter_confirm);
-
                 break;
         }
+
+        Build_Manager.instance.Example_Confirm(
+            transform.GetChild(1).GetComponent<Image>().sprite,
+            shipBuildSlider != null ? (int)shipBuildSlider.slider.value : 0,
+            this,
+            info_types == Types.Tab4 ? shipMaking_confirm : controlCenter_confirm);
+
     }
 
     string TimerTexting(int timer)

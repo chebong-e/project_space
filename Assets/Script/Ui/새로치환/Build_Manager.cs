@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class Build_Manager : MonoBehaviour
 {
     public static Build_Manager instance;
-    public ImageSetting_Group ImageSetting_Group;
+    public ContainerSlide_Group containerSlide_Group;
     public MainTabCategory mainTabCategory;
     public GameObject[] tabContainer, mainTab_Container;
 
@@ -51,6 +51,11 @@ public class Build_Manager : MonoBehaviour
 
         scriptable_Group = GetComponent<Scriptable_Group>();
 
+
+        foreach (GameObject obj in tabContainer)
+        {
+            obj.SetActive(true);
+        }
 
         // 탭 별로 스크립터블매칭의 초기화를 한뒤 첫번째 화면만 놔두고 다른 탭 비활성화
         for (int i = 3; i < tabContainer.Length; i++)
@@ -95,15 +100,30 @@ public class Build_Manager : MonoBehaviour
     }*/
 
 
+    public void KeepOpenState(int index)
+    {
+        List<ContainerSlide> slide = GetTargetListByIndex(index);
+        foreach (ContainerSlide container in slide)
+        {
+            if (container.imgOpen)
+            {
+                foreach (Animator anim in container.anims)
+                {
+                    anim.SetTrigger("OpenDefault");
+                }
+            }
+        }
+    }
+
     public List<ContainerSlide> GetTargetListByIndex(int index)
     {
         switch (index)
         {
-            case 0: return ImageSetting_Group.build_Tab1;
-            case 1: return ImageSetting_Group.build_Tab2;
-            case 2: return ImageSetting_Group.build_Tab3; // 연구
-            case 3: return ImageSetting_Group.build_Tab4; // 함선생산
-            case 4: return ImageSetting_Group.controlCenter_Tab;
+            case 0: return containerSlide_Group.build_Tab1;
+            case 1: return containerSlide_Group.build_Tab2;
+            case 2: return containerSlide_Group.build_Tab3; // 연구
+            case 3: return containerSlide_Group.build_Tab4; // 함선생산
+            case 4: return containerSlide_Group.controlCenter_Tab;
             default: return null;
         }
     }
@@ -153,7 +173,7 @@ public class Build_Manager : MonoBehaviour
 
         if (upgrade)
         {
-            /*info.containerSlide.imgBtn.enabled = false;*/
+            info.containerSlide.imgBtn.enabled = false;
             makingShip_coroutine = StartCoroutine(
                 MakingShips_Timer(
                     img,
@@ -186,6 +206,7 @@ public class Build_Manager : MonoBehaviour
             switch (info.info_types)
             {
                 case Con_Infomation.Types.Tab4:
+                    info.containerSlide.imgBtn.enabled = false;
                     makingShip_coroutine = StartCoroutine(
                         MakingShips_Timer(
                             img,
@@ -206,6 +227,7 @@ public class Build_Manager : MonoBehaviour
             switch (info.info_types)
             {
                 case Con_Infomation.Types.Tab4:
+                    info.containerSlide.imgBtn.enabled = true;
                     StopCoroutine(makingShip_coroutine);
                     info.child_InfoContainer.transform.GetChild(0).gameObject.SetActive(upgrade);
                     info.child_InfoContainer.transform.GetChild(1).gameObject.SetActive(!upgrade);
@@ -221,9 +243,13 @@ public class Build_Manager : MonoBehaviour
                 info.timeText[i].text = $"{info.buildResource.building_Time[info.buildResource.level]}초";
             }
             mainTabCategory.Upgrading(null, false);
-            info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
         }
-
+        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
+        if (info.info_types == Con_Infomation.Types.Tab4)
+        {
+            info.child_InfoContainer.transform.GetChild(0).gameObject.SetActive(upgrade);
+            info.child_InfoContainer.transform.GetChild(1).gameObject.SetActive(!upgrade);
+        }
     }
 
 
@@ -258,8 +284,10 @@ public class Build_Manager : MonoBehaviour
     {
         int activeIndex = Active_TabContainerIndex();
         GameObject maintab_container = mainTabCategory.Upgrading(img, true);
-        Slider maintab_slider = maintab_container.GetComponentInChildren<Slider>();
-        TextMeshProUGUI[] maintab_texts = maintab_container.GetComponentsInChildren<TextMeshProUGUI>();
+        Slider maintab_slider = mainTabCategory.sliderContainer.GetComponentInChildren<Slider>();
+        TextMeshProUGUI[] maintab_texts = mainTabCategory.sliderContainer.GetComponentsInChildren<TextMeshProUGUI>();
+
+
         maintab_texts[0].text = info.title_Text["name"].text;
 
         float totalMakeTime = makeCount * info.ship.shipMaking_Time;
@@ -320,7 +348,7 @@ public class Build_Manager : MonoBehaviour
         info.btns[0].gameObject.SetActive(true);
 
         // 메인탭의 이미지 기본사진으로 변경
-        mainTabCategory.Upgrading(null, false);
+        maintab_container.GetComponent<MainTabCategory>().Upgrading(null, false);
     }
 
     IEnumerator ControlCenter_BuildingTimer(Sprite img, Con_Infomation info, float targetTimer)
@@ -329,8 +357,11 @@ public class Build_Manager : MonoBehaviour
         // Con_Infomation의 160번 줄 예외처리 다시 복귀하고 같이 수정진행
         int activeIndex = Active_TabContainerIndex();
         GameObject maintab_container = mainTabCategory.Upgrading(img, true);
-        Slider maintab_slider = maintab_container.GetComponentInChildren<Slider>();
-        TextMeshProUGUI[] maintab_texts = maintab_container.GetComponentsInChildren<TextMeshProUGUI>();
+
+        /*Slider maintab_slider = maintab_container.GetComponentInChildren<Slider>();*/
+        Slider maintab_slider = mainTabCategory.sliderContainer.GetComponentInChildren<Slider>();
+        /*TextMeshProUGUI[] maintab_texts = maintab_container.GetComponentsInChildren<TextMeshProUGUI>();*/
+        TextMeshProUGUI[] maintab_texts = mainTabCategory.sliderContainer.GetComponentsInChildren<TextMeshProUGUI>();
         maintab_texts[0].text = info.title_Text["name"].text;
 
         maintab_slider.maxValue = targetTimer;
@@ -378,11 +409,14 @@ public class Build_Manager : MonoBehaviour
         info.btns[0].gameObject.SetActive(true);
 
         // 메인탭의 이미지 기본사진으로 변경
-        mainTabCategory.Upgrading(null, false);
+        maintab_container.GetComponent<MainTabCategory>().Upgrading(null, false);
 
         /*관제센터 업그레이드 후 생산가능 수량 업데이트 정보를
             함선생산 탭의 정보로 넘겨주기(현재는 infomation의 ships 정보를 수정하는 방향)*/
         info.ship.maxHaveShip_Amount = info.buildResource.AllowableBuild;
+
+        // 항상 업그레이드 완료 또는 생산 완료 후에는 유저 정보를 업데이트 하여 취합하는 곳이 필요
+        // (서버에 통신을 용이하게 하기 위함)
     }
 
     public string TimerTexting(int timer)
@@ -406,7 +440,7 @@ public class Build_Manager : MonoBehaviour
 }
 
 [System.Serializable]
-public class ImageSetting_Group
+public class ContainerSlide_Group
 {
     public List<ContainerSlide> build_Tab1;
     public List<ContainerSlide> build_Tab2;
