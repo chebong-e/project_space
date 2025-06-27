@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e4ca4627b729cc40b655ada8a78a081, type: 3}
+  m_Name: "\uBA54\uD0C8 \uACF5\uC7A5"
+  m_EditorClassIdentifier: 
+  build_Category: 0
+  factory_Category: 0
+  grade: 0
+  init_Needs: c80000006400000032000000
+  AllowableBuild: 0
+  manufacture: 100
+  electricity_Consumption: 10
+  level: 0
+  building_Time: 030000000a0000001e0000005a00000096000000e7030000e7030000e7030000e7030000581b0000
+  build_require:
+  - 1
+  - 2
+  - 2
+  - 2
+  - 2
+  - 2
+  - 2.5
+  - 2.5
+  - 2.5
+  - 3
+  build_result:
+  - 0
+  - 2
+  - 2
+  - 2
+  - 2
+  - 2
+  - 2.3
+  - 2.3
+  - 2.3
+  - 2.5
+  require_condition: "\uD2B9\uC815 \uC694\uAD6C\uC870\uAC74 \uC791\uC131"
+  Lv_Title: 
+  img: {fileID: 6811990624840089440, guid: c8a7e8009cffce641bc053aa217707f6, type: 3}

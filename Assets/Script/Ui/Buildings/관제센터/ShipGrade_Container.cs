@@ -1,9 +1,8 @@
-using System;
+using System.Linq;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class ShipGrade_Container : MonoBehaviour
 {
@@ -21,6 +20,8 @@ public class ShipGrade_Container : MonoBehaviour
             shipGrade[i].GetComponent<Button>().onClick.AddListener(() => SelfObject_Check(shipGrade[capturedIndex]));*/
         }
 
+        shipGrade_Window = transform.parent.GetComponentsInChildren<ScrollRect>(true)
+            .Select(sr => sr.gameObject).ToArray();
     }
 
     void Start()

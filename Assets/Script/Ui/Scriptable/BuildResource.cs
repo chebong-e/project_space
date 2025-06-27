@@ -17,11 +17,13 @@ public class BuildResource : ScriptableObject
     [Header("Upgrade Data")]
     public int[] init_Needs;
     public int AllowableBuild;
+    public int manufacture;
+    public int electricity_Consumption;
     [Header("# Level Data")]
     public int level;
     public int[] building_Time; // 건설 시간
-    public float[] build_require; // 업그레이드시 필요 자원
-    public float[] build_result; // 건설 후 능력치 또는 함선보유수량
+    public float[] build_require; // 업그레이드시 필요 자원 배수
+    public float[] build_result; // 건설 후 능력치 배수 또는 함선보유수량
     [TextArea]
     public string require_condition; // 건설 특정 요구 조건
 

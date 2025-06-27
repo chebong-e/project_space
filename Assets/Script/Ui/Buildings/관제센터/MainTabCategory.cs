@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class MainTabCategory : MonoBehaviour
 {
-    public enum Category { Planet, Building, Reserch, Ship_Building, ControlCenter }
+    public enum Category { Planet, Resource_Building, General_Building, Reserch, Ship_Building, ControlCenter }
     public Category category;
     public GameObject upgrading_Image;
     public GameObject iconContainer;
@@ -12,12 +12,29 @@ public class MainTabCategory : MonoBehaviour
 
     void Awake()
     {
-        upgrading_Image = transform.GetChild(0).GetChild(0).GetChild(1).gameObject;
-        iconContainer = transform.GetChild(1).GetChild(0).gameObject;
-        sliderContainer = transform.GetChild(1).GetChild(1).gameObject;
+        switch (category)
+        {
+            case Category.Resource_Building:
+            case Category.General_Building:
+                upgrading_Image = transform.GetChild(1).gameObject;
+                iconContainer = transform.parent.parent.GetChild(1).gameObject;
+                sliderContainer = transform.GetChild(2).gameObject;
+                break;
+
+            case Category.Reserch:
+
+                break;
+
+            case Category.Ship_Building:
+            case Category.ControlCenter:
+                upgrading_Image = transform.GetChild(0).GetChild(0).GetChild(1).gameObject;
+                iconContainer = transform.GetChild(1).GetChild(0).gameObject;
+                sliderContainer = transform.GetChild(1).GetChild(1).gameObject;
+                break;
+        }
     }
 
-    //현재 컨트롤센터 업그레이드 관련 함수임
+    // 메인탭의 정보 연동 및 이미지 등을 연동
     public GameObject Upgrading(Sprite img, bool upgrading)
     {
         if (upgrading)
@@ -47,10 +64,4 @@ public class MainTabCategory : MonoBehaviour
             return null;
         }
     }
-
-    public void Example_Window()
-    {
-
-    }
-
 }
