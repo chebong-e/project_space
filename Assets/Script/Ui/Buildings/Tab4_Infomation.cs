@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Tab4_Infomation : Base_Infomation
 {
-    public override void SelectedTabs()
+    protected override void SelectedTabs()
     {
         tabs = Tabs.Tab4;
     }
@@ -15,7 +15,7 @@ public class Tab4_Infomation : Base_Infomation
         
     }
 
-    public override void Init_CostInfo()
+    protected override void Init_CostInfo()
     {
         var (metal, cristal, gas) = (ship.shipMake_Cost[0], ship.shipMake_Cost[1], ship.shipMake_Cost[2]);
 

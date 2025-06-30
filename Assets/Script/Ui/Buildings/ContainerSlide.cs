@@ -109,7 +109,7 @@ public class ContainerSlide : MonoBehaviour
         {
             Slide_Open();
 
-            if (Infomation.shipBuildSlider)
+            if (Infomation.tabs == Base_Infomation.Tabs.Tab4)
             {
                 Infomation.shipBuildSlider.slider.value =
                 Infomation.ship.maxHaveShip_Amount - Infomation.ship.currentHave_Ship >= 1 ? 1 : 0;
@@ -162,7 +162,11 @@ public class ContainerSlide : MonoBehaviour
     // 이미지 슬라이드시 슬라이더 표시 관련
     public void Slider_On_Off()
     {
-        if (Infomation.controlCenter_confirm)
+        /*if (Infomation.controlCenter_confirm)
+        {
+            Infomation.timeSlider[0].gameObject.SetActive(!imgOpen);
+        }*/
+        if (Infomation.confirm)
         {
             Infomation.timeSlider[0].gameObject.SetActive(!imgOpen);
         }

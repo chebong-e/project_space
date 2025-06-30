@@ -1,13 +1,14 @@
+using TMPro;
 using UnityEngine;
 
 public class Tab1_Infomation : Base_Infomation
 {
-    public override void SelectedTabs()
+    protected override void SelectedTabs()
     {
         tabs = Tabs.Tab1;
     }
 
-    public override void Init_CostInfo()
+    protected override void Init_CostInfo()
     {
         var (metal, cristal, gas) = (buildResource.init_Needs[0], buildResource.init_Needs[1], buildResource.init_Needs[2]);
 
@@ -18,7 +19,9 @@ public class Tab1_Infomation : Base_Infomation
             gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
         }
 
-        production[0].text = $"{buildResource.manufacture}";
+        buildResource.electricity_Consumption = buildResource.manufacture[buildResource.level] / 10;
+        production[0].text = $"{buildResource.manufacture[buildResource.level]}";
+        buildResource.electricity_Consumption = 5;
         production[1].text = $"{buildResource.electricity_Consumption}";
 
         foreach (var tt in timeText)
@@ -31,5 +34,14 @@ public class Tab1_Infomation : Base_Infomation
         resources[0].text = $"{metal}";
         resources[1].text = $"{cristal}";
         resources[2].text = $"{gas}";
+
+        /*buildResource.electricity_Consumption = buildResource.manufacture[buildResource.level] / 10;*/
+
+        /*production[0].text = $"{buildResource.manufacture[buildResource.level]}";
+        production[1].text = $"{buildResource.electricity_Consumption}";*/
     }
+
+
+
+
 }

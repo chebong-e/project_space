@@ -27,8 +27,10 @@ public class Base_Infomation : MonoBehaviour
 
     public bool data = false;
     public bool unLock;
-    public bool controlCenter_confirm;
+    /*public bool controlCenter_confirm;
     public bool shipMaking_confirm;
+    public bool tab1_Confirm, tab2_Confirm, tab3_Confirm, tab4_Confirm, tab5_Confirm;*/
+    public bool confirm;
 
     public virtual void Init_Setting()
     {
@@ -37,6 +39,8 @@ public class Base_Infomation : MonoBehaviour
         timeText = new TextMeshProUGUI[2];
         production = new TextMeshProUGUI[2];
         timeSlider = new Slider[2];
+
+        SelectedTabs();
 
         CommonResetData();
 
@@ -51,7 +55,7 @@ public class Base_Infomation : MonoBehaviour
 
         Init_CostInfo();
 
-        SelectedTabs();
+        
         ApplyResourceText();
 
         foreach (Button btn in btns)
@@ -92,12 +96,12 @@ public class Base_Infomation : MonoBehaviour
         }
     }
 
-    public virtual void Init_CostInfo()
+    protected virtual void Init_CostInfo()
     {
-        // 기본적으로 비워두고 자식 클래스에서 오버라이드
+        
     }
 
-    public virtual void SelectedTabs()
+    protected virtual void SelectedTabs()
     {
 
     }
@@ -117,7 +121,97 @@ public class Base_Infomation : MonoBehaviour
 
     public void Upgrade_To_Infomation(Base_Infomation info)
     {
-        if (info.shipBuildSlider) // Tab4
+        switch (info.tabs)
+        {
+            case Tabs.Tab1:
+                buildResource.level++;
+                title_Text["name"].text = $"Lv.{buildResource.level} {buildResource.name}";
+
+                int metal = buildResource.init_Needs[0];
+                int cristal = buildResource.init_Needs[1];
+                int gas = buildResource.init_Needs[2];
+                for (int i = 0; i < buildResource.level + 1; i++) // 왜 1을 더 해줘야 할까 확인할것
+                {
+                    metal = Mathf.FloorToInt(metal * buildResource.build_require[i]);
+                    cristal = Mathf.FloorToInt(cristal * buildResource.build_require[i]);
+                    gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
+                }
+                resources[0].text = $"{metal}";
+                resources[1].text = $"{cristal}";
+                resources[2].text = $"{gas}";
+
+                foreach (TextMeshProUGUI tt in timeText)
+                {
+                    tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
+                }
+                buildResource.electricity_Consumption = (buildResource.manufacture[buildResource.level]) / 10;
+
+                production[0].text = $"{buildResource.manufacture[buildResource.level]}";
+                production[1].text = $"{buildResource.electricity_Consumption}";
+
+                break;
+            case Tabs.Tab2:
+
+                break;
+            case Tabs.Tab3:
+
+                break;
+            case Tabs.Tab4:
+                haveShipCount.text = $"보유 함선 수 : {ship.currentHave_Ship}";
+                shipBuildSlider.slider.maxValue = ship.maxHaveShip_Amount - ship.currentHave_Ship;
+                shipBuildSlider.slider.value = 0;
+                shipBuildSlider.building_Amount.text = $"<       {shipBuildSlider.slider.value}     /     {shipBuildSlider.slider.maxValue}       >";
+                break;
+            case Tabs.Tab5:
+                buildResource.level++;
+                title_Text["name"].text = $"Lv.{buildResource.level} {buildResource.name} 관제센터";
+
+                metal = buildResource.init_Needs[0];
+                cristal = buildResource.init_Needs[1];
+                gas = buildResource.init_Needs[2];
+                int allowableBuild = 0;
+                for (int i = 0; i < buildResource.level + 1; i++) // 왜 1을 더 해줘야 할까 확인할것
+                {
+                    metal = Mathf.FloorToInt(metal * buildResource.build_require[i]);
+                    cristal = Mathf.FloorToInt(cristal * buildResource.build_require[i]);
+                    gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
+                    allowableBuild = allowableBuild + (int)buildResource.build_result[i];
+                }
+
+                resources[0].text = $"{metal}";
+                resources[1].text = $"{cristal}";
+                resources[2].text = $"{gas}";
+                resources[3].text = $"{allowableBuild}";
+                buildResource.AllowableBuild = allowableBuild;
+
+                // 임시 사항. 나중에 로직으로 빼두던지 해야할듯
+                // 윗열 슬라이더 시간 텍스트 표시 관련임 
+                foreach (TextMeshProUGUI tt in timeText)
+                {
+                    tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
+                }
+
+                // 함선생산 탭의 최대 함선 생산 수량 업데이트
+                ship.maxHaveShip_Amount = allowableBuild;
+                var imgGroup = Build_Manager.instance.containerSlide_Group;
+                for (int i = 0; i < imgGroup.controlCenter_Tab.Count; i++)
+                {
+                    if (imgGroup.controlCenter_Tab[i] == info.containerSlide)
+                    {
+                        imgGroup.build_Tab4[i].Infomation.shipBuildSlider.
+                            building_Amount.text =
+                            $"<       {imgGroup.build_Tab4[i].Infomation.shipBuildSlider.slider.value}     /     {ship.maxHaveShip_Amount - ship.currentHave_Ship}       >";
+                        imgGroup.build_Tab4[i].Infomation.shipBuildSlider.
+                            slider.maxValue = ship.maxHaveShip_Amount - ship.currentHave_Ship;
+                        imgGroup.build_Tab4[i].Infomation.shipBuildSlider.slider.value
+                            = ship.maxHaveShip_Amount - ship.currentHave_Ship >= 1 ? 1 : 0;
+                        break;
+                    }
+                }
+                break;
+        }
+
+        /*if (info.tabs == Tabs.Tab4) // Tab4
         {
             haveShipCount.text = $"보유 함선 수 : {ship.currentHave_Ship}";
             shipBuildSlider.slider.maxValue = ship.maxHaveShip_Amount - ship.currentHave_Ship;
@@ -171,30 +265,44 @@ public class Base_Infomation : MonoBehaviour
                     break;
                 }
             }
-        }
+        }*/
     }
 
     public void UpgradeConfirm_Or_Cancle()
     {
-        if (shipBuildSlider)
+        /*switch (tabs)
         {
-            shipMaking_confirm = !shipMaking_confirm;
-        }
-        else
-        {
-            controlCenter_confirm = !controlCenter_confirm;
-        }
+            case Tabs.Tab1:
+
+                break;
+            case Tabs.Tab2:
+
+                break;
+            case Tabs.Tab3:
+
+                break;
+            case Tabs.Tab4:
+                tab4_Confirm = !tab4_Confirm;
+                break;
+            case Tabs.Tab5:
+                tab5_Confirm = !tab5_Confirm;
+                break;
+        }*/
+
+        /*Build_Manager.instance.Example_Confirm(
+            transform.GetChild(1).GetComponent<Image>().sprite,
+            tabs == Tabs.Tab4 ? (int)shipBuildSlider.slider.value : 0,
+            this,
+            tabs == Tabs.Tab4 ? tab4_Confirm : tab5_Confirm);*/
+
+        confirm = !confirm;
 
         Build_Manager.instance.Example_Confirm(
             transform.GetChild(1).GetComponent<Image>().sprite,
             tabs == Tabs.Tab4 ? (int)shipBuildSlider.slider.value : 0,
             this,
-            tabs == Tabs.Tab4 ? shipMaking_confirm : controlCenter_confirm);
+            confirm);
     }
-
-
-
-
 
 
 

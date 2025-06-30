@@ -11,7 +11,11 @@ public class DownInfomation_Anim : MonoBehaviour
 
     public void Slider_On_Off()
     {
-        if (Infomation.controlCenter_confirm)
+        /*if (Infomation.controlCenter_confirm)
+        {
+            Infomation.timeSlider[0].gameObject.SetActive(true);
+        }*/
+        if (Infomation.confirm)
         {
             Infomation.timeSlider[0].gameObject.SetActive(true);
         }

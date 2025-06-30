@@ -12,7 +12,7 @@ public class Build_Manager : MonoBehaviour
     public MainTabCategory mainTabCategory;
     public GameObject[] tabContainer, mainTab_Container;
 
-    Coroutine controllCenter_coroutine, makingShip_coroutine;
+    Coroutine tab1_coroutine, tab2_coroutine, tab3_coroutine, tab4_coroutine, tab5_coroutine;
     Scriptable_Group scriptable_Group;
 
     public bool upgrading, makingShips, building, reserching;
@@ -78,17 +78,21 @@ public class Build_Manager : MonoBehaviour
             else
             {
                 tabContainer[i].GetComponentInChildren<Scriptable_Matching>()?.Init();
-            }
-            
-
-
-
-
+            } 
         }
 
         foreach (GameObject obj in tabContainer)
         {
             obj.SetActive(false);
+        }
+
+
+        // 수치를 얻기위한 실험
+        float value = 100;
+        for (int i = 0; i < 10; i++)
+        {
+            value *= 1.6f;
+            Debug.Log($"기본값:{value},  정수형:{(int)value},  절삭값:{((int)value / 10) * 10}");
         }
 
     }
@@ -178,46 +182,23 @@ public class Build_Manager : MonoBehaviour
         }
     }
 
-    /*public void BuildTab4_MakingShips(Sprite img, int makeCount, Base_Infomation info, bool upgrade)
-    {
-        mainTabCategory = mainTab_Container[Active_TabContainerIndex()].GetComponent<MainTabCategory>();
-
-        if (upgrade)
-        {
-            info.containerSlide.imgBtn.enabled = false;
-            makingShip_coroutine = StartCoroutine(
-                MakingShips_Timer(
-                    img,
-                    info,
-                    makeCount));
-        }
-        else
-        {
-            info.containerSlide.imgBtn.enabled = true;
-            StopCoroutine(makingShip_coroutine);
-            for (int i = 0; i < 2; i++)
-            {
-                info.timeSlider[i].value = 0f;
-                info.timeText[i].text = $"{info.buildResource.building_Time[info.buildResource.level]}초";
-            }
-            mainTabCategory.Upgrading(null, false);
-        }
-
-        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
-        info.child_InfoContainer.transform.GetChild(0).gameObject.SetActive(upgrade);
-        info.child_InfoContainer.transform.GetChild(1).gameObject.SetActive(!upgrade);
-    }*/
-
     //함선생산과 관제센터 업그레이드 함수 중복 정리 하여 간결하게 하기 위한 코드 정리 실험
     public void Example_Confirm(Sprite img, int makeCount, Base_Infomation info, bool upgrade)
     {
         mainTabCategory = mainTab_Container[Active_TabContainerIndex()].GetComponent<MainTabCategory>();
         if (upgrade)
         {
-            if (info.tabs == Base_Infomation.Tabs.Tab4)
+            if (info.tabs == Base_Infomation.Tabs.Tab1)
+            {
+                tab1_coroutine = StartCoroutine(Tab1_Building(
+                    img,
+                    info,
+                    info.buildResource.building_Time[info.buildResource.level]));
+            }
+            else if (info.tabs == Base_Infomation.Tabs.Tab4)
             {
                 info.containerSlide.imgBtn.enabled = false;
-                makingShip_coroutine = StartCoroutine(
+                tab4_coroutine = StartCoroutine(
                     MakingShips_Timer(
                         img,
                         info,
@@ -225,7 +206,7 @@ public class Build_Manager : MonoBehaviour
             }
             else
             {
-                controllCenter_coroutine = StartCoroutine(
+                tab5_coroutine = StartCoroutine(
                             ControlCenter_BuildingTimer(
                                 img,
                                 info,
@@ -234,16 +215,20 @@ public class Build_Manager : MonoBehaviour
         }
         else
         {
-            if (info.tabs == Base_Infomation.Tabs.Tab4)
+            if (info.tabs == Base_Infomation.Tabs.Tab1)
+            {
+                StopCoroutine(tab1_coroutine);
+            }
+            else if (info.tabs == Base_Infomation.Tabs.Tab4)
             {
                 info.containerSlide.imgBtn.enabled = true;
-                StopCoroutine(makingShip_coroutine);
+                StopCoroutine(tab4_coroutine);
                 info.child_InfoContainer.transform.GetChild(0).gameObject.SetActive(upgrade);
                 info.child_InfoContainer.transform.GetChild(1).gameObject.SetActive(!upgrade);
             }
             else
             {
-                StopCoroutine(controllCenter_coroutine);
+                StopCoroutine(tab5_coroutine);
                 /*mainTabCategory.Upgrading(null, false);*/
             }
 
@@ -262,32 +247,6 @@ public class Build_Manager : MonoBehaviour
             info.child_InfoContainer.transform.GetChild(1).gameObject.SetActive(!upgrade);
         }
     }
-    /*public void ControlCenter_Upgrade(Sprite img, Base_Infomation info, bool upgrade)
-    {
-        mainTabCategory = mainTab_Container[Active_TabContainerIndex()].GetComponent<MainTabCategory>();
-
-        if (upgrade)
-        {
-            float targetTimer = info.buildResource.building_Time[info.buildResource.level];
-            controllCenter_coroutine = StartCoroutine(
-                ControlCenter_BuildingTimer(
-                    img, 
-                    info, 
-                    targetTimer));
-        }
-        else
-        {
-            StopCoroutine(controllCenter_coroutine);
-            for (int i = 0; i < 2; i++)
-            {
-                info.timeSlider[i].value = 0f;
-                info.timeText[i].text = $"{info.buildResource.building_Time[info.buildResource.level]}초";
-            }
-            mainTabCategory.Upgrading(null, false);
-        }
-        //업그레이드 중인 버튼 외 흑백처리
-        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
-    }*/
 
     IEnumerator MakingShips_Timer(Sprite img, Base_Infomation info, int makeCount)
     {
@@ -295,7 +254,6 @@ public class Build_Manager : MonoBehaviour
         GameObject maintab_container = mainTabCategory.Upgrading(img, true);
         Slider maintab_slider = mainTabCategory.sliderContainer.GetComponentInChildren<Slider>();
         TextMeshProUGUI[] maintab_texts = mainTabCategory.sliderContainer.GetComponentsInChildren<TextMeshProUGUI>();
-
 
         maintab_texts[0].text = $"{info.ship.name} {makeCount}기";
 
@@ -357,8 +315,10 @@ public class Build_Manager : MonoBehaviour
         info.containerSlide.ColorChange_To_Upgrade(activeIndex);
         info.containerSlide.imgBtn.enabled = true;
 
+        // 6.28 수정 실험 사항 (확인 후 지속할지 삭제할지 판단)
+        //info.shipMaking_confirm = false;
+        info.confirm = false;
 
-        info.shipMaking_confirm = false;
 
         foreach (Slider slide in info.timeSlider)
         {
@@ -380,7 +340,6 @@ public class Build_Manager : MonoBehaviour
     {
         int activeIndex = Active_TabContainerIndex();
         GameObject maintab_container = mainTabCategory.Upgrading(img, true);
-
         Slider maintab_slider = mainTabCategory.sliderContainer.GetComponentInChildren<Slider>();
         TextMeshProUGUI[] maintab_texts = mainTabCategory.sliderContainer.GetComponentsInChildren<TextMeshProUGUI>();
         maintab_texts[0].text = info.title_Text["name"].text;
@@ -420,7 +379,8 @@ public class Build_Manager : MonoBehaviour
         // 이미지 컬러전환 및 버튼 활성화 처리
         info.containerSlide.ColorChange_To_Upgrade(activeIndex);
 
-        info.controlCenter_confirm = false;
+        //info.controlCenter_confirm = false;
+        info.confirm = false;
         foreach (Slider slide in info.timeSlider)
         {
             slide.value = 0f;
@@ -439,6 +399,63 @@ public class Build_Manager : MonoBehaviour
         // 항상 업그레이드 완료 또는 생산 완료 후에는 유저 정보를 업데이트 하여 취합하는 곳이 필요
         // (서버에 통신을 용이하게 하기 위함)
     }
+
+    IEnumerator Tab1_Building(Sprite img, Base_Infomation info, float targetTimer)
+    {
+        int activeIndex = Active_TabContainerIndex();
+        GameObject maintab_container = mainTabCategory.Upgrading(img, true);
+        Slider maintab_slider = mainTabCategory.sliderContainer.GetComponentInChildren<Slider>();
+        TextMeshProUGUI[] maintab_texts = mainTabCategory.sliderContainer.GetComponentsInChildren<TextMeshProUGUI>();
+        maintab_texts[0].text = info.title_Text["name"].text;
+        maintab_slider.maxValue = targetTimer;
+
+        foreach (Slider _slider in info.timeSlider)
+        {
+            _slider.maxValue = targetTimer;
+        }
+
+        float timer = 0f;
+        while (timer < targetTimer)
+        {
+            timer += Time.deltaTime;
+            foreach (Slider slide in info.timeSlider)
+            {
+                slide.value = timer;
+            }
+            maintab_slider.value = timer;
+
+            int remaining_curTime = Mathf.CeilToInt(
+                Mathf.Clamp(targetTimer - timer, 0f, targetTimer));
+
+            foreach (TextMeshProUGUI tt in info.timeText)
+            {
+                tt.text = TimerTexting(remaining_curTime);
+            }
+            maintab_texts[1].text = TimerTexting(remaining_curTime);
+
+            yield return null;
+        }
+
+        // 업그레이드 성공 후 반영될 정보들 가시화
+        info.Upgrade_To_Infomation(info);
+
+        // 이미지 컬러전환 및 버튼 활성화 처리
+        info.containerSlide.ColorChange_To_Upgrade(activeIndex);
+
+        info.confirm = false;
+        foreach (Slider slide in info.timeSlider)
+        {
+            slide.value = 0f;
+        }
+        info.timeSlider[0].gameObject.SetActive(false);
+        info.btns[1].gameObject.SetActive(false);
+        info.btns[0].gameObject.SetActive(true);
+
+        // 메인탭의 이미지 기본사진으로 변경
+        maintab_container.GetComponent<MainTabCategory>().Upgrading(null, false);
+
+    }
+
 
     public string TimerTexting(int timer)
     {

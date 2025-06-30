@@ -3,12 +3,12 @@ using UnityEngine;
 public class Tab5_Infomation : Base_Infomation
 {
 
-    public override void SelectedTabs()
+    protected override void SelectedTabs()
     {
         tabs = Tabs.Tab5;
     }
 
-    public override void Init_CostInfo()
+    protected override void Init_CostInfo()
     {
         var (metal, cristal, gas) = (buildResource.init_Needs[0], buildResource.init_Needs[1], buildResource.init_Needs[2]);
 
