@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9033b956e893ed34c99c91fa232ecba3, type: 3}
+  m_Name: "5.\uBA54\uD0C8 \uC815\uC81C"
+  m_EditorClassIdentifier: 
+  research_Category: 0
+  generalResearch: 1
+  engine_Type: 0
+  high_Research: 0
+  combat_Research: 1
+  research_Level: 0
+  research_Time: 0a0000001e0000005a0000000e0100002a030000e7030000e7030000e7030000e7030000e7030000
+  research_Cost: 2c0100002c01000096000000
+  upgrade_Cost_Require:
+  - 1
+  - 2
+  - 2
+  - 2
+  - 2
+  - 2
+  - 3
+  - 3
+  - 3
+  - 3.5

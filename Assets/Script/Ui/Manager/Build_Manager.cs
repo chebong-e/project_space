@@ -8,6 +8,11 @@ using UnityEngine.UI;
 public class Build_Manager : MonoBehaviour
 {
     public static Build_Manager instance;
+    
+    
+    public PlayerInfomation playerInfomation;
+
+
     public ContainerSlide_Group containerSlide_Group;
     public MainTabCategory mainTabCategory;
     public GameObject[] tabContainer, mainTab_Container;
@@ -87,16 +92,149 @@ public class Build_Manager : MonoBehaviour
         }
 
 
-        // 수치를 얻기위한 실험
+        /*// 수치를 얻기위한 실험
         float value = 100;
         for (int i = 0; i < 10; i++)
         {
             value *= 1.6f;
             Debug.Log($"기본값:{value},  정수형:{(int)value},  절삭값:{((int)value / 10) * 10}");
-        }
+        }*/
 
+        /*// 플레이어 인포 할당 실험 (06-30)
+        playerInfomation.build_Levels[0] = new int[5, 16];
+
+        for (int i = 0; i < 2; i++)
+        {
+            for (int j = 0; j < 16; j++)
+            {
+                playerInfomation.build_Levels[0][i, j] = j + 1;
+            }
+        }*/
+
+        //for (int i = 0; i < 2; i++)
+        //{
+        //    for (int j = 0; j < 16; j++)
+        //    {
+        //        Debug.Log($"홈플래닛의 건설레벨들은 = tab{i + 1} : {j}\n" +
+        //            $"{playerInfomation.build_Levels[0][i, j]}");
+
+        //    }
+        //}
+
+
+
+        /*playerInfomation.planets = new BuildLevels[2]; // 가정(홈플래닛과 콜로니1)
+        for (int i = 0; i < playerInfomation.planets.Length; i++)
+        {
+            playerInfomation.planets[i].tabs = new TabWindows[5];
+            
+            for (int j = 0; j < playerInfomation.planets[i].tabs.Length; j++)
+            {
+                int num = scriptable_Group.GetTargetListByBuildResource(j, 0).Count;
+                playerInfomation.planets[i].tabs[j].lv = new int[num];
+                for (int ii = 0; ii < num; ii++)
+                {
+                    playerInfomation.planets[i].tabs[j].lv[ii] =
+                        scriptable_Group.GetTargetListByBuildResource(j, 0)[ii].level;
+                }
+            }
+        }*/
+        
+
+
+        
+            
     }
 
+    // 함선과 관제센터는 그레이드가 5로 더 세분화 되므로 이것의 값을 세분화하여 저장하는게 필요
+    public void btnExex()
+    {
+        playerInfomation.planets = new BuildLevels[2]; // 가정(홈플래닛과 콜로니1)
+        for (int i = 0; i < playerInfomation.planets.Length; i++) // 2
+        {
+            playerInfomation.planets[i] = new BuildLevels();
+            playerInfomation.planets[i].tabs = new TabWindows[5];
+
+            for (int j = 0; j < playerInfomation.planets[i].tabs.Length; j++) // 5
+            {
+                playerInfomation.planets[i].tabs[j] = new TabWindows();
+                int num = scriptable_Group.GetTargetListByBuildResource(j, 0).Count; // 0일때 8
+                playerInfomation.planets[i].tabs[j].lv = new int[num];
+
+                if (j == 0 || j == 1)
+                {
+                    for (int ii = 0; ii < num; ii++)
+                    {
+                        playerInfomation.planets[i].tabs[j].lv[ii] =
+                            scriptable_Group.GetTargetListByBuildResource(j, 0)[ii].level;
+                    }
+                }
+                else if (j == 2)
+                {
+                    for (int aa = 0; aa < 3; aa++)
+                    {
+                        num = scriptable_Group.GetTargetListByResearch(aa).Count;
+                        Debug.Log($"tab{j + 1}:{aa}의 길이는 {num}");
+                        for (int ii = 0; ii < num; ii++)
+                        {
+                            playerInfomation.planets[i].tabs[j].gradeLv[ii] = new Int_Grade();
+                            playerInfomation.planets[i].tabs[j].gradeLv[ii].lv = new int[scriptable_Group.GetTargetListByResearch(ii).Count];
+                            for (int jj = 0; jj < scriptable_Group.GetTargetListByResearch(ii).Count; jj++)
+                            {
+                                playerInfomation.planets[i].tabs[j].gradeLv[ii].lv[jj] =
+                                    scriptable_Group.GetTargetListByResearch(ii)[jj].research_Level;
+
+                            }
+                        }
+                    }
+                    
+                }
+                else if (j == 3)
+                {
+                    for (int aa = 0; aa < 5; aa++)
+                    {
+                        num = scriptable_Group.GetTargetListByShips(aa).Count;
+                        for (int ii = 0; ii < num; ii++)
+                        {
+                            playerInfomation.planets[i].tabs[j].gradeLv[ii] = new Int_Grade();
+                            playerInfomation.planets[i].tabs[j].gradeLv[ii].lv = new int[scriptable_Group.GetTargetListByShips(ii).Count];
+                            for (int jj = 0; jj < scriptable_Group.GetTargetListByShips(ii).Count; jj++)
+                            {
+                                playerInfomation.planets[i].tabs[j].gradeLv[ii].lv[jj] =
+                                    scriptable_Group.GetTargetListByShips(ii)[jj].currentHave_Ship;
+
+                            }
+                        }
+                    }
+                    
+                }
+                else
+                {
+                    for (int aa = 0; aa < 5; aa++)
+                    {
+                        num = scriptable_Group.GetTargetListByBuildResource(j, aa).Count;
+                        for (int ii = 0; ii < num; ii++)
+                        {
+                            playerInfomation.planets[i].tabs[j].gradeLv[ii] = new Int_Grade();
+                            playerInfomation.planets[i].tabs[j].gradeLv[ii].lv = new int[scriptable_Group.GetTargetListByBuildResource(j, ii).Count];
+                            for (int jj = 0; jj < scriptable_Group.GetTargetListByBuildResource(j, ii).Count; jj++)
+                            {
+                                playerInfomation.planets[i].tabs[j].gradeLv[ii].lv[jj] =
+                                    scriptable_Group.GetTargetListByBuildResource(j, ii)[jj].level;
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    void OnDestroy()
+    {
+        
+
+    }
     // 서버에서 계정의 데이터 확인하여 반영해주기 위한 초기 로직(임시)
     /*void Data_CheckInit(bool data)
     {

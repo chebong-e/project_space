@@ -19,6 +19,12 @@ public class Scriptable_Group : MonoBehaviour
     [Header("Controlcenters")]
     public List<ControlcenterGroup> controlcenterGroup;
 
+
+    public List<Research> GetTargetListByResearch(int grade)
+    {
+        return tab3Groups[grade].researches;
+    }
+
     public List<BuildResource> GetTargetListByBuildResource(int tab_index, int grade)
     {
         List<BuildResource> targetList = new List<BuildResource>();
@@ -28,7 +34,7 @@ public class Scriptable_Group : MonoBehaviour
                 targetList = tab1Group;
                 break;
             case 1:
-
+                targetList = tab2Groups;
                 break;
             case 2:
 
@@ -46,7 +52,6 @@ public class Scriptable_Group : MonoBehaviour
         return targetList;
     }
 
-    /*public List<BuildResource> GetTargetListByBuildResource(int index) => (index >= 0 && index < controlcenterGroup.Count) ? controlcenterGroup[index].buildResources : null;*/
     public List<Ship> GetTargetListByShips(int index) => (index >= 0 && index < shipGroups.Count) ? shipGroups[index].ships : null;
 
 }
@@ -54,7 +59,7 @@ public class Scriptable_Group : MonoBehaviour
 [System.Serializable]
 public class Tab3Group
 {
-    public List<BuildResource> buildResources;
+    public List<Research> researches;
 }
 
 [System.Serializable]

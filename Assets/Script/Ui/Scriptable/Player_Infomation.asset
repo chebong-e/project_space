@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 506d2a14d90d8c447904f07d3205268d, type: 3}
+  m_Name: Player_Infomation
+  m_EditorClassIdentifier: 
+  userCode: ok
+  userID: 
+  userPassword: 
+  userName: 
+  build_Levels:
+    m_keys: 
+  planets:
+  - tabs:
+    - lv: 0000000000000000000000000000000000000000000000000000000000000000
+      gradeLv: []
+    - lv: 
+      gradeLv: []
+    - lv: 
+      gradeLv: []
+    - lv: 
+      gradeLv: []
+    - lv: 
+      gradeLv: []
+  - tabs: []

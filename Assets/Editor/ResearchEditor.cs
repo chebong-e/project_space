@@ -6,6 +6,7 @@ using static Research;
 [CustomEditor(typeof(Research))]
 public class ResearchEditor : Editor
 {
+    SerializedProperty research_Level;
     SerializedProperty research_Time;
     SerializedProperty research_Cost;
     SerializedProperty upgrade_Cost_Require;
@@ -33,13 +34,13 @@ public class ResearchEditor : Editor
                 break;
         }
 
-        int research_Level = EditorGUILayout.IntField("연구 레벨", research.research_Level);
-
         serializedObject.Update();
+        research_Level = serializedObject.FindProperty("research_Level");
         research_Time = serializedObject.FindProperty("research_Time");
         research_Cost = serializedObject.FindProperty("research_Cost");
         upgrade_Cost_Require = serializedObject.FindProperty("upgrade_Cost_Require");
 
+        EditorGUILayout.PropertyField(research_Level, new GUIContent("연구 레벨"), true);
         EditorGUILayout.PropertyField(research_Time, new GUIContent("연구 시간"), true);
         EditorGUILayout.PropertyField(research_Cost, new GUIContent("연구 비용"), true);
         EditorGUILayout.PropertyField(upgrade_Cost_Require, new GUIContent("업그레이드 비용 배수"), true);

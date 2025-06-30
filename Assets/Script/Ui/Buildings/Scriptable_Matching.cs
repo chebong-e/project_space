@@ -16,11 +16,6 @@ public class Scriptable_Matching : MonoBehaviour
         switch (tab_Category)
         {
             case Tab_Category.Tab1:
-                
-                foreach (BuildResource bl in scriptable_Group.GetTargetListByBuildResource((int)tab_Category, (int)container_Grade))
-                {
-                    Debug.Log(bl.name);
-                }
                 for (int i = 0; i < Infomations.Length; i++)
                 {
                     Infomations[i].buildResource = scriptable_Group.GetTargetListByBuildResource((int)tab_Category, (int)container_Grade)[i];
