@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 
 public class Tab1_Infomation : Base_Infomation
@@ -29,7 +28,7 @@ public class Tab1_Infomation : Base_Infomation
             tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
         }
 
-        title_Text["name"].text = $"Lv.{buildResource.level} {buildResource.name}";
+        title_Text["name"].text = $"Lv.{buildResource.level} {buildResource.name.Split('.')[1]}";
 
         resources[0].text = $"{metal}";
         resources[1].text = $"{cristal}";

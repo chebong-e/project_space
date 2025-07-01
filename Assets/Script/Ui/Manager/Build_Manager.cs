@@ -171,58 +171,56 @@ public class Build_Manager : MonoBehaviour
                 }
                 else if (j == 2)
                 {
+                    playerInfomation.planets[i].tabs[j].gradeLv = new Int_Grade[3];
                     for (int aa = 0; aa < 3; aa++)
                     {
                         num = scriptable_Group.GetTargetListByResearch(aa).Count;
                         Debug.Log($"tab{j + 1}:{aa}의 길이는 {num}");
+
+                        playerInfomation.planets[i].tabs[j].gradeLv[aa] = new Int_Grade();
+                        playerInfomation.planets[i].tabs[j].gradeLv[aa].lv =
+                            new int[scriptable_Group.GetTargetListByResearch(aa).Count];
                         for (int ii = 0; ii < num; ii++)
                         {
-                            playerInfomation.planets[i].tabs[j].gradeLv[ii] = new Int_Grade();
-                            playerInfomation.planets[i].tabs[j].gradeLv[ii].lv = new int[scriptable_Group.GetTargetListByResearch(ii).Count];
-                            for (int jj = 0; jj < scriptable_Group.GetTargetListByResearch(ii).Count; jj++)
-                            {
-                                playerInfomation.planets[i].tabs[j].gradeLv[ii].lv[jj] =
-                                    scriptable_Group.GetTargetListByResearch(ii)[jj].research_Level;
-
-                            }
+                            playerInfomation.planets[i].tabs[j].gradeLv[aa].lv[ii] =
+                                    scriptable_Group.GetTargetListByResearch(aa)[ii].research_Level;
                         }
-                    }
-                    
+                    }                  
                 }
                 else if (j == 3)
                 {
+                    playerInfomation.planets[i].tabs[j].gradeLv = new Int_Grade[5];
                     for (int aa = 0; aa < 5; aa++)
                     {
                         num = scriptable_Group.GetTargetListByShips(aa).Count;
+
+                        playerInfomation.planets[i].tabs[j].gradeLv[aa] = new Int_Grade();
+                        playerInfomation.planets[i].tabs[j].gradeLv[aa].lv =
+                            new int[scriptable_Group.GetTargetListByShips(aa).Count];
+
                         for (int ii = 0; ii < num; ii++)
                         {
-                            playerInfomation.planets[i].tabs[j].gradeLv[ii] = new Int_Grade();
-                            playerInfomation.planets[i].tabs[j].gradeLv[ii].lv = new int[scriptable_Group.GetTargetListByShips(ii).Count];
-                            for (int jj = 0; jj < scriptable_Group.GetTargetListByShips(ii).Count; jj++)
-                            {
-                                playerInfomation.planets[i].tabs[j].gradeLv[ii].lv[jj] =
-                                    scriptable_Group.GetTargetListByShips(ii)[jj].currentHave_Ship;
-
-                            }
+                            playerInfomation.planets[i].tabs[j].gradeLv[aa].lv[ii] =
+                                    scriptable_Group.GetTargetListByShips(aa)[ii].currentHave_Ship;
                         }
-                    }
-                    
+                    }  
                 }
                 else
                 {
+                    playerInfomation.planets[i].tabs[j].gradeLv = new Int_Grade[5];
                     for (int aa = 0; aa < 5; aa++)
                     {
                         num = scriptable_Group.GetTargetListByBuildResource(j, aa).Count;
+
+                        playerInfomation.planets[i].tabs[j].gradeLv[aa] = new Int_Grade();
+                        playerInfomation.planets[i].tabs[j].gradeLv[aa].lv =
+                            new int[scriptable_Group.GetTargetListByBuildResource(j, aa).Count];
+
+
                         for (int ii = 0; ii < num; ii++)
                         {
-                            playerInfomation.planets[i].tabs[j].gradeLv[ii] = new Int_Grade();
-                            playerInfomation.planets[i].tabs[j].gradeLv[ii].lv = new int[scriptable_Group.GetTargetListByBuildResource(j, ii).Count];
-                            for (int jj = 0; jj < scriptable_Group.GetTargetListByBuildResource(j, ii).Count; jj++)
-                            {
-                                playerInfomation.planets[i].tabs[j].gradeLv[ii].lv[jj] =
-                                    scriptable_Group.GetTargetListByBuildResource(j, ii)[jj].level;
-
-                            }
+                            playerInfomation.planets[i].tabs[j].gradeLv[aa].lv[ii] =
+                                    scriptable_Group.GetTargetListByBuildResource(j, aa)[ii].level;
                         }
                     }
                 }

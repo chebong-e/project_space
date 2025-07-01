@@ -12,7 +12,7 @@ public class BuildResource : ScriptableObject
     [Header("# Main Info")]
     public Build_Category build_Category;
     public Factory_Category factory_Category;
-    public int grade;
+    //public int grade;
 
     [Header("Upgrade Data")]
     public int[] init_Needs;
@@ -26,9 +26,6 @@ public class BuildResource : ScriptableObject
     public float[] build_result; // 건설 후 능력치 배수 또는 함선보유수량
     [TextArea]
     public string require_condition; // 건설 특정 요구 조건
-
-    [Header("String Data")]
-    public string Lv_Title;
 
     [Header("Datas")]
     public Sprite img;
