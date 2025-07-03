@@ -37,7 +37,6 @@ public class Scriptable_Group : MonoBehaviour
                 targetList = tab2Groups;
                 break;
             case 2:
-
                 break;
             case 3:
             case 4:
@@ -47,7 +46,6 @@ public class Scriptable_Group : MonoBehaviour
                 }
                 break;
         }
-
 
         return targetList;
     }

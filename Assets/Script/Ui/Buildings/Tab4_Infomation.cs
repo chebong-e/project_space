@@ -21,7 +21,7 @@ public class Tab4_Infomation : Base_Infomation
 
         Debug.Log(timeText[0]);
         timeText[0].text = $"{TimerTexting((int)ship.shipMaking_Time)}";
-        title_Text["name"].text = $"{ship.name}";
+        title_Text["name"].text = $"{ship.name.Split('.')[1]}";
         child_InfoContainer.transform.GetChild(0).gameObject.SetActive(false);
 
         resources[0].text = $"{metal}";

@@ -27,7 +27,7 @@ public class Tab5_Infomation : Base_Infomation
             tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
         }
 
-        title_Text["name"].text = $"Lv.{buildResource.level} {buildResource.name} 包力季磐";
+        title_Text["name"].text = $"Lv.{buildResource.level} {buildResource.name.Split('.')[1]} 包力季磐";
 
         resources[0].text = $"{metal}";
         resources[1].text = $"{cristal}";

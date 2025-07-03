@@ -25,7 +25,13 @@ public class Scriptable_Matching : MonoBehaviour
                 }
                 break;
             case Tab_Category.Tab2:
+                for (int i = 0; i < Infomations.Length; i++)
+                {
+                    Infomations[i].buildResource = scriptable_Group.GetTargetListByBuildResource((int)tab_Category, (int)container_Grade)[i];
 
+                    Infomations[i].Init_Setting();
+
+                }
                 break;
             case Tab_Category.Tab3:
 

@@ -1,4 +1,7 @@
+using NUnit.Framework;
+using TMPro;
 using UnityEngine;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class Tab2_Infomation : Base_Infomation
 {
@@ -18,9 +21,20 @@ public class Tab2_Infomation : Base_Infomation
             gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
         }
 
-        production[0].text = $"{buildResource.manufacture[buildResource.level]}";
-        buildResource.electricity_Consumption = 10;
-        production[1].text = $"{buildResource.electricity_Consumption}";
+        production[0].transform.parent.parent.GetChild(0).GetComponent<TextMeshProUGUI>().text =
+            $"{buildResource.ability_Text}";
+        if (production[1] == null)
+        {
+            production[0].text = "";
+        }
+        else
+        {
+            production[0].text = $"{buildResource.buildAbility * buildResource.level}%";
+            buildResource.electricity_Consumption = 10;
+            production[1].text = $"{buildResource.electricity_Consumption}";
+        }
+
+        
 
         foreach (var tt in timeText)
         {
@@ -38,4 +52,6 @@ public class Tab2_Infomation : Base_Infomation
         /*production[0].text = $"{buildResource.manufacture[buildResource.level]}";
         production[1].text = $"{buildResource.electricity_Consumption}";*/
     }
+
+    
 }

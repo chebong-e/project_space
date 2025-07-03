@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 780cd3db2bb9ec84abb10cba1c4a104c, type: 3}
+  m_Name: "1.\uD560\uD30C\uC2A4"
+  m_EditorClassIdentifier: 
+  category: 0
+  shipName: "\uD32C\uD140"
+  maxHaveShip_Amount: 0
+  currentHave_Ship: 0
+  shipMaking_Time: 5
+  shipMake_Cost: 140000000a00000005000000
+  ship_Damage: 0
+  ship_Armor: 0
+  ship_Speed: 0
+  ship_Engine: 0
+  img: {fileID: -3700178997304691455, guid: 98e53d859f544d049ba523a6b170cdcf, type: 3}

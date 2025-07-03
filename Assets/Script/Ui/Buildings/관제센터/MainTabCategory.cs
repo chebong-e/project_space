@@ -35,7 +35,7 @@ public class MainTabCategory : MonoBehaviour
     }
 
     // 메인탭의 정보 연동 및 이미지 등을 연동
-    public GameObject Upgrading(Sprite img, bool upgrading)
+    public GameObject Upgrading(Sprite img, bool upgrading, bool anotherTab)
     {
         if (upgrading)
         {
@@ -60,7 +60,8 @@ public class MainTabCategory : MonoBehaviour
             sliderContainer.SetActive(false);
 
             //아이콘 컨테이너 활성화 처리하고
-            iconContainer.SetActive(true);
+            if (!anotherTab)
+                iconContainer.SetActive(true);
             return null;
         }
     }

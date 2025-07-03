@@ -21,7 +21,7 @@ public class Build_Manager : MonoBehaviour
     Scriptable_Group scriptable_Group;
 
     public bool upgrading, makingShips, building, reserching;
-    bool datas;
+    bool tab1, tab2, tab3, tab4, tab5;
 
     void Awake()
     {
@@ -228,30 +228,6 @@ public class Build_Manager : MonoBehaviour
         }
     }
 
-    void OnDestroy()
-    {
-        
-
-    }
-    // 서버에서 계정의 데이터 확인하여 반영해주기 위한 초기 로직(임시)
-    /*void Data_CheckInit(bool data)
-    {
-        if (!data)
-        {
-            for (int i = 3; i < tabContainer.Length; i++)
-            {
-                Con_Infomation[] con_ = tabContainer[i].GetComponentsInChildren<Con_Infomation>(true);
-                for (int j = 0; j < con_.Length; j++)
-                {
-                    con_[j]
-                }
-            }
-        }
-
-
-    }*/
-
-
     public void KeepOpenState(int index)
     {
         List<ContainerSlide> slide = GetTargetListByIndex(index);
@@ -326,7 +302,16 @@ public class Build_Manager : MonoBehaviour
         {
             if (info.tabs == Base_Infomation.Tabs.Tab1)
             {
+                tab1 = true;
                 tab1_coroutine = StartCoroutine(Tab1_Building(
+                    img,
+                    info,
+                    info.buildResource.building_Time[info.buildResource.level]));
+            }
+            else if (info.tabs == Base_Infomation.Tabs.Tab2)
+            {
+                tab2 = true;
+                tab2_coroutine = StartCoroutine(Tab1_Building(
                     img,
                     info,
                     info.buildResource.building_Time[info.buildResource.level]));
@@ -353,7 +338,13 @@ public class Build_Manager : MonoBehaviour
         {
             if (info.tabs == Base_Infomation.Tabs.Tab1)
             {
+                tab1 = false;
                 StopCoroutine(tab1_coroutine);
+            }
+            else if (info.tabs == Base_Infomation.Tabs.Tab2)
+            {
+                tab2 = false;
+                StopCoroutine(tab2_coroutine);
             }
             else if (info.tabs == Base_Infomation.Tabs.Tab4)
             {
@@ -373,7 +364,7 @@ public class Build_Manager : MonoBehaviour
                 info.timeSlider[i].value = 0f;
                 info.timeText[i].text = $"{info.buildResource.building_Time[info.buildResource.level]}초";
             }
-            mainTabCategory.Upgrading(null, false);
+            mainTabCategory.Upgrading(null, false, false);
         }
 
         info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
@@ -387,7 +378,7 @@ public class Build_Manager : MonoBehaviour
     IEnumerator MakingShips_Timer(Sprite img, Base_Infomation info, int makeCount)
     {
         int activeIndex = Active_TabContainerIndex();
-        GameObject maintab_container = mainTabCategory.Upgrading(img, true);
+        GameObject maintab_container = mainTabCategory.Upgrading(img, true, false);
         Slider maintab_slider = mainTabCategory.sliderContainer.GetComponentInChildren<Slider>();
         TextMeshProUGUI[] maintab_texts = mainTabCategory.sliderContainer.GetComponentsInChildren<TextMeshProUGUI>();
 
@@ -469,13 +460,13 @@ public class Build_Manager : MonoBehaviour
         info.btns[0].gameObject.SetActive(true);
 
         // 메인탭의 이미지 기본사진으로 변경
-        maintab_container.GetComponent<MainTabCategory>().Upgrading(null, false);
+        maintab_container.GetComponent<MainTabCategory>().Upgrading(null, false, false);
     }
 
     IEnumerator ControlCenter_BuildingTimer(Sprite img, Base_Infomation info, float targetTimer)
     {
         int activeIndex = Active_TabContainerIndex();
-        GameObject maintab_container = mainTabCategory.Upgrading(img, true);
+        GameObject maintab_container = mainTabCategory.Upgrading(img, true, false);
         Slider maintab_slider = mainTabCategory.sliderContainer.GetComponentInChildren<Slider>();
         TextMeshProUGUI[] maintab_texts = mainTabCategory.sliderContainer.GetComponentsInChildren<TextMeshProUGUI>();
         maintab_texts[0].text = info.title_Text["name"].text;
@@ -526,7 +517,7 @@ public class Build_Manager : MonoBehaviour
         info.btns[0].gameObject.SetActive(true);
 
         // 메인탭의 이미지 기본사진으로 변경
-        maintab_container.GetComponent<MainTabCategory>().Upgrading(null, false);
+        maintab_container.GetComponent<MainTabCategory>().Upgrading(null, false, false);
 
         /*관제센터 업그레이드 후 생산가능 수량 업데이트 정보를
             함선생산 탭의 정보로 넘겨주기(현재는 infomation의 ships 정보를 수정하는 방향)*/
@@ -539,7 +530,7 @@ public class Build_Manager : MonoBehaviour
     IEnumerator Tab1_Building(Sprite img, Base_Infomation info, float targetTimer)
     {
         int activeIndex = Active_TabContainerIndex();
-        GameObject maintab_container = mainTabCategory.Upgrading(img, true);
+        GameObject maintab_container = mainTabCategory.Upgrading(img, true, false);
         Slider maintab_slider = mainTabCategory.sliderContainer.GetComponentInChildren<Slider>();
         TextMeshProUGUI[] maintab_texts = mainTabCategory.sliderContainer.GetComponentsInChildren<TextMeshProUGUI>();
         maintab_texts[0].text = info.title_Text["name"].text;
@@ -587,9 +578,14 @@ public class Build_Manager : MonoBehaviour
         info.btns[1].gameObject.SetActive(false);
         info.btns[0].gameObject.SetActive(true);
 
-        // 메인탭의 이미지 기본사진으로 변경
-        maintab_container.GetComponent<MainTabCategory>().Upgrading(null, false);
 
+        if (info.tabs == Base_Infomation.Tabs.Tab1) tab1 = false;
+        else tab2 = false;
+
+        // 메인탭의 이미지 기본사진으로 변경
+        maintab_container.GetComponent<MainTabCategory>().Upgrading(null, false, info.tabs == Base_Infomation.Tabs.Tab1 ? tab2 : tab1);
+
+        
     }
 
 
