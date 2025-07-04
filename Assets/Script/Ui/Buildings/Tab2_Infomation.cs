@@ -1,7 +1,5 @@
-using NUnit.Framework;
 using TMPro;
 using UnityEngine;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class Tab2_Infomation : Base_Infomation
 {

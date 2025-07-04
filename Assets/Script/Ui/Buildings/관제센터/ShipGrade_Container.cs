@@ -24,23 +24,9 @@ public class ShipGrade_Container : MonoBehaviour
             .Select(sr => sr.gameObject).ToArray();
     }
 
-    void Start()
-    {
-        /*Scriptable_Matching[] scriptable_Matchings = transform.parent.GetComponentsInChildren<Scriptable_Matching>();
-        foreach (Scriptable_Matching sc_mat in scriptable_Matchings)
-        {
-            sc_mat.Init();
-        }
-
-
-        StartCoroutine(Init_WindowClose());*/
-    }
-
-
     void OnEnable()
     {
-        int index = shipGrade_Window.Length;
-        for (int i = 0; i < index; i++)
+        for (int i = 0; i < shipGrade_Window.Length; i++)
         {
             if (shipGrade_Window[i].activeInHierarchy)
             {
@@ -62,13 +48,9 @@ public class ShipGrade_Container : MonoBehaviour
             if (num == i)
             {
                 shipGrade_Window[i].gameObject.SetActive(true);
-                if (Build_Manager.instance.upgrading) // 업그레이드가 진행중이라면
+                if (Build_Manager.instance.tab4)
                 {
-                    //업그레이드 진행중인 화면 외의 다른 윈도우의 하위 그룹들의 이미지를 모두 흑백처리 및 버튼의 enable을 false처리 해야 함
-
-                    //업그레이드 진행 중인 카테고리 인덱스 가져오기
-
-                    //그리고 업그레이드가 비진행 중이라면 모든 윈도우의 하위 그룹의 이미지를 컬러전환 하고 버튼의 enable를 true처리
+                    Build_Manager.instance.KeepOpenState(3);
                 }
             }
             else
@@ -79,8 +61,9 @@ public class ShipGrade_Container : MonoBehaviour
                 for (int ii = 0; ii < index; ii++)
                 {
                     ContainerSlide imgsl = scroll.content.GetChild(ii).GetComponent<ContainerSlide>();
-                    if (imgsl.imgOpen)
+                    if (imgsl.imgOpen && imgsl.confirm == false)
                     {
+                        Debug.Log(imgsl.name);
                         imgsl.imgOpen = false;
                         imgsl.Slider_On_Off();
                     }
@@ -91,7 +74,7 @@ public class ShipGrade_Container : MonoBehaviour
         Button_SelectedColor(num);
     }
 
-    public void Button_SelectedColor(int num)
+    void Button_SelectedColor(int num)
     {
         Color32 yellow = new Color32(255, 255, 0, 255);
         Color32 white = new Color32(255, 255, 255, 255);

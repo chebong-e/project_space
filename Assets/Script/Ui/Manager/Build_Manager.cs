@@ -21,7 +21,11 @@ public class Build_Manager : MonoBehaviour
     Scriptable_Group scriptable_Group;
 
     public bool upgrading, makingShips, building, reserching;
-    bool tab1, tab2, tab3, tab4, tab5;
+    public bool tab1 { get; private set; }
+    public bool tab2 { get; private set; }
+    public bool tab3 { get; private set; }
+    public bool tab4 { get; private set; }
+    public bool tab5 { get; private set; }
 
     void Awake()
     {
@@ -319,6 +323,7 @@ public class Build_Manager : MonoBehaviour
             else if (info.tabs == Base_Infomation.Tabs.Tab4)
             {
                 info.containerSlide.imgBtn.enabled = false;
+                tab4 = !tab4;
                 tab4_coroutine = StartCoroutine(
                     MakingShips_Timer(
                         img,
@@ -348,6 +353,7 @@ public class Build_Manager : MonoBehaviour
             }
             else if (info.tabs == Base_Infomation.Tabs.Tab4)
             {
+                tab4 = !tab4;
                 info.containerSlide.imgBtn.enabled = true;
                 StopCoroutine(tab4_coroutine);
                 info.child_InfoContainer.transform.GetChild(0).gameObject.SetActive(upgrade);

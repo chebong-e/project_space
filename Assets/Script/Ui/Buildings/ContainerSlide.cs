@@ -13,7 +13,8 @@ public class ContainerSlide : MonoBehaviour
     
 
     public bool imgOpen;
-    bool confirm;
+    public bool confirm { get; private set; }
+    
 
     void Awake()
     {
