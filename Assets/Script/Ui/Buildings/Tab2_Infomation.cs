@@ -19,8 +19,7 @@ public class Tab2_Infomation : Base_Infomation
             gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
         }
 
-        production[0].transform.parent.parent.GetChild(0).GetComponent<TextMeshProUGUI>().text =
-            $"{buildResource.ability_Text}";
+        production[2].text = $"{buildResource.ability_Text}";
         if (production[1] == null)
         {
             production[0].text = "";

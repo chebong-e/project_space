@@ -37,8 +37,20 @@ public class ContainerSlide : MonoBehaviour
 
         myImage.material = grayMat;
 
-        myImage.sprite = Infomation.shipBuildSlider ?
-            Infomation.ship.img : Infomation.buildResource.img;
+        switch (Infomation.tabs)
+        {
+            case Base_Infomation.Tabs.Tab1:
+            case Base_Infomation.Tabs.Tab2:
+            case Base_Infomation.Tabs.Tab5:
+                myImage.sprite = Infomation.buildResource.img;
+                break;
+            case Base_Infomation.Tabs.Tab3:
+                myImage.sprite = Infomation.research.img;
+                break;
+            case Base_Infomation.Tabs.Tab4:
+                myImage.sprite = Infomation.ship.img;
+                break;
+        }
         /*switch (con_Infomation.info_types)
         {
             case Con_Infomation.Types.Tab4:

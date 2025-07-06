@@ -86,7 +86,27 @@ public class Build_Manager : MonoBehaviour
 
             else
             {
-                tabContainer[i].GetComponentInChildren<Scriptable_Matching>()?.Init();
+                if (i == 2)
+                {
+                    Scriptable_Matching[] child = tabContainer[i].GetComponentsInChildren<Scriptable_Matching>();
+                    for (int j = 0; j < child.Length; j++)
+                    {
+                        child[j].Init();
+                        if (j > 0)
+                        {
+                            child[j].gameObject.SetActive(false);
+                        }
+                    }
+                    /*foreach (Scriptable_Matching sm in tabContainer[i].GetComponentsInChildren<Scriptable_Matching>())
+                    {
+                        sm.Init();
+                    }*/
+                }
+                else
+                {
+                    tabContainer[i].GetComponentInChildren<Scriptable_Matching>()?.Init();
+                }
+                    
             } 
         }
 
@@ -187,7 +207,7 @@ public class Build_Manager : MonoBehaviour
                         for (int ii = 0; ii < num; ii++)
                         {
                             playerInfomation.planets[i].tabs[j].gradeLv[aa].lv[ii] =
-                                    scriptable_Group.GetTargetListByResearch(aa)[ii].research_Level;
+                                    scriptable_Group.GetTargetListByResearch(aa)[ii].level;
                         }
                     }                  
                 }

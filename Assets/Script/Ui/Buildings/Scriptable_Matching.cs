@@ -34,7 +34,13 @@ public class Scriptable_Matching : MonoBehaviour
                 }
                 break;
             case Tab_Category.Tab3:
+                for (int i = 0; i < Infomations.Length; i++)
+                {
+                    Infomations[i].research = scriptable_Group.GetTargetListByResearch((int)container_Grade)[i];
 
+                    Infomations[i].Init_Setting();
+
+                }
                 break;
 
             case Tab_Category.Tab4:

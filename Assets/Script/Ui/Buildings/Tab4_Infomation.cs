@@ -19,7 +19,6 @@ public class Tab4_Infomation : Base_Infomation
     {
         var (metal, cristal, gas) = (ship.shipMake_Cost[0], ship.shipMake_Cost[1], ship.shipMake_Cost[2]);
 
-        Debug.Log(timeText[0]);
         timeText[0].text = $"{TimerTexting((int)ship.shipMaking_Time)}";
         title_Text["name"].text = $"{ship.name.Split('.')[1]}";
         child_InfoContainer.transform.GetChild(0).gameObject.SetActive(false);

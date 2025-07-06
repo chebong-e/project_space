@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -108,7 +107,7 @@ public class ShipGrade_Container : MonoBehaviour
         
     }
 
-    IEnumerator Init_WindowClose()
+    /*IEnumerator Init_WindowClose()
     {
         yield return new WaitForSeconds(0.01f);
         for (int i = 1; i < shipGrade_Window.Length; i++)
@@ -117,5 +116,5 @@ public class ShipGrade_Container : MonoBehaviour
         }
         yield return new WaitForSeconds(0.01f);
         Build_Manager.instance.Tab_Close();
-    }
+    }*/
 }

@@ -18,6 +18,7 @@ public class Base_Infomation : MonoBehaviour
     public TextMeshProUGUI haveShipCount;
     public TextMeshProUGUI making_Targets_Text;
     public BuildResource buildResource;
+    public Research research;
     public Ship ship;
     public Slider[] timeSlider; // 경과시간에 따른 표시할 슬라이더
     public Slider amountSlider; // 생산할 함선 수량 관련
@@ -37,7 +38,7 @@ public class Base_Infomation : MonoBehaviour
         btns = new Button[2];
         resources = new TextMeshProUGUI[5];
         timeText = new TextMeshProUGUI[2];
-        production = new TextMeshProUGUI[2];
+        production = new TextMeshProUGUI[3];
         timeSlider = new Slider[2];
 
         SelectedTabs();
@@ -73,7 +74,11 @@ public class Base_Infomation : MonoBehaviour
         if (!data)
         {
             //buildResource.level = 0;
-            buildResource.AllowableBuild = (int)buildResource.build_result[buildResource.level];
+            if (buildResource != null)
+            {
+                buildResource.AllowableBuild = (int)buildResource.build_result[buildResource.level];
+            }
+                
             if (ship != null)
             {
                 ship.maxHaveShip_Amount = buildResource.AllowableBuild;

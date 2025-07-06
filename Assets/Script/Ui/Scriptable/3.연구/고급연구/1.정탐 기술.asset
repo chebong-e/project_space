@@ -12,12 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9033b956e893ed34c99c91fa232ecba3, type: 3}
   m_Name: "1.\uC815\uD0D0 \uAE30\uC220"
   m_EditorClassIdentifier: 
-  research_Category: 0
+  research_Category: 1
   generalResearch: 1
   engine_Type: 0
-  high_Research: 0
+  generalNumber: 0
+  high_Number: 0
+  combat_Number: 0
   combat_Research: 1
-  research_Level: 0
+  level: 0
   research_Time: 0a0000001e0000005a0000000e0100002a030000e7030000e7030000e7030000e7030000e7030000
   research_Cost: 2c0100002c01000096000000
   upgrade_Cost_Require:
@@ -31,3 +33,7 @@ MonoBehaviour:
   - 3
   - 3
   - 3.5
+  research_Ability: 0
+  ability_Text: "\uC815\uD0D0 \uAE30\uC220 \uC99D\uAC00"
+  miningSlot: 
+  img: {fileID: 6361165563275267903, guid: 315169bdeaf380148b72fbac8e8e9a7c, type: 3}

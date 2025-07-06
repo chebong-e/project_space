@@ -90,6 +90,8 @@ public class SelfRegister : MonoBehaviour
                 if (subType6 == SubType6.Manufacture)
                 {
                     info.production[0] = GetComponent<TextMeshProUGUI>();
+                    // 2번은 설명 텍스트
+                    info.production[2] = transform.parent.parent.GetChild(0).GetComponent<TextMeshProUGUI>();
                 }
                 else
                 {
