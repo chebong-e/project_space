@@ -7,11 +7,9 @@ using UnityEngine.UI;
 
 public class Build_Manager : MonoBehaviour
 {
-    public static Build_Manager instance;
-    
+    public static Build_Manager instance;   
     
     public PlayerInfomation playerInfomation;
-
 
     public ContainerSlide_Group containerSlide_Group;
     public MainTabCategory mainTabCategory;
@@ -97,16 +95,11 @@ public class Build_Manager : MonoBehaviour
                             child[j].gameObject.SetActive(false);
                         }
                     }
-                    /*foreach (Scriptable_Matching sm in tabContainer[i].GetComponentsInChildren<Scriptable_Matching>())
-                    {
-                        sm.Init();
-                    }*/
                 }
                 else
                 {
                     tabContainer[i].GetComponentInChildren<Scriptable_Matching>()?.Init();
-                }
-                    
+                }                    
             } 
         }
 
@@ -163,11 +156,7 @@ public class Build_Manager : MonoBehaviour
                 }
             }
         }*/
-        
 
-
-        
-            
     }
 
     // 함선과 관제센터는 그레이드가 5로 더 세분화 되므로 이것의 값을 세분화하여 저장하는게 필요
@@ -199,7 +188,6 @@ public class Build_Manager : MonoBehaviour
                     for (int aa = 0; aa < 3; aa++)
                     {
                         num = scriptable_Group.GetTargetListByResearch(aa).Count;
-                        Debug.Log($"tab{j + 1}:{aa}의 길이는 {num}");
 
                         playerInfomation.planets[i].tabs[j].gradeLv[aa] = new Int_Grade();
                         playerInfomation.planets[i].tabs[j].gradeLv[aa].lv =
@@ -298,7 +286,7 @@ public class Build_Manager : MonoBehaviour
 
     // 열려있는 탭을 확인하여 그 중 선택되어 슬라이드 되어있는 컨테이너가 있다면
     // 컨테이너를 슬라이드 닫기처리
-    public void TabWindow_Close()
+    public void TabWindow_Close() // 현재 home 버튼에 할당 중
     {
         Debug.Log(Active_TabContainerIndex());
         if (3 == Active_TabContainerIndex())
@@ -319,10 +307,127 @@ public class Build_Manager : MonoBehaviour
     }
 
     //함선생산과 관제센터 업그레이드 함수 중복 정리 하여 간결하게 하기 위한 코드 정리 실험
-    public void Example_Confirm(Sprite img, int makeCount, Base_Infomation info, bool upgrade)
+    public void Building_Confirm(Sprite img, int makeCount, Base_Infomation info, bool upgrade)
     {
         mainTabCategory = mainTab_Container[Active_TabContainerIndex()].GetComponent<MainTabCategory>();
-        if (upgrade)
+
+        switch (info.tabs)
+        {
+            case Base_Infomation.Tabs.Tab1:
+                tab1 = upgrade;
+                if (upgrade)
+                {
+                    tab1_coroutine = StartCoroutine(Tab1_Building(
+                        img,
+                        info,
+                        info.buildResource.building_Time[info.buildResource.level]));
+                }
+                else
+                {
+                    StopCoroutine(tab1_coroutine);
+                }
+                break;
+            case Base_Infomation.Tabs.Tab2:
+                tab2 = upgrade;
+                if (upgrade)
+                {
+                    tab2_coroutine = StartCoroutine(Tab1_Building(
+                        img,
+                        info,
+                        info.buildResource.building_Time[info.buildResource.level]));
+                }
+                else
+                {
+                    StopCoroutine(tab2_coroutine);
+                }
+                break;
+            case Base_Infomation.Tabs.Tab3:
+                tab3 = upgrade;
+                if (upgrade)
+                {
+                    tab3_coroutine = StartCoroutine(Tab1_Building(
+                        img,
+                        info,
+                        info.research.research_Time[info.research.level]));
+                }
+                else
+                {
+                    StopCoroutine(tab3_coroutine);
+                }
+                break;
+            case Base_Infomation.Tabs.Tab4:
+                tab4 = upgrade;
+                info.containerSlide.imgBtn.enabled = !upgrade;
+                info.child_InfoContainer.transform.GetChild(0).gameObject.SetActive(upgrade);
+                info.child_InfoContainer.transform.GetChild(1).gameObject.SetActive(!upgrade);
+                if (upgrade)
+                {
+                    tab4_coroutine = StartCoroutine(
+                        MakingShips_Timer(
+                            img,
+                            info,
+                            makeCount));
+                }
+                else
+                {
+                    StopCoroutine(tab4_coroutine);
+                }
+                break;
+            case Base_Infomation.Tabs.Tab5:
+                tab5 = upgrade;
+                if (upgrade)
+                {
+                    tab5_coroutine = StartCoroutine(
+                            ControlCenter_BuildingTimer(
+                                img,
+                                info,
+                                info.buildResource.building_Time[info.buildResource.level]));
+                }
+                else
+                {
+                    StopCoroutine(tab5_coroutine);
+                }
+                break;
+        }
+
+        if (!upgrade)
+        {
+            switch(info.tabs)
+            {
+                case Base_Infomation.Tabs.Tab1:
+                case Base_Infomation.Tabs.Tab2:
+                case Base_Infomation.Tabs.Tab4:
+                case Base_Infomation.Tabs.Tab5:
+                    for (int i = 0; i < 2; i++)
+                    {
+                        info.timeSlider[i].value = 0f;
+                        info.timeText[i].text = $"{info.buildResource.building_Time[info.buildResource.level]}초";
+                    }
+                    break;
+                case Base_Infomation.Tabs.Tab3:
+                    for (int i = 0; i < 2; i++)
+                    {
+                        info.timeSlider[i].value = 0f;
+                        info.timeText[i].text = $"{info.research.research_Time[info.research.level]}초";
+                    }
+                    break;
+            }
+            mainTabCategory.Upgrading(null, false, false);
+        }
+
+        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
+
+
+
+
+
+
+
+
+
+
+
+        /*if (upgrade)
         {
             if (info.tabs == Base_Infomation.Tabs.Tab1)
             {
@@ -382,7 +487,7 @@ public class Build_Manager : MonoBehaviour
             else
             {
                 StopCoroutine(tab5_coroutine);
-                /*mainTabCategory.Upgrading(null, false);*/
+                *//*mainTabCategory.Upgrading(null, false);*//*
             }
 
             for (int i = 0; i < 2; i++)
@@ -398,7 +503,7 @@ public class Build_Manager : MonoBehaviour
         {
             info.child_InfoContainer.transform.GetChild(0).gameObject.SetActive(upgrade);
             info.child_InfoContainer.transform.GetChild(1).gameObject.SetActive(!upgrade);
-        }
+        }*/
     }
 
     IEnumerator MakingShips_Timer(Sprite img, Base_Infomation info, int makeCount)
@@ -606,7 +711,8 @@ public class Build_Manager : MonoBehaviour
 
 
         if (info.tabs == Base_Infomation.Tabs.Tab1) tab1 = false;
-        else tab2 = false;
+        else if (info.tabs == Base_Infomation.Tabs.Tab2) tab2 = false;
+        else tab3 = false;
 
         // 메인탭의 이미지 기본사진으로 변경
         maintab_container.GetComponent<MainTabCategory>().Upgrading(null, false, info.tabs == Base_Infomation.Tabs.Tab1 ? tab2 : tab1);

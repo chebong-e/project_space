@@ -160,7 +160,7 @@ public class Base_Infomation : MonoBehaviour
                 OverlapTextCode(info);
                 break;
             case Tabs.Tab3:
-
+                OverlapTextCode(info);
                 break;
             case Tabs.Tab4:
                 haveShipCount.text = $"보유 함선 수 : {ship.currentHave_Ship}";
@@ -223,7 +223,7 @@ public class Base_Infomation : MonoBehaviour
     {
         confirm = !confirm;
 
-        Build_Manager.instance.Example_Confirm(
+        Build_Manager.instance.Building_Confirm(
             transform.GetChild(1).GetComponent<Image>().sprite,
             tabs == Tabs.Tab4 ? (int)shipBuildSlider.slider.value : 0,
             this,
@@ -232,11 +232,66 @@ public class Base_Infomation : MonoBehaviour
 
     void OverlapTextCode(Base_Infomation info)
     {
-        buildResource.level++;
-        string nameText = $"Lv.{buildResource.level} {buildResource.name.Split('.')[1]}";
-        title_Text["name"].text = info.tabs == Tabs.Tab1 || info.tabs == Tabs.Tab2 ? nameText : nameText + " 관제센터";
+        string nameText = "";
+        int metal = 0;
+        int cristal = 0;
+        int gas = 0;
+        int allowableBuild = 0;
+        switch (info.tabs)
+        {
+            case Tabs.Tab1:
+            case Tabs.Tab2:
+            case Tabs.Tab5:
+                buildResource.level++;
+                nameText = $"Lv.{buildResource.level} {buildResource.name.Split('.')[1]}";
 
-        int metal = buildResource.init_Needs[0];
+                metal = buildResource.init_Needs[0];
+                cristal = buildResource.init_Needs[1];
+                gas = buildResource.init_Needs[2];
+
+                for (int i = 0; i < buildResource.level + 1; i++) // 왜 1을 더 해줘야 할까 확인할것
+                {
+                    metal = Mathf.FloorToInt(metal * buildResource.build_require[i]);
+                    cristal = Mathf.FloorToInt(cristal * buildResource.build_require[i]);
+                    gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
+                    if (info.tabs == Tabs.Tab5)
+                    {
+                        allowableBuild = allowableBuild + (int)buildResource.build_result[i];
+                        resources[3].text = $"{allowableBuild}";
+                        buildResource.AllowableBuild = allowableBuild;
+                    }
+                }
+
+                foreach (TextMeshProUGUI tt in timeText)
+                {
+                    tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
+                }
+                break;
+            case Tabs.Tab3:
+                research.level++;
+                nameText = $"Lv.{research.level} {research.name.Split('.')[1]}";
+
+                metal = research.research_Cost[0];
+                cristal = research.research_Cost[1];
+                gas = research.research_Cost[2];
+                for (int i = 0; i < research.level + 1; i++) // 왜 1을 더 해줘야 할까 확인할것
+                {
+                    metal = Mathf.FloorToInt(metal * research.upgrade_Cost_Require[i]);
+                    cristal = Mathf.FloorToInt(cristal * research.upgrade_Cost_Require[i]);
+                    gas = Mathf.FloorToInt(gas * research.upgrade_Cost_Require[i]);
+                }
+
+                foreach (TextMeshProUGUI tt in timeText)
+                {
+                    tt.text = $"{TimerTexting(research.research_Time[research.level])}";
+                }
+                break;
+        }
+        /*buildResource.level++;
+        nameText = $"Lv.{buildResource.level} {buildResource.name.Split('.')[1]}";*/
+        title_Text["name"].text = info.tabs == Tabs.Tab1 || info.tabs == Tabs.Tab2 || info.tabs == Tabs.Tab3 ? nameText : nameText + " 관제센터";
+
+        /*int metal = buildResource.init_Needs[0];
         int cristal = buildResource.init_Needs[1];
         int gas = buildResource.init_Needs[2];
         int allowableBuild = 0;
@@ -251,16 +306,16 @@ public class Base_Infomation : MonoBehaviour
                 resources[3].text = $"{allowableBuild}";
                 buildResource.AllowableBuild = allowableBuild;
             }
-        }
+        }*/
         resources[0].text = $"{metal}";
         resources[1].text = $"{cristal}";
         resources[2].text = $"{gas}";
 
 
-        foreach (TextMeshProUGUI tt in timeText)
+        /*foreach (TextMeshProUGUI tt in timeText)
         {
             tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
-        }
+        }*/
         if (info.tabs == Tabs.Tab1)
         {
             buildResource.electricity_Consumption = (buildResource.manufacture[buildResource.level]) / 10;
@@ -272,6 +327,10 @@ public class Base_Infomation : MonoBehaviour
         {
             production[0].text = $"{buildResource.buildAbility * buildResource.level}";
             production[1].text = $"{buildResource.electricity_Consumption * buildResource.level}";
+        }
+        else if (info.tabs == Tabs.Tab3)
+        {
+            production[0].text = $"{research.research_Ability * research.level}%";
         }
         else if (info.tabs == Tabs.Tab5)
         {

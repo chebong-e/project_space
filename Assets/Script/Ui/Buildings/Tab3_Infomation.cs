@@ -20,12 +20,22 @@ public class Tab3_Infomation : Base_Infomation
         }
 
         production[2].text = $"{research.ability_Text}";
-        production[0].text =
-                research.research_Ability != 0 ? $"{research.research_Ability * research.level + 1}%" : "";
+        production[0].text = $"{research.research_Ability * research.level}%";
+
+        /*if (research.level > 0)
+        {
+            production[0].text =
+                research.research_Ability != 0 ? $"{research.research_Ability * research.level} (+{research.research_Ability}%)" : "";
+        }
+        else
+        {
+            production[0].text = $"0 (+{research.research_Ability * research.level + 1}%)";
+        }*/
+
 
         foreach (var tt in timeText)
         {
-            tt.text = TimerTexting(20);
+            tt.text = TimerTexting(research.research_Time[research.level]);
         }
 
         title_Text["name"].text = $"Lv.{research.level} {research.name.Split('.')[1]}";

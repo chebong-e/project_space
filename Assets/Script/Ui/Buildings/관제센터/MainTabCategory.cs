@@ -20,11 +20,7 @@ public class MainTabCategory : MonoBehaviour
                 iconContainer = transform.parent.parent.GetChild(1).gameObject;
                 sliderContainer = transform.GetChild(2).gameObject;
                 break;
-
             case Category.Reserch:
-
-                break;
-
             case Category.Ship_Building:
             case Category.ControlCenter:
                 upgrading_Image = transform.GetChild(0).GetChild(0).GetChild(1).gameObject;
