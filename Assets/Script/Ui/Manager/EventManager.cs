@@ -18,9 +18,9 @@ public class EventManager : MonoBehaviour
     public GameObject[] TabContainer;
 
 
-    public float build_Timer1;
-    public float build_Timer2;
-    public float build_Timer3;
+    public float metal_RefillTimer;
+    public float cristal_RefillTimer;
+    public float gas_RefillTimer;
     public float total_Timer;
 
 
@@ -35,7 +35,6 @@ public class EventManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
-
     }
 
     public void Add_Event()
@@ -44,4 +43,7 @@ public class EventManager : MonoBehaviour
 
         dropDown.triggered_event = eventTriggered;
     }
+
+
+
 }

@@ -18,8 +18,21 @@ public class Tab1_Infomation : Base_Infomation
             gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
         }
 
+        //
+        
+        /*buildResource.manufacture[1] = buildResource.manufacture[0];
+        for (int i = 0; i < buildResource.level + 1; i++)
+        {
+            buildResource.manufacture[1] = 
+                (int)(buildResource.manufacture[1] * buildResource.magnification);
+            
+        }
+        
+        Debug.Log($"{buildResource.name}:»ý»ê·® = {Manufacture_Conversion(buildResource.manufacture[1])}");*/
+        //
+
         buildResource.electricity_Consumption = buildResource.manufacture[buildResource.level] / 10;
-        production[0].text = $"{buildResource.manufacture[buildResource.level]}";
+        production[0].text = $"{Manufacture_Conversion(buildResource)}";
         buildResource.electricity_Consumption = 5;
         production[1].text = $"{buildResource.electricity_Consumption}";
 

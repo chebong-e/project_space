@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
+
 
 public class Build_Manager : MonoBehaviour
 {
@@ -14,11 +14,12 @@ public class Build_Manager : MonoBehaviour
     public ContainerSlide_Group containerSlide_Group;
     public MainTabCategory mainTabCategory;
     public GameObject[] tabContainer, mainTab_Container;
+    
 
     Coroutine tab1_coroutine, tab2_coroutine, tab3_coroutine, tab4_coroutine, tab5_coroutine;
     Scriptable_Group scriptable_Group;
 
-    public bool upgrading, makingShips, building, reserching;
+    //public bool upgrading, makingShips, building, reserching;
     public bool tab1 { get; private set; }
     public bool tab2 { get; private set; }
     public bool tab3 { get; private set; }
@@ -107,6 +108,8 @@ public class Build_Manager : MonoBehaviour
         {
             obj.SetActive(false);
         }
+
+        
 
 
         /*// 수치를 얻기위한 실험
@@ -739,6 +742,9 @@ public class Build_Manager : MonoBehaviour
             tab.SetActive(false);
         }
     }
+
+
+
 }
 
 [System.Serializable]

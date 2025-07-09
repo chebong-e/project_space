@@ -48,7 +48,9 @@ public class BuildResourceEditor : Editor
             case BuildResource.Build_Category.General_Factory: // tab2
                 if (buildResource.build_Category == BuildResource.Build_Category.Resource_Factory)
                 {
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("basic_manufacture"), new GUIContent("basic_manufacture - 기본 자원 생산량"), true);
                     EditorGUILayout.PropertyField(serializedObject.FindProperty("manufacture"), new GUIContent("manufacture - 자원 생산량"), true);
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("magnification"), new GUIContent("magnification - 업그레이드 배율"), true);
                 }
                 else
                 {

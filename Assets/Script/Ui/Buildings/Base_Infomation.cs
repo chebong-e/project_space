@@ -1,4 +1,6 @@
+using System;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -318,10 +320,25 @@ public class Base_Infomation : MonoBehaviour
         }*/
         if (info.tabs == Tabs.Tab1)
         {
-            buildResource.electricity_Consumption = (buildResource.manufacture[buildResource.level]) / 10;
+            switch (buildResource.resource_Factory)
+            {
+                case BuildResource.Resource_Factory.Metal:
+                case BuildResource.Resource_Factory.Cristal:
+                case BuildResource.Resource_Factory.Gas:
+                    buildResource.electricity_Consumption = Manufacture_Conversion(buildResource) / 10;
 
-            production[0].text = $"{buildResource.manufacture[buildResource.level]}";
-            production[1].text = $"{buildResource.electricity_Consumption}";
+                    production[0].text = $"{Manufacture_Conversion(buildResource)}";
+                    production[1].text = $"{buildResource.electricity_Consumption}";
+
+                    // 리소스 매니져에 자원 생성량 전달 해야함.
+                    ResourceManager.instance.resource_Productions[(int)buildResource.resource_Factory]
+                        = Manufacture_Conversion(buildResource);
+                    break;
+            }
+            /*buildResource.electricity_Consumption = Manufacture_Conversion(buildResource) / 10;
+
+            production[0].text = $"{Manufacture_Conversion(buildResource)}";
+            production[1].text = $"{buildResource.electricity_Consumption}";*/
         }
         else if (info.tabs == Tabs.Tab2)
         {
@@ -375,5 +392,36 @@ public class Base_Infomation : MonoBehaviour
     {
         buildResource.AllowableBuild = 0;
         buildResource.level = 0;
+    }
+
+    internal int Manufacture_Conversion(int num)
+    {
+        
+        int remainder = num % 10;
+        Debug.Log($"{remainder}");
+        return num - remainder;
+    }
+
+    internal int Manufacture_Conversion(BuildResource build)
+    {
+        build.manufacture[1] = build.manufacture[0];
+
+        for (int i = 0; i < build.level; i++)
+        {
+            build.manufacture[1] = (int)(build.manufacture[1] * build.magnification);
+        }
+        int remainder = build.manufacture[1] % 10;
+
+        int value = 0;
+        if (build.level > 1)
+        {
+            value = build.manufacture[1] - remainder;
+        }
+        else if (build.level == 1)
+        {
+            value = build.basic_manufacture;
+        }
+
+        return value;
     }
 }
