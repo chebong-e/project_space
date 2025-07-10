@@ -16,8 +16,11 @@ MonoBehaviour:
   resource_Factory: 0
   general_Factory: 0
   init_Needs: 1e0000000f00000008000000
+  cur_Needs: 1e0000000f00000008000000
   AllowableBuild: 0
+  basic_manufacture: 0
   manufacture: 
+  magnification: 0
   electricity_Consumption: 0
   level: 0
   building_Time: 05000000070000000a0000003c000000960000009001000020030000dc050000b80b0000581b0000
@@ -44,4 +47,7 @@ MonoBehaviour:
   - 30
   - 50
   require_condition: "\uD2B9\uC815 \uC694\uAD6C\uC870\uAC74 \uC791\uC131"
+  buildAbility: 0
+  ability_Text: 
+  spacilAbility: []
   img: {fileID: -7238726701763850509, guid: 358104b1522eac6488372eb4737cd05d, type: 3}

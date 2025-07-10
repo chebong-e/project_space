@@ -3,6 +3,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static Base_Infomation;
 
 [System.Serializable]
 public class Title_Text : SerializableDictionary<string, TextMeshProUGUI> { };
@@ -73,6 +74,23 @@ public class Base_Infomation : MonoBehaviour
 
     void CommonResetData()
     {
+        // Build_Manager.instance.userData가 true라면 우선 레벨은 모두 0으로 초기화 해주기로 바꿔놓음
+        
+        if (Build_Manager.instance.userData)
+        {
+            switch (tabs)
+            {
+                case Tabs.Tab1:
+                case Tabs.Tab2:
+                case Tabs.Tab5:
+                    buildResource.level = 0;
+                    break;
+            }
+            
+        }
+
+
+        // 임시로직
         if (!data)
         {
             //buildResource.level = 0;
@@ -87,6 +105,7 @@ public class Base_Infomation : MonoBehaviour
                 ship.currentHave_Ship = 0;
             }
         }
+        
     }
 
     protected virtual void Init_ContainerSlide()
@@ -131,37 +150,9 @@ public class Base_Infomation : MonoBehaviour
         switch (info.tabs)
         {
             case Tabs.Tab1:
-                OverlapTextCode(info);
-                /*buildResource.level++;
-                title_Text["name"].text = $"Lv.{buildResource.level} {buildResource.name.Split('.')[1]}";
-
-                int metal = buildResource.init_Needs[0];
-                int cristal = buildResource.init_Needs[1];
-                int gas = buildResource.init_Needs[2];
-                for (int i = 0; i < buildResource.level + 1; i++) // 왜 1을 더 해줘야 할까 확인할것
-                {
-                    metal = Mathf.FloorToInt(metal * buildResource.build_require[i]);
-                    cristal = Mathf.FloorToInt(cristal * buildResource.build_require[i]);
-                    gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
-                }
-                resources[0].text = $"{metal}";
-                resources[1].text = $"{cristal}";
-                resources[2].text = $"{gas}";
-
-                foreach (TextMeshProUGUI tt in timeText)
-                {
-                    tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
-                }
-                buildResource.electricity_Consumption = (buildResource.manufacture[buildResource.level]) / 10;
-
-                production[0].text = $"{buildResource.manufacture[buildResource.level]}";
-                production[1].text = $"{buildResource.electricity_Consumption}";*/
-
-                break;
             case Tabs.Tab2:
-                OverlapTextCode(info);
-                break;
             case Tabs.Tab3:
+            case Tabs.Tab5:
                 OverlapTextCode(info);
                 break;
             case Tabs.Tab4:
@@ -169,54 +160,6 @@ public class Base_Infomation : MonoBehaviour
                 shipBuildSlider.slider.maxValue = ship.maxHaveShip_Amount - ship.currentHave_Ship;
                 shipBuildSlider.slider.value = 0;
                 shipBuildSlider.building_Amount.text = $"<       {shipBuildSlider.slider.value}     /     {shipBuildSlider.slider.maxValue}       >";
-                break;
-            case Tabs.Tab5:
-                OverlapTextCode(info);
-                /*buildResource.level++;
-                title_Text["name"].text = $"Lv.{buildResource.level} {buildResource.name.Split('.')[1]} 관제센터";
-
-                metal = buildResource.init_Needs[0];
-                cristal = buildResource.init_Needs[1];
-                gas = buildResource.init_Needs[2];
-                int allowableBuild = 0;
-                for (int i = 0; i < buildResource.level + 1; i++) // 왜 1을 더 해줘야 할까 확인할것
-                {
-                    metal = Mathf.FloorToInt(metal * buildResource.build_require[i]);
-                    cristal = Mathf.FloorToInt(cristal * buildResource.build_require[i]);
-                    gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
-                    allowableBuild = allowableBuild + (int)buildResource.build_result[i];
-                }
-
-                resources[0].text = $"{metal}";
-                resources[1].text = $"{cristal}";
-                resources[2].text = $"{gas}";
-                resources[3].text = $"{allowableBuild}";
-                buildResource.AllowableBuild = allowableBuild;
-
-                // 임시 사항. 나중에 로직으로 빼두던지 해야할듯
-                // 윗열 슬라이더 시간 텍스트 표시 관련임 
-                foreach (TextMeshProUGUI tt in timeText)
-                {
-                    tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
-                }
-
-                // 함선생산 탭의 최대 함선 생산 수량 업데이트
-                ship.maxHaveShip_Amount = allowableBuild;
-                var imgGroup = Build_Manager.instance.containerSlide_Group;
-                for (int i = 0; i < imgGroup.controlCenter_Tab.Count; i++)
-                {
-                    if (imgGroup.controlCenter_Tab[i] == info.containerSlide)
-                    {
-                        imgGroup.build_Tab4[i].Infomation.shipBuildSlider.
-                            building_Amount.text =
-                            $"<       {imgGroup.build_Tab4[i].Infomation.shipBuildSlider.slider.value}     /     {ship.maxHaveShip_Amount - ship.currentHave_Ship}       >";
-                        imgGroup.build_Tab4[i].Infomation.shipBuildSlider.
-                            slider.maxValue = ship.maxHaveShip_Amount - ship.currentHave_Ship;
-                        imgGroup.build_Tab4[i].Infomation.shipBuildSlider.slider.value
-                            = ship.maxHaveShip_Amount - ship.currentHave_Ship >= 1 ? 1 : 0;
-                        break;
-                    }
-                }*/
                 break;
         } 
     }
@@ -289,35 +232,17 @@ public class Base_Infomation : MonoBehaviour
                 }
                 break;
         }
-        /*buildResource.level++;
-        nameText = $"Lv.{buildResource.level} {buildResource.name.Split('.')[1]}";*/
+
         title_Text["name"].text = info.tabs == Tabs.Tab1 || info.tabs == Tabs.Tab2 || info.tabs == Tabs.Tab3 ? nameText : nameText + " 관제센터";
 
-        /*int metal = buildResource.init_Needs[0];
-        int cristal = buildResource.init_Needs[1];
-        int gas = buildResource.init_Needs[2];
-        int allowableBuild = 0;
-        for (int i = 0; i < buildResource.level + 1; i++) // 왜 1을 더 해줘야 할까 확인할것
-        {
-            metal = Mathf.FloorToInt(metal * buildResource.build_require[i]);
-            cristal = Mathf.FloorToInt(cristal * buildResource.build_require[i]);
-            gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
-            if (info.tabs == Tabs.Tab5)
-            {
-                allowableBuild = allowableBuild + (int)buildResource.build_result[i];
-                resources[3].text = $"{allowableBuild}";
-                buildResource.AllowableBuild = allowableBuild;
-            }
-        }*/
         resources[0].text = $"{metal}";
         resources[1].text = $"{cristal}";
         resources[2].text = $"{gas}";
 
+        buildResource.cur_Needs[0] = metal;
+        buildResource.cur_Needs[1] = cristal;
+        buildResource.cur_Needs[2] = gas;
 
-        /*foreach (TextMeshProUGUI tt in timeText)
-        {
-            tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
-        }*/
         if (info.tabs == Tabs.Tab1)
         {
             switch (buildResource.resource_Factory)
@@ -335,14 +260,10 @@ public class Base_Infomation : MonoBehaviour
                         = Manufacture_Conversion(buildResource);
                     break;
             }
-            /*buildResource.electricity_Consumption = Manufacture_Conversion(buildResource) / 10;
-
-            production[0].text = $"{Manufacture_Conversion(buildResource)}";
-            production[1].text = $"{buildResource.electricity_Consumption}";*/
         }
         else if (info.tabs == Tabs.Tab2)
         {
-            production[0].text = $"{buildResource.buildAbility * buildResource.level}";
+            production[0].text = $"{buildResource.buildAbility * buildResource.level}%";
             production[1].text = $"{buildResource.electricity_Consumption * buildResource.level}";
         }
         else if (info.tabs == Tabs.Tab3)
@@ -394,16 +315,9 @@ public class Base_Infomation : MonoBehaviour
         buildResource.level = 0;
     }
 
-    internal int Manufacture_Conversion(int num)
-    {
-        
-        int remainder = num % 10;
-        Debug.Log($"{remainder}");
-        return num - remainder;
-    }
-
     internal int Manufacture_Conversion(BuildResource build)
     {
+        // build.manufacture[0]은 basic과 같은 기능으로 항상 1번 인덱스의 값만 덮어씌어지도록 설계
         build.manufacture[1] = build.manufacture[0];
 
         for (int i = 0; i < build.level; i++)

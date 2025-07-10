@@ -18,6 +18,7 @@ public class BuildResource : ScriptableObject
 
     [Header("Upgrade Data")]
     public int[] init_Needs;
+    public int[] cur_Needs;
     public int AllowableBuild;
     public int basic_manufacture;
     public int[] manufacture;

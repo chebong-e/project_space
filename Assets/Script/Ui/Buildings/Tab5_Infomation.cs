@@ -19,6 +19,10 @@ public class Tab5_Infomation : Base_Infomation
             gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
         }
 
+        buildResource.cur_Needs[0] = metal;
+        buildResource.cur_Needs[1] = cristal;
+        buildResource.cur_Needs[2] = gas;
+
         resources[3].text = $"{buildResource.AllowableBuild} (+{Supplement_Allowable()})";
         resources[4].text = $"생산 가능 {buildResource.name}";
 

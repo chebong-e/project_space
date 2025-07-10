@@ -39,6 +39,7 @@ public class BuildResourceEditor : Editor
         buildResource.level = EditorGUILayout.IntField("Level", buildResource.level);
 
         EditorGUILayout.PropertyField(serializedObject.FindProperty("init_Needs"), new GUIContent("init_Needs", "초기 필요 자원"), true);
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("cur_Needs"), new GUIContent("cur_Needs", "현 레벨 필요 자원"), true);
         EditorGUILayout.PropertyField(serializedObject.FindProperty("building_Time"), new GUIContent("building_Time ", "레벨당 건설 시간"), true);
         EditorGUILayout.PropertyField(serializedObject.FindProperty("build_require"), new GUIContent("build_require", "레벨당 업그레이드 필요 자원 배수"), true);
 

@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -92,18 +94,41 @@ public class ResourceManager : MonoBehaviour
     }
 
     // 건설 및 업그레이드에 따른 자원 감소처리 로직
-    public void UpgradePerDeduct(int cost, int index)
+    public bool UpgradePerDeduct(int[] cost, bool confirm)
     {
-        if (myRes[index] < cost)
+        if (confirm)
         {
-            // 자원이 모잘라서 업그레이드 또는 생산이 되지 않을때는 화면 중앙에 0.5초? ~1초 정도 
-            // 안내 창이 뜨는 팝업 표시 구현하도록
-            Debug.Log("자원 모자름");
-            return;
+            for (int i = 0; i < cost.Length; i++)
+            {
+                if (myRes[i] < cost[i])
+                {
+                    // 자원이 모잘라서 업그레이드 또는 생산이 되지 않을때는 화면 중앙에 0.5초? ~1초 정도 
+                    // 안내 창이 뜨는 팝업 표시 구현하도록
+                    Debug.LogError("자원 모자름");
+                    return false;
+                }
+                
+            }
+
+            for (int i = 0; i < cost.Length; i++)
+            {
+                myRes[i] -= cost[i];
+                resourceWindow[i == 0 ? "Metal" : i == 1 ? "Cristal" : "Gas"].container.text
+                    = $"{myRes[i]}";
+            }
+            return true;
         }
-        myRes[index] -= cost;
-        resourceWindow[index == 0 ? "Metal" : index == 1 ? "Cristal" : "Gas"].container.text
-            = $"{myRes[index]}";
+        else
+        {
+            for (int i = 0; i < cost.Length; i++)
+            {
+                myRes[i] += cost[i];
+                resourceWindow[i == 0 ? "Metal" : i == 1 ? "Cristal" : "Gas"].container.text
+                    = $"{myRes[i]}";
+            }
+            return true;
+        }
+        
     }
 
     public string ResourceMarkChange(long value)
@@ -130,7 +155,6 @@ public class ResourceManager : MonoBehaviour
         }
         else return value.ToString();
     }
-
 }
 
 [System.Serializable]

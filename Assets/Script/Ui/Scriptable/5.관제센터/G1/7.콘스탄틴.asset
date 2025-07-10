@@ -13,10 +13,15 @@ MonoBehaviour:
   m_Name: "7.\uCF58\uC2A4\uD0C4\uD2F4"
   m_EditorClassIdentifier: 
   build_Category: 3
-  factory_Category: 0
-  grade: 0
+  resource_Factory: 0
+  general_Factory: 0
   init_Needs: 1e0000000f00000008000000
+  cur_Needs: 1e0000000f00000008000000
   AllowableBuild: 0
+  basic_manufacture: 0
+  manufacture: 
+  magnification: 0
+  electricity_Consumption: 0
   level: 0
   building_Time: 05000000070000000a0000003c000000960000009001000020030000dc050000b80b0000581b0000
   build_require:
@@ -42,5 +47,7 @@ MonoBehaviour:
   - 30
   - 50
   require_condition: "\uD2B9\uC815 \uC694\uAD6C\uC870\uAC74 \uC791\uC131"
-  Lv_Title: "Lv.{0} \uC544\uB9C8\uAC9F\uB3C8 \uAD00\uC81C\uC13C\uD130"
+  buildAbility: 0
+  ability_Text: 
+  spacilAbility: []
   img: {fileID: -3341561420256330237, guid: 1899794b69f80b849a0079cb9696f690, type: 3}

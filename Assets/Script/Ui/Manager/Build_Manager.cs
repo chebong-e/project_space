@@ -19,6 +19,7 @@ public class Build_Manager : MonoBehaviour
     Coroutine tab1_coroutine, tab2_coroutine, tab3_coroutine, tab4_coroutine, tab5_coroutine;
     Scriptable_Group scriptable_Group;
 
+    public bool userData;
     //public bool upgrading, makingShips, building, reserching;
     public bool tab1 { get; private set; }
     public bool tab2 { get; private set; }
@@ -163,7 +164,7 @@ public class Build_Manager : MonoBehaviour
     }
 
     // 함선과 관제센터는 그레이드가 5로 더 세분화 되므로 이것의 값을 세분화하여 저장하는게 필요
-    public void btnExex()
+    public void PlayerInfoDataSave() // 데이터 저장관련
     {
         playerInfomation.planets = new BuildLevels[2]; // 가정(홈플래닛과 콜로니1)
         for (int i = 0; i < playerInfomation.planets.Length; i++) // 2
@@ -291,7 +292,6 @@ public class Build_Manager : MonoBehaviour
     // 컨테이너를 슬라이드 닫기처리
     public void TabWindow_Close() // 현재 home 버튼에 할당 중
     {
-        Debug.Log(Active_TabContainerIndex());
         if (3 == Active_TabContainerIndex())
         {
             
@@ -317,85 +317,146 @@ public class Build_Manager : MonoBehaviour
         switch (info.tabs)
         {
             case Base_Infomation.Tabs.Tab1:
-                tab1 = upgrade;
                 if (upgrade)
                 {
-                    tab1_coroutine = StartCoroutine(Tab1_Building(
-                        img,
-                        info,
-                        info.buildResource.building_Time[info.buildResource.level]));
+                    // 업그레이드 비용 로직
+                    if (ResourceManager.instance.UpgradePerDeduct(info.buildResource.cur_Needs, upgrade))
+                    {
+                        tab1 = upgrade;
+                        // 업그레이드 진행 로직
+                        tab1_coroutine = StartCoroutine(Tab1_Building(
+                            img,
+                            info,
+                            info.buildResource.building_Time[info.buildResource.level]));
+                        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
+                    }
                 }
                 else
                 {
-                    StopCoroutine(tab1_coroutine);
+                    if (tab1)
+                    {
+                        ResourceManager.instance.UpgradePerDeduct(info.buildResource.cur_Needs, upgrade);
+                        StopCoroutine(tab1_coroutine);
+                        CancleForReset(info);
+                        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
+                    }
                 }
                 break;
             case Base_Infomation.Tabs.Tab2:
-                tab2 = upgrade;
+                
                 if (upgrade)
                 {
-                    tab2_coroutine = StartCoroutine(Tab1_Building(
-                        img,
-                        info,
-                        info.buildResource.building_Time[info.buildResource.level]));
+                    if (ResourceManager.instance.UpgradePerDeduct(info.buildResource.cur_Needs, upgrade))
+                    {
+                        tab2 = upgrade;
+                        tab2_coroutine = StartCoroutine(Tab1_Building(
+                            img,
+                            info,
+                            info.buildResource.building_Time[info.buildResource.level]));
+                        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
+                    }
                 }
                 else
                 {
-                    StopCoroutine(tab2_coroutine);
+                    if (tab2)
+                    {
+                        ResourceManager.instance.UpgradePerDeduct(info.buildResource.cur_Needs, upgrade);
+                        StopCoroutine(tab2_coroutine);
+                        CancleForReset(info);
+                        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
+                    }
                 }
                 break;
-            case Base_Infomation.Tabs.Tab3:
-                tab3 = upgrade;
+            case Base_Infomation.Tabs.Tab3:               
                 if (upgrade)
                 {
-                    tab3_coroutine = StartCoroutine(Tab1_Building(
-                        img,
-                        info,
-                        info.research.research_Time[info.research.level]));
+                    if (ResourceManager.instance.UpgradePerDeduct(info.buildResource.cur_Needs, upgrade))
+                    {
+                        tab3 = upgrade;
+                        tab3_coroutine = StartCoroutine(Tab1_Building(
+                            img,
+                            info,
+                            info.research.research_Time[info.research.level]));
+                        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
+                    }
+                        
                 }
                 else
                 {
-                    StopCoroutine(tab3_coroutine);
+                    if (tab3)
+                    {
+
+                        StopCoroutine(tab3_coroutine);
+                        CancleForReset(info);
+                        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
+                    }                       
                 }
                 break;
             case Base_Infomation.Tabs.Tab4:
-                tab4 = upgrade;
+                
                 info.containerSlide.imgBtn.enabled = !upgrade;
                 info.child_InfoContainer.transform.GetChild(0).gameObject.SetActive(upgrade);
                 info.child_InfoContainer.transform.GetChild(1).gameObject.SetActive(!upgrade);
+
+                int[] shipCost = new int[3];
+                for (int i = 0; i < info.ship.shipMake_Cost.Length; i++)
+                {
+                    shipCost[i] = (int)info.shipBuildSlider.slider.value * info.ship.shipMake_Cost[i];
+                }
+
                 if (upgrade)
                 {
-                    tab4_coroutine = StartCoroutine(
-                        MakingShips_Timer(
+                    if (ResourceManager.instance.UpgradePerDeduct(shipCost, upgrade))
+                    {
+                        tab4 = upgrade;
+                        tab4_coroutine = StartCoroutine(MakingShips_Timer(
                             img,
                             info,
                             makeCount));
+                        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
+                    }  
                 }
                 else
                 {
-                    StopCoroutine(tab4_coroutine);
+                    if (tab4)
+                    {
+                        ResourceManager.instance.UpgradePerDeduct(shipCost, upgrade);
+                        StopCoroutine(tab4_coroutine);
+                        CancleForReset(info);
+                        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
+                    }     
                 }
                 break;
             case Base_Infomation.Tabs.Tab5:
-                tab5 = upgrade;
+                
                 if (upgrade)
                 {
-                    tab5_coroutine = StartCoroutine(
-                            ControlCenter_BuildingTimer(
-                                img,
-                                info,
-                                info.buildResource.building_Time[info.buildResource.level]));
+                    if (ResourceManager.instance.UpgradePerDeduct(info.buildResource.cur_Needs, upgrade))
+                    {
+                        tab5 = upgrade;
+                        tab5_coroutine = StartCoroutine(ControlCenter_BuildingTimer(
+                            img,
+                            info,
+                            info.buildResource.building_Time[info.buildResource.level]));
+                        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
+                    }                        
                 }
                 else
                 {
-                    StopCoroutine(tab5_coroutine);
+                    if (tab5)
+                    {
+                        ResourceManager.instance.UpgradePerDeduct(info.buildResource.cur_Needs, upgrade);
+                        StopCoroutine(tab5_coroutine);
+                        CancleForReset(info);
+                        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
+                    }                        
                 }
                 break;
         }
 
-        if (!upgrade)
+        /*if (!upgrade)
         {
-            switch(info.tabs)
+            switch (info.tabs)
             {
                 case Base_Infomation.Tabs.Tab1:
                 case Base_Infomation.Tabs.Tab2:
@@ -416,97 +477,30 @@ public class Build_Manager : MonoBehaviour
                     break;
             }
             mainTabCategory.Upgrading(null, false, false);
-        }
+        }*/
 
-        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
+        /*info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());*/
+    }
 
-
-
-
-
-
-
-
-
-
-
-        /*if (upgrade)
+    void CancleForReset(Base_Infomation info)
+    {
+        if (info.tabs == Base_Infomation.Tabs.Tab3)
         {
-            if (info.tabs == Base_Infomation.Tabs.Tab1)
+            for (int i = 0; i < 2; i++)
             {
-                tab1 = true;
-                tab1_coroutine = StartCoroutine(Tab1_Building(
-                    img,
-                    info,
-                    info.buildResource.building_Time[info.buildResource.level]));
-            }
-            else if (info.tabs == Base_Infomation.Tabs.Tab2)
-            {
-                tab2 = true;
-                tab2_coroutine = StartCoroutine(Tab1_Building(
-                    img,
-                    info,
-                    info.buildResource.building_Time[info.buildResource.level]));
-            }
-            else if (info.tabs == Base_Infomation.Tabs.Tab4)
-            {
-                info.containerSlide.imgBtn.enabled = false;
-                tab4 = !tab4;
-                tab4_coroutine = StartCoroutine(
-                    MakingShips_Timer(
-                        img,
-                        info,
-                        makeCount));
-            }
-            else
-            {
-                tab5_coroutine = StartCoroutine(
-                            ControlCenter_BuildingTimer(
-                                img,
-                                info,
-                                info.buildResource.building_Time[info.buildResource.level]));
+                info.timeSlider[i].value = 0f;
+                info.timeText[i].text = $"{info.research.research_Time[info.research.level]}초";
             }
         }
         else
         {
-            if (info.tabs == Base_Infomation.Tabs.Tab1)
-            {
-                tab1 = false;
-                StopCoroutine(tab1_coroutine);
-            }
-            else if (info.tabs == Base_Infomation.Tabs.Tab2)
-            {
-                tab2 = false;
-                StopCoroutine(tab2_coroutine);
-            }
-            else if (info.tabs == Base_Infomation.Tabs.Tab4)
-            {
-                tab4 = !tab4;
-                info.containerSlide.imgBtn.enabled = true;
-                StopCoroutine(tab4_coroutine);
-                info.child_InfoContainer.transform.GetChild(0).gameObject.SetActive(upgrade);
-                info.child_InfoContainer.transform.GetChild(1).gameObject.SetActive(!upgrade);
-            }
-            else
-            {
-                StopCoroutine(tab5_coroutine);
-                *//*mainTabCategory.Upgrading(null, false);*//*
-            }
-
             for (int i = 0; i < 2; i++)
             {
                 info.timeSlider[i].value = 0f;
                 info.timeText[i].text = $"{info.buildResource.building_Time[info.buildResource.level]}초";
             }
-            mainTabCategory.Upgrading(null, false, false);
         }
-
-        info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
-        if (info.tabs == Base_Infomation.Tabs.Tab4)
-        {
-            info.child_InfoContainer.transform.GetChild(0).gameObject.SetActive(upgrade);
-            info.child_InfoContainer.transform.GetChild(1).gameObject.SetActive(!upgrade);
-        }*/
+        mainTabCategory.Upgrading(null, false, false);
     }
 
     IEnumerator MakingShips_Timer(Sprite img, Base_Infomation info, int makeCount)
@@ -743,8 +737,39 @@ public class Build_Manager : MonoBehaviour
         }
     }
 
+    //꺼질때 cur_Init 초기화 해주기
+    /*void OnDestroy()
+    {
+        List<BuildResource> list_BR = new List<BuildResource>();
+        for (int i = 0; i < 2; i++)
+        {
+            List<Research> research = new List<Research>();
+            research = scriptable_Group.GetTargetListByResearch(i);
+            foreach (Research re in research)
+            {
+                re.level = 0;
+            }
+            if (i < 2)
+            {
+                list_BR = scriptable_Group.GetTargetListByBuildResource(i, 0);
+                foreach (BuildResource build in list_BR)
+                {
+                    build.level = 0;
+                }
+            }
+            
+        }
 
-
+        for (int i = 0; i < 4; i++)
+        {
+            list_BR = scriptable_Group.GetTargetListByBuildResource(0, i);
+            foreach (BuildResource build in list_BR)
+            {
+                build.level = 0;
+            }
+        }
+        Debug.Log("초기화 완료. 종료함");
+    }*/
 }
 
 [System.Serializable]

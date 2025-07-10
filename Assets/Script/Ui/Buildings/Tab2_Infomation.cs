@@ -19,6 +19,11 @@ public class Tab2_Infomation : Base_Infomation
             gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
         }
 
+        buildResource.cur_Needs[0] = metal;
+        buildResource.cur_Needs[1] = cristal;
+        buildResource.cur_Needs[2] = gas;
+
+
         production[2].text = $"{buildResource.ability_Text}";
         if (production[1] == null)
         {

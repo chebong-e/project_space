@@ -11,30 +11,37 @@ public class Tab1_Infomation : Base_Infomation
     {
         var (metal, cristal, gas) = (buildResource.init_Needs[0], buildResource.init_Needs[1], buildResource.init_Needs[2]);
 
+        buildResource.manufacture[1] = buildResource.manufacture[0];
         for (int i = 0; i < buildResource.level; i++)
         {
             metal = Mathf.FloorToInt(metal * buildResource.build_require[i]);
             cristal = Mathf.FloorToInt(cristal * buildResource.build_require[i]);
             gas = Mathf.FloorToInt(gas * buildResource.build_require[i]);
+            buildResource.manufacture[1] = (int)(buildResource.manufacture[1] * buildResource.magnification);
         }
 
-        //
-        
-        /*buildResource.manufacture[1] = buildResource.manufacture[0];
-        for (int i = 0; i < buildResource.level + 1; i++)
+        buildResource.cur_Needs[0] = metal;
+        buildResource.cur_Needs[1] = cristal;
+        buildResource.cur_Needs[2] = gas;
+
+        //자원생산량 및 전력소모량 적용
+        switch (buildResource.resource_Factory)
         {
-            buildResource.manufacture[1] = 
-                (int)(buildResource.manufacture[1] * buildResource.magnification);
-            
+            case BuildResource.Resource_Factory.Metal:
+            case BuildResource.Resource_Factory.Cristal:
+            case BuildResource.Resource_Factory.Gas:
+                ResourceManager.instance.resource_Productions[(int)buildResource.resource_Factory]
+                        = Manufacture_Conversion(buildResource);
+                break;
         }
-        
-        Debug.Log($"{buildResource.name}:생산량 = {Manufacture_Conversion(buildResource.manufacture[1])}");*/
         //
 
         buildResource.electricity_Consumption = buildResource.manufacture[buildResource.level] / 10;
         production[0].text = $"{Manufacture_Conversion(buildResource)}";
         buildResource.electricity_Consumption = 5;
         production[1].text = $"{buildResource.electricity_Consumption}";
+
+        
 
         foreach (var tt in timeText)
         {
