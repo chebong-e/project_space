@@ -16,7 +16,7 @@ MonoBehaviour:
   resource_Factory: 0
   general_Factory: 2
   init_Needs: 140000000a00000005000000
-  cur_Needs: 140000000a00000005000000
+  cur_Needs: 28000000140000000a000000
   AllowableBuild: 0
   basic_manufacture: 0
   manufacture: 
