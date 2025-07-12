@@ -20,10 +20,6 @@ public class ResourceManager : MonoBehaviour
     float timer = 0f;
     float productionInterval = 1f;
 
-
-
-
-
     public int[] myRes;
 
     //
@@ -59,6 +55,20 @@ public class ResourceManager : MonoBehaviour
         resourceWindow["Energy"].container.text = ResourceMarkChange(123_456);
 
 
+        float timer = 3600f;
+        for (int i = 0; i < 3; i++)
+        {
+            timer = timer - (timer * 0.3f);
+            Debug.Log($"레벨{i+1}당 감소되는 시간 = {timer}");
+        }
+        Debug.Log($"일반적:{3600 - (3600 * 0.9f)}");
+
+
+
+
+
+
+
     }
 
     void Update()
@@ -90,7 +100,7 @@ public class ResourceManager : MonoBehaviour
     // 플레이어의 연구 능력 및 기타 특정 능력으로 인한 자원 생성 상승률 반영 로직
     void PlayerProduction_Apply()
     {
-        
+        //scriptable_Group.tab2Groups[0]
     }
 
     // 건설 및 업그레이드에 따른 자원 감소처리 로직
@@ -104,31 +114,26 @@ public class ResourceManager : MonoBehaviour
                 {
                     // 자원이 모잘라서 업그레이드 또는 생산이 되지 않을때는 화면 중앙에 0.5초? ~1초 정도 
                     // 안내 창이 뜨는 팝업 표시 구현하도록
-                    Debug.LogError("자원 모자름");
+                    Debug.Log("자원 모자름");
                     return false;
                 }
-                
             }
+        }
 
-            for (int i = 0; i < cost.Length; i++)
+        for (int i = 0; i < cost.Length; i++)
+        {
+            if (confirm)
             {
                 myRes[i] -= cost[i];
-                resourceWindow[i == 0 ? "Metal" : i == 1 ? "Cristal" : "Gas"].container.text
-                    = $"{myRes[i]}";
             }
-            return true;
-        }
-        else
-        {
-            for (int i = 0; i < cost.Length; i++)
+            else
             {
                 myRes[i] += cost[i];
-                resourceWindow[i == 0 ? "Metal" : i == 1 ? "Cristal" : "Gas"].container.text
-                    = $"{myRes[i]}";
             }
-            return true;
+            resourceWindow[i == 0 ? "Metal" : i == 1 ? "Cristal" : "Gas"].container.text
+                    = $"{myRes[i]}";
         }
-        
+        return true;
     }
 
     public string ResourceMarkChange(long value)

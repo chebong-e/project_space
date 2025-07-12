@@ -26,9 +26,10 @@ public class Tab5_Infomation : Base_Infomation
         resources[3].text = $"{buildResource.AllowableBuild} (+{Supplement_Allowable()})";
         resources[4].text = $"생산 가능 {buildResource.name}";
 
+        int timer = Mathf.CeilToInt(Build_Manager.instance.TimerCalculation(tabs, buildResource.building_Time[buildResource.level]));
         foreach (var tt in timeText)
         {
-            tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
+            tt.text = $"{TimerTexting(timer)}";
         }
 
         title_Text["name"].text = $"Lv.{buildResource.level} {buildResource.name.Split('.')[1]} 관제센터";

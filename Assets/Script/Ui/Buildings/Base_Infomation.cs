@@ -76,7 +76,7 @@ public class Base_Infomation : MonoBehaviour
     {
         // Build_Manager.instance.userData가 true라면 우선 레벨은 모두 0으로 초기화 해주기로 바꿔놓음
         
-        if (Build_Manager.instance.userData)
+        /*if (Build_Manager.instance.userData)
         {
             switch (tabs)
             {
@@ -104,7 +104,7 @@ public class Base_Infomation : MonoBehaviour
                 ship.maxHaveShip_Amount = buildResource.AllowableBuild;
                 ship.currentHave_Ship = 0;
             }
-        }
+        }*/
         
     }
 
@@ -161,7 +161,7 @@ public class Base_Infomation : MonoBehaviour
                 shipBuildSlider.slider.value = 0;
                 shipBuildSlider.building_Amount.text = $"<       {shipBuildSlider.slider.value}     /     {shipBuildSlider.slider.maxValue}       >";
                 break;
-        } 
+        }
     }
 
     public void UpgradeConfirm_Or_Cancle()
@@ -173,6 +173,17 @@ public class Base_Infomation : MonoBehaviour
             tabs == Tabs.Tab4 ? (int)shipBuildSlider.slider.value : 0,
             this,
             confirm);
+    }
+
+    //건물 건설시간 감소 로직 (적용확인 중)
+    public void Ability_Apply()
+    {
+        int timer = Mathf.CeilToInt(Build_Manager.instance.TimerCalculation(tabs, buildResource.building_Time[buildResource.level]));
+        foreach (var tt in timeText)
+        {
+            tt.text = $"{TimerTexting(timer)}";
+        }
+
     }
 
     void OverlapTextCode(Base_Infomation info)
@@ -209,7 +220,9 @@ public class Base_Infomation : MonoBehaviour
 
                 foreach (TextMeshProUGUI tt in timeText)
                 {
-                    tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
+                    /*tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";*/
+                    /*tt.text = $"{TimerTexting((int)Build_Manager.instance.TimerCalculation(tabs, buildResource.building_Time[buildResource.level]))}";
+                    Debug.Log($"시간표기: {TimerTexting((int)Build_Manager.instance.TimerCalculation(tabs, buildResource.building_Time[buildResource.level]))}");*/
                 }
                 break;
             case Tabs.Tab3:
@@ -315,6 +328,7 @@ public class Base_Infomation : MonoBehaviour
         buildResource.level = 0;
     }
 
+    // 자원 생산량 1자릿수는 버림처리하기 위한 로직
     internal int Manufacture_Conversion(BuildResource build)
     {
         // build.manufacture[0]은 basic과 같은 기능으로 항상 1번 인덱스의 값만 덮어씌어지도록 설계

@@ -41,11 +41,12 @@ public class Tab1_Infomation : Base_Infomation
         buildResource.electricity_Consumption = 5;
         production[1].text = $"{buildResource.electricity_Consumption}";
 
-        
 
+        int timer = Mathf.CeilToInt(Build_Manager.instance.TimerCalculation(tabs, buildResource.building_Time[buildResource.level]));
         foreach (var tt in timeText)
         {
-            tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
+            //tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";
+            tt.text = $"{TimerTexting(timer)}";
         }
 
         title_Text["name"].text = $"Lv.{buildResource.level} {buildResource.name.Split('.')[1]}";

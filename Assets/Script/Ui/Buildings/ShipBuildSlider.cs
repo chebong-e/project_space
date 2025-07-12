@@ -18,7 +18,15 @@ public class ShipBuildSlider : MonoBehaviour
         info = GetComponentInParent<Base_Infomation>();
 
         building_Amount.text = $"<       {slider.value}     /     {info.ship.maxHaveShip_Amount - info.ship.currentHave_Ship}       >";
-        slider.maxValue = info.ship.maxHaveShip_Amount - info.ship.currentHave_Ship;
+        if (info.buildResource.level > 0)
+        {
+            slider.maxValue = info.ship.maxHaveShip_Amount - info.ship.currentHave_Ship;
+        }
+        else
+        {
+            slider.maxValue = 0;
+        }
+        
     }
 
     public void OnSliderValueChanged()

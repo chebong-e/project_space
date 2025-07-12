@@ -59,4 +59,32 @@ public class Scriptable_Matching : MonoBehaviour
                 break;
         }
     }
+
+    public void Infomation_UpdateSet()
+    {
+        Base_Infomation[] Infomations = GetComponentsInChildren<Base_Infomation>(true);
+        switch (tab_Category)
+        {
+            case Tab_Category.Tab1:
+            case Tab_Category.Tab2:
+            case Tab_Category.Tab5:
+                for (int i = 0; i < Infomations.Length; i++)
+                {
+                    Infomations[i].Ability_Apply();
+
+                }
+                break;
+            case Tab_Category.Tab3:
+                /*for (int i = 0; i < Infomations.Length; i++)
+                {
+                    Infomations[i].Init_Setting();
+
+                }*/
+                break;
+
+            case Tab_Category.Tab4:
+
+                break;
+        }
+    }
 }

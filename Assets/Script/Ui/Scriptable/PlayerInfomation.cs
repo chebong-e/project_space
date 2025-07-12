@@ -1,8 +1,4 @@
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-
-
 
 [System.Serializable]
 public class BuildingLevels : SerializableDictionary<int, int[,]> { };
@@ -19,7 +15,28 @@ public class PlayerInfomation : ScriptableObject
     // value값 : 첫번째 인덱스: tab1~5, 두번째 인덱스: 첫번째 인덱스에 해당하는 건물들의 레벨(순차적)
     public BuildingLevels build_Levels;
     public BuildLevels[] planets;
-    
+
+    //ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+    public static float buildingSpeed 
+    {
+        get { return Build_Manager.instance.scriptable_Group.tab2Groups[0].level * 0.01f; }
+    }
+    public static float spacialBuildingSpeed
+    {
+        get { return Build_Manager.instance.scriptable_Group.tab2Groups[6].spacilAbility[0]; }
+    }
+    public static float researchSpeed
+    {
+        get { return Build_Manager.instance.scriptable_Group.tab2Groups[1].level * 0.01f; }
+    }
+    public static float spacialResearchSpeed
+    {
+        get { return Build_Manager.instance.scriptable_Group.tab2Groups[6].spacilAbility[1]; }
+    }
+    public static float makingSpeed
+    {
+        get { return Build_Manager.instance.scriptable_Group.tab2Groups[4].level * 0.01f; }
+    }
 
 }
 

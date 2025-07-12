@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static Base_Infomation;
 
 
 public class Build_Manager : MonoBehaviour
@@ -14,10 +15,10 @@ public class Build_Manager : MonoBehaviour
     public ContainerSlide_Group containerSlide_Group;
     public MainTabCategory mainTabCategory;
     public GameObject[] tabContainer, mainTab_Container;
-    
+    public Scriptable_Group scriptable_Group;
 
     Coroutine tab1_coroutine, tab2_coroutine, tab3_coroutine, tab4_coroutine, tab5_coroutine;
-    Scriptable_Group scriptable_Group;
+    
 
     public bool userData;
     //public bool upgrading, makingShips, building, reserching;
@@ -316,7 +317,7 @@ public class Build_Manager : MonoBehaviour
 
         switch (info.tabs)
         {
-            case Base_Infomation.Tabs.Tab1:
+            case Tabs.Tab1:
                 if (upgrade)
                 {
                     // 업그레이드 비용 로직
@@ -327,7 +328,7 @@ public class Build_Manager : MonoBehaviour
                         tab1_coroutine = StartCoroutine(Tab1_Building(
                             img,
                             info,
-                            info.buildResource.building_Time[info.buildResource.level]));
+                            TimerCalculation(info.tabs, info.buildResource.building_Time[info.buildResource.level])));
                         info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
                     }
                 }
@@ -484,7 +485,7 @@ public class Build_Manager : MonoBehaviour
 
     void CancleForReset(Base_Infomation info)
     {
-        if (info.tabs == Base_Infomation.Tabs.Tab3)
+        if (info.tabs == Tabs.Tab3)
         {
             for (int i = 0; i < 2; i++)
             {
@@ -494,10 +495,13 @@ public class Build_Manager : MonoBehaviour
         }
         else
         {
+            int timer = Mathf.CeilToInt(TimerCalculation(info.tabs, info.buildResource.building_Time[info.buildResource.level]));
             for (int i = 0; i < 2; i++)
             {
                 info.timeSlider[i].value = 0f;
-                info.timeText[i].text = $"{info.buildResource.building_Time[info.buildResource.level]}초";
+                /*info.timeText[i].text = $"{info.buildResource.building_Time[info.buildResource.level]}초";*/
+                info.timeText[i].text =
+                    $"{TimerTexting(timer)}";
             }
         }
         mainTabCategory.Upgrading(null, false, false);
@@ -657,6 +661,7 @@ public class Build_Manager : MonoBehaviour
 
     IEnumerator Tab1_Building(Sprite img, Base_Infomation info, float targetTimer)
     {
+        Debug.Log($"{info.buildResource.name}의 업그레이드 시간 : {targetTimer}");
         int activeIndex = Active_TabContainerIndex();
         GameObject maintab_container = mainTabCategory.Upgrading(img, true, false);
         Slider maintab_slider = mainTabCategory.sliderContainer.GetComponentInChildren<Slider>();
@@ -679,8 +684,7 @@ public class Build_Manager : MonoBehaviour
             }
             maintab_slider.value = timer;
 
-            int remaining_curTime = Mathf.CeilToInt(
-                Mathf.Clamp(targetTimer - timer, 0f, targetTimer));
+            int remaining_curTime = Mathf.CeilToInt(Mathf.Clamp(targetTimer - timer, 0f, targetTimer));
 
             foreach (TextMeshProUGUI tt in info.timeText)
             {
@@ -714,7 +718,7 @@ public class Build_Manager : MonoBehaviour
         // 메인탭의 이미지 기본사진으로 변경
         maintab_container.GetComponent<MainTabCategory>().Upgrading(null, false, info.tabs == Base_Infomation.Tabs.Tab1 ? tab2 : tab1);
 
-        
+        Ex();
     }
 
 
@@ -737,8 +741,65 @@ public class Build_Manager : MonoBehaviour
         }
     }
 
+    // 로봇공장 등의 유저 능력 상승에 의한 건설시간 감소 계산 적용 로직
+    // tab 인스턴스는 건물건설 시간 감소, 연구시간 감소, 함선생산 시간 감소를 위한 time인지 구분하기 위함
+    public float TimerCalculation(Tabs tab, int time)
+    {
+        float timer = 0;
+        switch (tab)
+        {
+            case Tabs.Tab1:
+            case Tabs.Tab2:
+            case Tabs.Tab5:
+                timer = time - (time * PlayerAbilityInfo.BuildingSpeed);
+
+                if (scriptable_Group.tab2Groups[6].level > 0)
+                {
+                    for (int i = 0; i < scriptable_Group.tab2Groups[6].level; i++)
+                    {
+                        timer = timer - (timer * scriptable_Group.tab2Groups[6].spacilAbility[0]);
+                    }
+                    
+                }
+                break;
+            case Tabs.Tab3:
+                timer = time - (time * PlayerAbilityInfo.ResearchSpeed);
+
+                if (scriptable_Group.tab2Groups[7].level > 0)
+                {
+                    for (int i = 0; i < scriptable_Group.tab2Groups[7].level; i++)
+                    {
+                        timer = timer - (timer * (scriptable_Group.tab2Groups[7].buildAbility * 0.01f));
+                    }
+                }
+                
+                break;
+            case Tabs.Tab4:
+                timer = time - (time * PlayerAbilityInfo.MakingSpeed);
+
+                if (scriptable_Group.tab2Groups[6].level > 0)
+                {
+                    for (int i = 0; i < scriptable_Group.tab2Groups[6].level; i++)
+                    {
+                        timer = timer - (timer * scriptable_Group.tab2Groups[6].spacilAbility[1]);
+                    }
+                }
+                break;
+        }
+        return timer;
+    }
+
+    // 로봇공장 업그레이드에 따른 시간 감소 적용 로직
+    public void Ex()
+    {
+        tabContainer[0].GetComponentInChildren<Scriptable_Matching>().Infomation_UpdateSet();
+        tabContainer[1].GetComponentInChildren<Scriptable_Matching>().Infomation_UpdateSet();
+        tabContainer[4].GetComponentInChildren<Scriptable_Matching>().Infomation_UpdateSet();
+
+    }
+
     //꺼질때 cur_Init 초기화 해주기
-    /*void OnDestroy()
+    void OnDestroy()
     {
         List<BuildResource> list_BR = new List<BuildResource>();
         for (int i = 0; i < 2; i++)
@@ -757,7 +818,7 @@ public class Build_Manager : MonoBehaviour
                     build.level = 0;
                 }
             }
-            
+
         }
 
         for (int i = 0; i < 4; i++)
@@ -769,7 +830,7 @@ public class Build_Manager : MonoBehaviour
             }
         }
         Debug.Log("초기화 완료. 종료함");
-    }*/
+    }
 }
 
 [System.Serializable]
