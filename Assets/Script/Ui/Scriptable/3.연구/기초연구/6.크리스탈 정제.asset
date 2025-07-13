@@ -33,7 +33,7 @@ MonoBehaviour:
   - 3
   - 3
   - 3.5
-  research_Ability: 5
+  research_Ability: 0.05
   ability_Text: "\uD06C\uB9AC\uC2A4\uD0C8 \uC0DD\uC0B0\uB7C9 \uC99D\uAC00"
   miningSlot: 
   img: {fileID: -5256468705373266807, guid: a44a14a9e62ac764ca500354a1b813e9, type: 3}

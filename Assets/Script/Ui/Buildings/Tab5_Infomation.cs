@@ -24,9 +24,10 @@ public class Tab5_Infomation : Base_Infomation
         buildResource.cur_Needs[2] = gas;
 
         resources[3].text = $"{buildResource.AllowableBuild} (+{Supplement_Allowable()})";
-        resources[4].text = $"생산 가능 {buildResource.name}";
+        resources[4].text = $"생산 가능 {buildResource.name.Split('.')[1]}";
 
-        int timer = Mathf.CeilToInt(Build_Manager.instance.TimerCalculation(tabs, buildResource.building_Time[buildResource.level]));
+        /*int timer = Mathf.CeilToInt(Build_Manager.instance.TimerCalculation(tabs, buildResource.building_Time[buildResource.level]));*/
+        int timer = Mathf.CeilToInt(PlayerAbilityInfo.GetCalculatedTime("Build", buildResource.building_Time[buildResource.level]));
         foreach (var tt in timeText)
         {
             tt.text = $"{TimerTexting(timer)}";

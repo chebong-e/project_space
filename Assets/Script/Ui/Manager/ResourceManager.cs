@@ -45,29 +45,14 @@ public class ResourceManager : MonoBehaviour
         }
 
 
-        myRes[0] = 500;
-        myRes[1] = 200;
-        myRes[2] = 100;
+        myRes[0] = 50000;
+        myRes[1] = 20000;
+        myRes[2] = 10000;
 
         resourceWindow["Metal"].container.text = ResourceMarkChange(myRes[0]);
         resourceWindow["Cristal"].container.text = ResourceMarkChange(myRes[1]);
         resourceWindow["Gas"].container.text = ResourceMarkChange(myRes[2]);
         resourceWindow["Energy"].container.text = ResourceMarkChange(123_456);
-
-
-        float timer = 3600f;
-        for (int i = 0; i < 3; i++)
-        {
-            timer = timer - (timer * 0.3f);
-            Debug.Log($"레벨{i+1}당 감소되는 시간 = {timer}");
-        }
-        Debug.Log($"일반적:{3600 - (3600 * 0.9f)}");
-
-
-
-
-
-
 
     }
 
@@ -131,7 +116,7 @@ public class ResourceManager : MonoBehaviour
                 myRes[i] += cost[i];
             }
             resourceWindow[i == 0 ? "Metal" : i == 1 ? "Cristal" : "Gas"].container.text
-                    = $"{myRes[i]}";
+                    = $"{ResourceMarkChange(myRes[i])}";
         }
         return true;
     }

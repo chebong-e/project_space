@@ -1,6 +1,6 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine.UI;
 
 public class ShipBuildSlider : MonoBehaviour
 {
@@ -37,8 +37,9 @@ public class ShipBuildSlider : MonoBehaviour
         int amount = info.ship.maxHaveShip_Amount - info.ship.currentHave_Ship;
         building_Amount.text = $"<       {slider.value}     /     {amount}       >";
 
+        float time1 = slider.value * PlayerAbilityInfo.GetCalculatedTime("Ship", info.ship.shipMaking_Time);
+        int time = Mathf.CeilToInt(time1);
 
-        int time = (int)slider.value * (int)info.ship.shipMaking_Time;
         if (time >= 3600)
             building_Time.text = $"{time / 3600}시간 {(time % 3600) / 60}분 {time % 60}초";
         else if (time >= 60)

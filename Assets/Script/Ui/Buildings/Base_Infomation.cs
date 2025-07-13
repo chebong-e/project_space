@@ -178,11 +178,36 @@ public class Base_Infomation : MonoBehaviour
     //건물 건설시간 감소 로직 (적용확인 중)
     public void Ability_Apply()
     {
-        int timer = Mathf.CeilToInt(Build_Manager.instance.TimerCalculation(tabs, buildResource.building_Time[buildResource.level]));
-        foreach (var tt in timeText)
+        int timer = 0;
+        switch (tabs)
         {
-            tt.text = $"{TimerTexting(timer)}";
+            case Tabs.Tab1:
+            case Tabs.Tab2:
+            case Tabs.Tab5:
+                
+                timer = Mathf.CeilToInt(PlayerAbilityInfo.GetCalculatedTime("Build", buildResource.building_Time[buildResource.level]));
+                foreach (var tt in timeText)
+                {
+                    tt.text = $"{TimerTexting(timer)}";
+                }
+                break;
+            case Tabs.Tab4:
+                timer = Mathf.CeilToInt(PlayerAbilityInfo.GetCalculatedTime("Ship", ship.shipMaking_Time));
+                foreach (var tt in timeText)
+                {
+                    tt.text = $"{TimerTexting(timer)}";
+                }
+                break;
+            case Tabs.Tab3:
+                timer = Mathf.CeilToInt(PlayerAbilityInfo.GetCalculatedTime("Research", research.research_Time[research.level]));
+                foreach (var tt in timeText)
+                {
+                    tt.text = $"{TimerTexting(timer)}";
+                }
+                break;
+
         }
+        
 
     }
 
@@ -220,6 +245,7 @@ public class Base_Infomation : MonoBehaviour
 
                 foreach (TextMeshProUGUI tt in timeText)
                 {
+                    
                     /*tt.text = $"{TimerTexting(buildResource.building_Time[buildResource.level])}";*/
                     /*tt.text = $"{TimerTexting((int)Build_Manager.instance.TimerCalculation(tabs, buildResource.building_Time[buildResource.level]))}";
                     Debug.Log($"시간표기: {TimerTexting((int)Build_Manager.instance.TimerCalculation(tabs, buildResource.building_Time[buildResource.level]))}");*/
@@ -252,9 +278,14 @@ public class Base_Infomation : MonoBehaviour
         resources[1].text = $"{cristal}";
         resources[2].text = $"{gas}";
 
-        buildResource.cur_Needs[0] = metal;
-        buildResource.cur_Needs[1] = cristal;
-        buildResource.cur_Needs[2] = gas;
+        if (info.tabs != Tabs.Tab3)
+        {
+            buildResource.cur_Needs[0] = metal;
+            buildResource.cur_Needs[1] = cristal;
+            buildResource.cur_Needs[2] = gas;
+        }
+        
+
 
         if (info.tabs == Tabs.Tab1)
         {

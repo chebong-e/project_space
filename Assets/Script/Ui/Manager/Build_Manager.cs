@@ -328,7 +328,7 @@ public class Build_Manager : MonoBehaviour
                         tab1_coroutine = StartCoroutine(Tab1_Building(
                             img,
                             info,
-                            TimerCalculation(info.tabs, info.buildResource.building_Time[info.buildResource.level])));
+                            PlayerAbilityInfo.GetCalculatedTime("Build", info.buildResource.building_Time[info.buildResource.level])));
                         info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
                     }
                 }
@@ -353,7 +353,7 @@ public class Build_Manager : MonoBehaviour
                         tab2_coroutine = StartCoroutine(Tab1_Building(
                             img,
                             info,
-                            info.buildResource.building_Time[info.buildResource.level]));
+                            PlayerAbilityInfo.GetCalculatedTime("Build", info.buildResource.building_Time[info.buildResource.level])));
                         info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
                     }
                 }
@@ -371,13 +371,14 @@ public class Build_Manager : MonoBehaviour
             case Base_Infomation.Tabs.Tab3:               
                 if (upgrade)
                 {
-                    if (ResourceManager.instance.UpgradePerDeduct(info.buildResource.cur_Needs, upgrade))
+                    if (ResourceManager.instance.UpgradePerDeduct(info.research.research_Cost, upgrade))
                     {
                         tab3 = upgrade;
-                        tab3_coroutine = StartCoroutine(Tab1_Building(
+                        tab3_coroutine = StartCoroutine(Tab3_Researching(
                             img,
                             info,
-                            info.research.research_Time[info.research.level]));
+                            PlayerAbilityInfo.GetCalculatedTime("Research", info.research.research_Time[info.research.level])));
+                        
                         info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
                     }
                         
@@ -386,7 +387,7 @@ public class Build_Manager : MonoBehaviour
                 {
                     if (tab3)
                     {
-
+                        ResourceManager.instance.UpgradePerDeduct(info.research.research_Cost, upgrade);
                         StopCoroutine(tab3_coroutine);
                         CancleForReset(info);
                         info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
@@ -438,7 +439,7 @@ public class Build_Manager : MonoBehaviour
                         tab5_coroutine = StartCoroutine(ControlCenter_BuildingTimer(
                             img,
                             info,
-                            info.buildResource.building_Time[info.buildResource.level]));
+                            PlayerAbilityInfo.GetCalculatedTime("Build", info.buildResource.building_Time[info.buildResource.level])));
                         info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
                     }                        
                 }
@@ -454,56 +455,27 @@ public class Build_Manager : MonoBehaviour
                 }
                 break;
         }
-
-        /*if (!upgrade)
-        {
-            switch (info.tabs)
-            {
-                case Base_Infomation.Tabs.Tab1:
-                case Base_Infomation.Tabs.Tab2:
-                case Base_Infomation.Tabs.Tab4:
-                case Base_Infomation.Tabs.Tab5:
-                    for (int i = 0; i < 2; i++)
-                    {
-                        info.timeSlider[i].value = 0f;
-                        info.timeText[i].text = $"{info.buildResource.building_Time[info.buildResource.level]}초";
-                    }
-                    break;
-                case Base_Infomation.Tabs.Tab3:
-                    for (int i = 0; i < 2; i++)
-                    {
-                        info.timeSlider[i].value = 0f;
-                        info.timeText[i].text = $"{info.research.research_Time[info.research.level]}초";
-                    }
-                    break;
-            }
-            mainTabCategory.Upgrading(null, false, false);
-        }*/
-
-        /*info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());*/
     }
 
     void CancleForReset(Base_Infomation info)
     {
+        int timer = 0;
         if (info.tabs == Tabs.Tab3)
         {
-            for (int i = 0; i < 2; i++)
-            {
-                info.timeSlider[i].value = 0f;
-                info.timeText[i].text = $"{info.research.research_Time[info.research.level]}초";
-            }
+            timer = Mathf.CeilToInt(PlayerAbilityInfo.GetCalculatedTime("Research", info.research.research_Time[info.research.level]));
         }
         else
         {
-            int timer = Mathf.CeilToInt(TimerCalculation(info.tabs, info.buildResource.building_Time[info.buildResource.level]));
-            for (int i = 0; i < 2; i++)
-            {
-                info.timeSlider[i].value = 0f;
-                /*info.timeText[i].text = $"{info.buildResource.building_Time[info.buildResource.level]}초";*/
-                info.timeText[i].text =
-                    $"{TimerTexting(timer)}";
-            }
+            timer = Mathf.CeilToInt(PlayerAbilityInfo.GetCalculatedTime("Build", info.buildResource.building_Time[info.buildResource.level]));
         }
+
+        for (int i = 0; i < 2; i++)
+        {
+            info.timeSlider[i].value = 0f;
+            info.timeText[i].text =
+                $"{TimerTexting(timer)}";
+        }
+        
         mainTabCategory.Upgrading(null, false, false);
     }
 
@@ -517,7 +489,9 @@ public class Build_Manager : MonoBehaviour
         maintab_texts[0].text = $"{info.ship.name} {makeCount}기";
 
         info.making_Targets_Text.text = $"{info.ship.name} {makeCount}기 생산 중.";
-        float totalMakeTime = makeCount * info.ship.shipMaking_Time;
+
+        float totalMakeTime = makeCount * PlayerAbilityInfo.GetCalculatedTime("Ship", info.ship.shipMaking_Time);
+        /*float totalMakeTime = makeCount * info.ship.shipMaking_Time;*/
         maintab_slider.maxValue = totalMakeTime;
 
         foreach (Slider _slider in info.timeSlider)
@@ -655,10 +629,73 @@ public class Build_Manager : MonoBehaviour
             함선생산 탭의 정보로 넘겨주기(현재는 infomation의 ships 정보를 수정하는 방향)*/
         info.ship.maxHaveShip_Amount = info.buildResource.AllowableBuild;
 
+        Ex();
         // 항상 업그레이드 완료 또는 생산 완료 후에는 유저 정보를 업데이트 하여 취합하는 곳이 필요
         // (서버에 통신을 용이하게 하기 위함)
     }
 
+    IEnumerator Tab3_Researching(Sprite img, Base_Infomation info, float targetTimer)
+    {
+        Debug.Log($"{info.research.name}의 업그레이드 시간 : {targetTimer}");
+        int activeIndex = Active_TabContainerIndex();
+        GameObject maintab_container = mainTabCategory.Upgrading(img, true, false);
+        Slider maintab_slider = mainTabCategory.sliderContainer.GetComponentInChildren<Slider>();
+        TextMeshProUGUI[] maintab_texts = mainTabCategory.sliderContainer.GetComponentsInChildren<TextMeshProUGUI>();
+        maintab_texts[0].text = info.title_Text["name"].text;
+        maintab_slider.maxValue = targetTimer;
+
+        foreach (Slider _slider in info.timeSlider)
+        {
+            _slider.maxValue = targetTimer;
+        }
+
+        float timer = 0f;
+        while (timer < targetTimer)
+        {
+            timer += Time.deltaTime;
+            foreach (Slider slide in info.timeSlider)
+            {
+                slide.value = timer;
+            }
+            maintab_slider.value = timer;
+
+            int remaining_curTime = Mathf.CeilToInt(Mathf.Clamp(targetTimer - timer, 0f, targetTimer));
+
+            foreach (TextMeshProUGUI tt in info.timeText)
+            {
+                tt.text = TimerTexting(remaining_curTime);
+            }
+            maintab_texts[1].text = TimerTexting(remaining_curTime);
+
+            yield return null;
+        }
+
+        // 업그레이드 성공 후 반영될 정보들 가시화
+        info.Upgrade_To_Infomation(info);
+
+        // 이미지 컬러전환 및 버튼 활성화 처리
+        info.containerSlide.ColorChange_To_Upgrade(activeIndex);
+
+        info.confirm = false;
+        foreach (Slider slide in info.timeSlider)
+        {
+            slide.value = 0f;
+        }
+        info.timeSlider[0].gameObject.SetActive(false);
+        info.btns[1].gameObject.SetActive(false);
+        info.btns[0].gameObject.SetActive(true);
+
+
+        if (info.tabs == Base_Infomation.Tabs.Tab1) tab1 = false;
+        else if (info.tabs == Base_Infomation.Tabs.Tab2) tab2 = false;
+        else tab3 = false;
+
+        // 메인탭의 이미지 기본사진으로 변경
+        maintab_container.GetComponent<MainTabCategory>().Upgrading(null, false, info.tabs == Base_Infomation.Tabs.Tab1 ? tab2 : tab1);
+
+        Ex();
+       
+    }
     IEnumerator Tab1_Building(Sprite img, Base_Infomation info, float targetTimer)
     {
         Debug.Log($"{info.buildResource.name}의 업그레이드 시간 : {targetTimer}");
@@ -753,6 +790,12 @@ public class Build_Manager : MonoBehaviour
             case Tabs.Tab5:
                 timer = time - (time * PlayerAbilityInfo.BuildingSpeed);
 
+                // 연구에 대한 시간 감소 로직
+                if (scriptable_Group.GetTargetListByResearch(0)[1].level > 0)
+                {
+                    timer = timer - (timer * (scriptable_Group.GetTargetListByResearch(0)[1].level * scriptable_Group.GetTargetListByResearch(0)[1].research_Ability));
+                }
+
                 if (scriptable_Group.tab2Groups[6].level > 0)
                 {
                     for (int i = 0; i < scriptable_Group.tab2Groups[6].level; i++)
@@ -764,6 +807,11 @@ public class Build_Manager : MonoBehaviour
                 break;
             case Tabs.Tab3:
                 timer = time - (time * PlayerAbilityInfo.ResearchSpeed);
+
+                if (scriptable_Group.GetTargetListByResearch(0)[2].level > 0) // 원자공학
+                {
+                    timer = timer - (timer * (scriptable_Group.GetTargetListByResearch(0)[2].level * scriptable_Group.GetTargetListByResearch(0)[2].research_Ability));
+                }
 
                 if (scriptable_Group.tab2Groups[7].level > 0)
                 {
@@ -792,9 +840,17 @@ public class Build_Manager : MonoBehaviour
     // 로봇공장 업그레이드에 따른 시간 감소 적용 로직
     public void Ex()
     {
-        tabContainer[0].GetComponentInChildren<Scriptable_Matching>().Infomation_UpdateSet();
+        for (int i = 0; i < tabContainer.Length; i++)
+        {
+            if (i == 3)
+                continue;
+
+            tabContainer[i].GetComponentInChildren<Scriptable_Matching>().Infomation_UpdateSet();
+        }
+        /*tabContainer[0].GetComponentInChildren<Scriptable_Matching>().Infomation_UpdateSet();
         tabContainer[1].GetComponentInChildren<Scriptable_Matching>().Infomation_UpdateSet();
-        tabContainer[4].GetComponentInChildren<Scriptable_Matching>().Infomation_UpdateSet();
+        tabContainer[2].GetComponentInChildren<Scriptable_Matching>().Infomation_UpdateSet();
+        tabContainer[4].GetComponentInChildren<Scriptable_Matching>().Infomation_UpdateSet();*/
 
     }
 
@@ -821,12 +877,20 @@ public class Build_Manager : MonoBehaviour
 
         }
 
+        List<Ship> ships = new List<Ship>();
         for (int i = 0; i < 4; i++)
         {
-            list_BR = scriptable_Group.GetTargetListByBuildResource(0, i);
+            list_BR = scriptable_Group.GetTargetListByBuildResource(4, i);
             foreach (BuildResource build in list_BR)
             {
+                
                 build.level = 0;
+            }
+            ships = scriptable_Group.GetTargetListByShips(i);
+            foreach (Ship sp in ships)
+            {
+                sp.currentHave_Ship = 0;
+                sp.maxHaveShip_Amount = 0;
             }
         }
         Debug.Log("초기화 완료. 종료함");

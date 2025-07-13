@@ -36,7 +36,7 @@ public class Tab2_Infomation : Base_Infomation
             production[1].text = $"{buildResource.electricity_Consumption}";
         }
 
-        int timer = Mathf.CeilToInt(Build_Manager.instance.TimerCalculation(tabs, buildResource.building_Time[buildResource.level]));
+        int timer = Mathf.CeilToInt(PlayerAbilityInfo.GetCalculatedTime("Build", buildResource.building_Time[buildResource.level]));
         foreach (var tt in timeText)
         {
             tt.text = $"{TimerTexting(timer)}";

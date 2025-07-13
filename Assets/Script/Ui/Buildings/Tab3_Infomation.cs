@@ -32,10 +32,10 @@ public class Tab3_Infomation : Base_Infomation
             production[0].text = $"0 (+{research.research_Ability * research.level + 1}%)";
         }*/
 
-
+        int timer = Mathf.CeilToInt(PlayerAbilityInfo.GetCalculatedTime("Research", research.research_Time[research.level]));
         foreach (var tt in timeText)
         {
-            tt.text = TimerTexting(research.research_Time[research.level]);
+            tt.text = TimerTexting(timer);
         }
 
         title_Text["name"].text = $"Lv.{research.level} {research.name.Split('.')[1]}";
