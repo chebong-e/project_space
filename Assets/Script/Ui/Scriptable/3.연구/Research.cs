@@ -26,7 +26,7 @@ public class Research : ScriptableObject
     public int[] research_Time; // 업그레이드 시간
     public int[] research_Cost; // 업그레이드 비용 (메탈/크리스탈/가스)
     public float[] upgrade_Cost_Require; // 레벨당 업그레이드 비용 증가 배수
-    public float research_Ability; // 연구 레벨당 증가량
+    public int research_Ability; // 연구 레벨당 증가량
     public string ability_Text; // 연구 내용
     public int[] miningSlot; // 채광 레벨당 함대 슬롯
 

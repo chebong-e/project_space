@@ -55,7 +55,7 @@ public class BuildResourceEditor : Editor
                 }
                 else
                 {
-                    EditorGUILayout.LabelField("건물 능력 / 건물능력 Text", EditorStyles.boldLabel);
+                    EditorGUILayout.LabelField(new GUIContent("건물 능력 / 건물능력 Text", "buildAbility / ability_Text"), EditorStyles.boldLabel);
                     // 일반건물간 특정 능력을 표기하기
                     if (buildResource.general_Factory == BuildResource.General_Factory.General)
                     {

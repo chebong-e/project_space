@@ -54,8 +54,8 @@ public class ResearchEditor : Editor
         EditorGUILayout.PropertyField(research_Time, new GUIContent("연구 시간"), true);
         EditorGUILayout.PropertyField(research_Cost, new GUIContent("연구 비용"), true);
         EditorGUILayout.PropertyField(upgrade_Cost_Require, new GUIContent("업그레이드 비용 배수"), true);
-
-        EditorGUILayout.LabelField("연구수치 증가량 / 연구 능력 Text", EditorStyles.boldLabel);
+        
+        EditorGUILayout.LabelField(new GUIContent("연구수치 증가량 / 연구 능력 Text", "research_Ability / ability_Text"), EditorStyles.boldLabel);
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.PropertyField(serializedObject.FindProperty("research_Ability"), GUIContent.none, GUILayout.Width(50));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("ability_Text"), GUIContent.none, GUILayout.Width(300));

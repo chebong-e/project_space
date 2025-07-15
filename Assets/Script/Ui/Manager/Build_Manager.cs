@@ -329,8 +329,11 @@ public class Build_Manager : MonoBehaviour
                             img,
                             info,
                             PlayerAbilityInfo.GetCalculatedTime("Build", info.buildResource.building_Time[info.buildResource.level])));
+
                         info.containerSlide.ColorChange_To_Upgrade(Active_TabContainerIndex());
+
                     }
+                    // 업그레이드 비용이 없을때는 실행되지 않도록, 버튼 변경되지 않도록 해야함
                 }
                 else
                 {
@@ -778,65 +781,6 @@ public class Build_Manager : MonoBehaviour
         }
     }
 
-    // 로봇공장 등의 유저 능력 상승에 의한 건설시간 감소 계산 적용 로직
-    // tab 인스턴스는 건물건설 시간 감소, 연구시간 감소, 함선생산 시간 감소를 위한 time인지 구분하기 위함
-    public float TimerCalculation(Tabs tab, int time)
-    {
-        float timer = 0;
-        switch (tab)
-        {
-            case Tabs.Tab1:
-            case Tabs.Tab2:
-            case Tabs.Tab5:
-                timer = time - (time * PlayerAbilityInfo.BuildingSpeed);
-
-                // 연구에 대한 시간 감소 로직
-                if (scriptable_Group.GetTargetListByResearch(0)[1].level > 0)
-                {
-                    timer = timer - (timer * (scriptable_Group.GetTargetListByResearch(0)[1].level * scriptable_Group.GetTargetListByResearch(0)[1].research_Ability));
-                }
-
-                if (scriptable_Group.tab2Groups[6].level > 0)
-                {
-                    for (int i = 0; i < scriptable_Group.tab2Groups[6].level; i++)
-                    {
-                        timer = timer - (timer * scriptable_Group.tab2Groups[6].spacilAbility[0]);
-                    }
-                    
-                }
-                break;
-            case Tabs.Tab3:
-                timer = time - (time * PlayerAbilityInfo.ResearchSpeed);
-
-                if (scriptable_Group.GetTargetListByResearch(0)[2].level > 0) // 원자공학
-                {
-                    timer = timer - (timer * (scriptable_Group.GetTargetListByResearch(0)[2].level * scriptable_Group.GetTargetListByResearch(0)[2].research_Ability));
-                }
-
-                if (scriptable_Group.tab2Groups[7].level > 0)
-                {
-                    for (int i = 0; i < scriptable_Group.tab2Groups[7].level; i++)
-                    {
-                        timer = timer - (timer * (scriptable_Group.tab2Groups[7].buildAbility * 0.01f));
-                    }
-                }
-                
-                break;
-            case Tabs.Tab4:
-                timer = time - (time * PlayerAbilityInfo.MakingSpeed);
-
-                if (scriptable_Group.tab2Groups[6].level > 0)
-                {
-                    for (int i = 0; i < scriptable_Group.tab2Groups[6].level; i++)
-                    {
-                        timer = timer - (timer * scriptable_Group.tab2Groups[6].spacilAbility[1]);
-                    }
-                }
-                break;
-        }
-        return timer;
-    }
-
     // 로봇공장 업그레이드에 따른 시간 감소 적용 로직
     public void Ex()
     {
@@ -847,11 +791,6 @@ public class Build_Manager : MonoBehaviour
 
             tabContainer[i].GetComponentInChildren<Scriptable_Matching>().Infomation_UpdateSet();
         }
-        /*tabContainer[0].GetComponentInChildren<Scriptable_Matching>().Infomation_UpdateSet();
-        tabContainer[1].GetComponentInChildren<Scriptable_Matching>().Infomation_UpdateSet();
-        tabContainer[2].GetComponentInChildren<Scriptable_Matching>().Infomation_UpdateSet();
-        tabContainer[4].GetComponentInChildren<Scriptable_Matching>().Infomation_UpdateSet();*/
-
     }
 
     //꺼질때 cur_Init 초기화 해주기
@@ -872,6 +811,10 @@ public class Build_Manager : MonoBehaviour
                 foreach (BuildResource build in list_BR)
                 {
                     build.level = 0;
+                    if (build.resource_Factory == BuildResource.Resource_Factory.Energy)
+                    {
+                        build.basic_manufacture = 0;
+                    }
                 }
             }
 

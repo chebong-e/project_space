@@ -20,7 +20,7 @@ MonoBehaviour:
   combat_Number: 0
   combat_Research: 1
   level: 0
-  research_Time: 0a0000001e0000005a0000000e0100002a030000e7030000e7030000e7030000e7030000e7030000
+  research_Time: 0100000001000000010000000e0100002a030000e7030000e7030000e7030000e7030000e7030000
   research_Cost: 2c0100002c01000096000000
   upgrade_Cost_Require:
   - 1
@@ -33,7 +33,7 @@ MonoBehaviour:
   - 3
   - 3
   - 3.5
-  research_Ability: 0.05
+  research_Ability: 5
   ability_Text: "\uAC00\uC2A4 \uC0DD\uC0B0\uB7C9 \uC99D\uAC00"
   miningSlot: 
   img: {fileID: 4080987203146206468, guid: fec157b37e9760347b298818ec9f7b1b, type: 3}

@@ -51,7 +51,6 @@ public class ResearchCategory_Container : MonoBehaviour
                     ContainerSlide imgsl = scroll.content.GetChild(ii).GetComponent<ContainerSlide>();
                     if (imgsl.imgOpen && imgsl.confirm == false)
                     {
-                        Debug.Log(imgsl.name);
                         imgsl.imgOpen = false;
                         imgsl.Slider_On_Off();
                     }

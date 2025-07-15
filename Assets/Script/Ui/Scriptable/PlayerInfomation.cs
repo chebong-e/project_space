@@ -17,7 +17,7 @@ public class PlayerInfomation : ScriptableObject
     public BuildLevels[] planets;
 
     //�ѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤѤ�
-    public static float buildingSpeed 
+    /*public static float buildingSpeed 
     {
         get { return Build_Manager.instance.scriptable_Group.tab2Groups[0].level * 0.01f; }
     }
@@ -36,7 +36,7 @@ public class PlayerInfomation : ScriptableObject
     public static float makingSpeed
     {
         get { return Build_Manager.instance.scriptable_Group.tab2Groups[4].level * 0.01f; }
-    }
+    }*/
 
 }
 

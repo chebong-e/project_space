@@ -30,15 +30,15 @@ public class Tab1_Infomation : Base_Infomation
             case BuildResource.Resource_Factory.Metal:
             case BuildResource.Resource_Factory.Cristal:
             case BuildResource.Resource_Factory.Gas:
-                ResourceManager.instance.resource_Productions[(int)buildResource.resource_Factory]
+                ResourceManager.instance.build_Productions[(int)buildResource.resource_Factory]
                         = Manufacture_Conversion(buildResource);
                 break;
         }
         //
 
-        buildResource.electricity_Consumption = buildResource.manufacture[buildResource.level] / 10;
+        /*buildResource.electricity_Consumption = buildResource.manufacture[buildResource.level] / 10;*/
+        buildResource.electricity_Consumption = 30;
         production[0].text = $"{Manufacture_Conversion(buildResource)}";
-        buildResource.electricity_Consumption = 5;
         production[1].text = $"{buildResource.electricity_Consumption}";
 
 

@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static Base_Infomation;
+using static BuildResource;
 
 [System.Serializable]
 public class Title_Text : SerializableDictionary<string, TextMeshProUGUI> { };
@@ -175,7 +176,7 @@ public class Base_Infomation : MonoBehaviour
             confirm);
     }
 
-    //건물 건설시간 감소 로직 (적용확인 중)
+    //건물 건설시간 감소 로직 (적용확인 중) - 텍스트만 바꿈
     public void Ability_Apply()
     {
         int timer = 0;
@@ -250,6 +251,7 @@ public class Base_Infomation : MonoBehaviour
                     /*tt.text = $"{TimerTexting((int)Build_Manager.instance.TimerCalculation(tabs, buildResource.building_Time[buildResource.level]))}";
                     Debug.Log($"시간표기: {TimerTexting((int)Build_Manager.instance.TimerCalculation(tabs, buildResource.building_Time[buildResource.level]))}");*/
                 }
+
                 break;
             case Tabs.Tab3:
                 research.level++;
@@ -294,14 +296,28 @@ public class Base_Infomation : MonoBehaviour
                 case BuildResource.Resource_Factory.Metal:
                 case BuildResource.Resource_Factory.Cristal:
                 case BuildResource.Resource_Factory.Gas:
-                    buildResource.electricity_Consumption = Manufacture_Conversion(buildResource) / 10;
+                    /*buildResource.electricity_Consumption = (int)(Manufacture_Conversion(buildResource) * 0.05f);*/
+
+                    int elec = buildResource.electricity_Consumption * buildResource.level;
 
                     production[0].text = $"{Manufacture_Conversion(buildResource)}";
-                    production[1].text = $"{buildResource.electricity_Consumption}";
+                    production[1].text = $"{elec}";
 
-                    // 리소스 매니져에 자원 생성량 전달 해야함.
-                    ResourceManager.instance.resource_Productions[(int)buildResource.resource_Factory]
+                    string name = buildResource.resource_Factory.ToString();
+                    ResourceManager.instance.Electricity_Calculated(name, elec);
+
+                    // 리소스 매니져에 자원 생산량 전달 해야함.
+                    ResourceManager.instance.build_Productions[(int)buildResource.resource_Factory]
                         = Manufacture_Conversion(buildResource);
+                    break;
+                case BuildResource.Resource_Factory.Energy:
+                    
+                    buildResource.basic_manufacture += buildResource.manufacture[buildResource.level - 1];
+                    production[0].text = $"{buildResource.basic_manufacture}";
+
+                    name = buildResource.resource_Factory.ToString();
+
+                    ResourceManager.instance.Electricity_Calculated(name, - buildResource.basic_manufacture);
                     break;
             }
         }
@@ -309,10 +325,19 @@ public class Base_Infomation : MonoBehaviour
         {
             production[0].text = $"{buildResource.buildAbility * buildResource.level}%";
             production[1].text = $"{buildResource.electricity_Consumption * buildResource.level}";
+
+            string name = buildResource.resource_Factory.ToString();
+            ResourceManager.instance.Electricity_Calculated(name, info.buildResource.electricity_Consumption);
         }
         else if (info.tabs == Tabs.Tab3)
         {
             production[0].text = $"{research.research_Ability * research.level}%";
+            switch (research.generalNumber)
+            {
+                case Research.GeneralNumber.G0:
+
+                    break;
+            }
         }
         else if (info.tabs == Tabs.Tab5)
         {
@@ -365,7 +390,7 @@ public class Base_Infomation : MonoBehaviour
         // build.manufacture[0]은 basic과 같은 기능으로 항상 1번 인덱스의 값만 덮어씌어지도록 설계
         build.manufacture[1] = build.manufacture[0];
 
-        for (int i = 0; i < build.level; i++)
+        for (int i = 0; i < build.level - 1; i++)
         {
             build.manufacture[1] = (int)(build.manufacture[1] * build.magnification);
         }
