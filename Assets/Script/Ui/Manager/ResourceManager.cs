@@ -23,15 +23,16 @@ public class ResourceManager : MonoBehaviour
     float productionInterval = 1f;
 
     public int[] myRes;
-
+    
     //
     public float[] productionPerSecond;
     public float[] temporarily_production;
 
-    public int consume_Electric, increase_Electric;
-    public int previousConsumeElectric = 0;
+    public int consume_Electric, increase_Electric, research_Electric;
     Dictionary<string, int> previousValues = new Dictionary<string, int>();
 
+
+    public int number;
 
     void Awake()
     {
@@ -71,7 +72,8 @@ public class ResourceManager : MonoBehaviour
         timer += Time.deltaTime;
 
         updateTotalProduction();
-        total_Productions[3] = basicProductions[3] + build_Productions[3];
+        /*total_Productions[3] = basicProductions[3] + build_Productions[3];*/
+        /*total_Productions[3] = ElectricityProductionToResearch() - consume_Electric;*/
         myRes[3] = (int)total_Productions[3];
 
         if (timer >= productionInterval)
@@ -109,6 +111,19 @@ public class ResourceManager : MonoBehaviour
         return result;
     }
 
+    // 이것을 업그레이드 마다 적용해 주어야 함.
+    public int ElectricityProductionToResearch()
+    {
+        float elecResearchLevel = Build_Manager.instance.scriptable_Group.tab3Groups[0].researches[0].level;
+        elecResearchLevel *= 0.01f;
+
+        research_Electric = (int)((increase_Electric + basicProductions[3]) * elecResearchLevel);
+
+        /*float elec = (increase_Electric + basicProductions[3]) + ((increase_Electric + basicProductions[3]) * elecResearchLevel);*/
+
+        Debug.Log($"연구 전력생산량: {research_Electric}, 연구레벨: {elecResearchLevel}");
+        return research_Electric;
+    }
 
     public void Electricity_Calculated(string callerID, int value)
     {
@@ -127,20 +142,16 @@ public class ResourceManager : MonoBehaviour
         
         previousValues[callerID] = value;
 
+        // 여기서 전력생산량의 연구레벨의 적용을 해주는게 필요함.
+        /*total_Productions[3] = ElectricityProductionToResearch() - consume_Electric;*/
+
+
 
 
         build_Productions[3] = increase_Electric - consume_Electric;
-        myRes[3] = basicProductions[3] + build_Productions[3];
-
-
-
-
-
-
-
-        /*build_Productions[3] = increase_Electric - consume_Electric;
-
-        myRes[3] = basicProductions[3] + build_Productions[3];*/
+        myRes[3] = basicProductions[3] + build_Productions[3] + ElectricityProductionToResearch();
+        /*myRes[3] = (int)total_Productions[3];*/
+        /*Debug.Log($"{}")*/
         resourceWindow["Energy"].container.text = ResourceMarkChange(myRes[3]);
     }
 

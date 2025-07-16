@@ -817,7 +817,6 @@ public class Build_Manager : MonoBehaviour
                     }
                 }
             }
-
         }
 
         List<Ship> ships = new List<Ship>();

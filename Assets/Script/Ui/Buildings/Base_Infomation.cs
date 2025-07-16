@@ -205,6 +205,9 @@ public class Base_Infomation : MonoBehaviour
                 {
                     tt.text = $"{TimerTexting(timer)}";
                 }
+
+                /*ResourceManager.instance.total_Productions[3] = ResourceManager.instance.ElectricityProductionToResearch();*/
+                ResourceManager.instance.Electricity_Calculated("none", 0);
                 break;
 
         }

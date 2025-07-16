@@ -12,7 +12,11 @@ public static class PlayerAbilityInfo
         return Build_Manager.instance.scriptable_Group.tab3Groups[0].researches[index + 4].level;
     }
 
-    
+    private static int GetElectricityProduction()
+    {
+        return Build_Manager.instance.scriptable_Group.tab3Groups[0].researches[0].level;
+
+    }
 
     /*private static float Get_HighTechMachine(int abilityIndex)
     {
@@ -24,6 +28,7 @@ public static class PlayerAbilityInfo
     public static int ResearchSpeed => GetLevelSpeed(1);
     public static int MakingSpeed => GetLevelSpeed(4);
     public static int ResourceMakingSpeed(int index) => GetMakingResourceLevel(index);
+    
 
 
     // 일반건물 및 연구에 따른 시간 차감 보너스 계산 로직
