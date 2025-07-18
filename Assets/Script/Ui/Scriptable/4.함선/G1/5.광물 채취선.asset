@@ -20,5 +20,7 @@ MonoBehaviour:
   ship_Damage: 0
   ship_Armor: 0
   ship_Speed: 0
+  ship_Cago: 0
+  miningRate: 10
   ship_Engine: 0
   img: {fileID: 6793025535744412290, guid: 05fef14050231e44ab21a6ef496dfed7, type: 3}
