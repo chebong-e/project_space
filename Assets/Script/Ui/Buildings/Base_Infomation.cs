@@ -37,6 +37,10 @@ public class Base_Infomation : MonoBehaviour
     public bool tab1_Confirm, tab2_Confirm, tab3_Confirm, tab4_Confirm, tab5_Confirm;*/
     public bool confirm;
 
+
+    // 인포메이션 업데이트 스택 확인관련
+    public int stack;
+
     public virtual void Init_Setting()
     {
         btns = new Button[2];

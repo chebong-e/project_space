@@ -1,25 +1,56 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EventLine : MonoBehaviour
 {
     public Event_Triggered event_Triggered;
     public TextMeshProUGUI targetText;
     public TextMeshProUGUI timerText;
-    float timer;
+    public Image missionImg;
+    public float timer;
 
     void Start()
     {
-        targetText = transform.GetChild(1).GetChild(1).GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
-        timerText = transform.GetChild(1).GetChild(1).GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>();
         timer = 500;
     }
 
-    void Update()
+    /*void Update()
     {
-        timer -= Time.deltaTime;
-        TimeSpan timespan = TimeSpan.FromSeconds(timer);
-        timerText.text = timespan.ToString(@"hh\:mm\:ss");
+
+        if (timer > 0)
+        {
+            timer -= Time.deltaTime;
+            TimeSpan timespan = TimeSpan.FromSeconds(timer);
+            timerText.text = timespan.ToString(@"hh\:mm\:ss");
+        }
+        else
+        {
+
+        }
+        
+        
+    }*/
+
+    public void ActionStart(float time)
+    {
+        timer = time;   
+        StartCoroutine(ActionTimerCoroutine());
+    }
+
+    IEnumerator ActionTimerCoroutine()
+    {
+
+        while (timer > 0)
+        {
+            timer -= Time.deltaTime;
+            TimeSpan timespan = TimeSpan.FromSeconds(timer);
+            timerText.text = timespan.ToString(@"hh\:mm\:ss");
+            yield return null;
+        }
+
+        timerText.text = $"-";
     }
 }

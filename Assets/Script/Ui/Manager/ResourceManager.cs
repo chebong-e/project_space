@@ -117,8 +117,8 @@ public class ResourceManager : MonoBehaviour
         float elecResearchLevel = Build_Manager.instance.scriptable_Group.tab3Groups[0].researches[0].level;
         elecResearchLevel *= 0.01f;
 
-        research_Electric = (int)((increase_Electric + basicProductions[3]) * elecResearchLevel);
-
+        research_Electric = Mathf.RoundToInt((increase_Electric + basicProductions[3]) * elecResearchLevel);
+        
         /*float elec = (increase_Electric + basicProductions[3]) + ((increase_Electric + basicProductions[3]) * elecResearchLevel);*/
 
         Debug.Log($"연구 전력생산량: {research_Electric}, 연구레벨: {elecResearchLevel}");

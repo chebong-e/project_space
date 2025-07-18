@@ -111,7 +111,7 @@ public class Build_Manager : MonoBehaviour
             obj.SetActive(false);
         }
 
-        
+
 
 
         /*// 수치를 얻기위한 실험
@@ -122,45 +122,6 @@ public class Build_Manager : MonoBehaviour
             Debug.Log($"기본값:{value},  정수형:{(int)value},  절삭값:{((int)value / 10) * 10}");
         }*/
 
-        /*// 플레이어 인포 할당 실험 (06-30)
-        playerInfomation.build_Levels[0] = new int[5, 16];
-
-        for (int i = 0; i < 2; i++)
-        {
-            for (int j = 0; j < 16; j++)
-            {
-                playerInfomation.build_Levels[0][i, j] = j + 1;
-            }
-        }*/
-
-        //for (int i = 0; i < 2; i++)
-        //{
-        //    for (int j = 0; j < 16; j++)
-        //    {
-        //        Debug.Log($"홈플래닛의 건설레벨들은 = tab{i + 1} : {j}\n" +
-        //            $"{playerInfomation.build_Levels[0][i, j]}");
-
-        //    }
-        //}
-
-
-
-        /*playerInfomation.planets = new BuildLevels[2]; // 가정(홈플래닛과 콜로니1)
-        for (int i = 0; i < playerInfomation.planets.Length; i++)
-        {
-            playerInfomation.planets[i].tabs = new TabWindows[5];
-            
-            for (int j = 0; j < playerInfomation.planets[i].tabs.Length; j++)
-            {
-                int num = scriptable_Group.GetTargetListByBuildResource(j, 0).Count;
-                playerInfomation.planets[i].tabs[j].lv = new int[num];
-                for (int ii = 0; ii < num; ii++)
-                {
-                    playerInfomation.planets[i].tabs[j].lv[ii] =
-                        scriptable_Group.GetTargetListByBuildResource(j, 0)[ii].level;
-                }
-            }
-        }*/
 
     }
 
@@ -632,9 +593,12 @@ public class Build_Manager : MonoBehaviour
             함선생산 탭의 정보로 넘겨주기(현재는 infomation의 ships 정보를 수정하는 방향)*/
         info.ship.maxHaveShip_Amount = info.buildResource.AllowableBuild;
 
-        Ex();
+        /*Ex();*/
+
+        InfomationUpdateForUpgrade();
         // 항상 업그레이드 완료 또는 생산 완료 후에는 유저 정보를 업데이트 하여 취합하는 곳이 필요
         // (서버에 통신을 용이하게 하기 위함)
+
     }
 
     IEnumerator Tab3_Researching(Sprite img, Base_Infomation info, float targetTimer)
@@ -696,8 +660,11 @@ public class Build_Manager : MonoBehaviour
         // 메인탭의 이미지 기본사진으로 변경
         maintab_container.GetComponent<MainTabCategory>().Upgrading(null, false, info.tabs == Base_Infomation.Tabs.Tab1 ? tab2 : tab1);
 
-        Ex();
-       
+        /*Ex();*/
+
+        
+        InfomationUpdateForUpgrade();
+        
     }
     IEnumerator Tab1_Building(Sprite img, Base_Infomation info, float targetTimer)
     {
@@ -758,7 +725,11 @@ public class Build_Manager : MonoBehaviour
         // 메인탭의 이미지 기본사진으로 변경
         maintab_container.GetComponent<MainTabCategory>().Upgrading(null, false, info.tabs == Base_Infomation.Tabs.Tab1 ? tab2 : tab1);
 
-        Ex();
+
+        /*Ex();*/
+
+
+        InfomationUpdateForUpgrade();
     }
 
 
@@ -781,6 +752,20 @@ public class Build_Manager : MonoBehaviour
         }
     }
 
+    //현재 활성화되어 있거나 활성화 하는 창에 업데이트를 수행하도록
+    public void InfomationUpdateForUpgrade()
+    {
+        for (int i = 0; i < tabContainer.Length; i++)
+        {
+            if (tabContainer[i].activeInHierarchy)
+            {
+                Debug.Log(tabContainer[i].name + "활성화중");
+                tabContainer[i].GetComponentInChildren<Scriptable_Matching>().Infomation_UpdateSet();
+                break;
+            }
+        }
+            
+    }
     // 로봇공장 업그레이드에 따른 시간 감소 적용 로직
     public void Ex()
     {

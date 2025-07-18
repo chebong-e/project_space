@@ -34,11 +34,7 @@ public class ShipGrade_Container : MonoBehaviour
                 break;
             }
         }
-
-        
     }
-
-
 
     public void GradeSelect(int num)
     {
@@ -47,6 +43,7 @@ public class ShipGrade_Container : MonoBehaviour
             if (num == i)
             {
                 shipGrade_Window[i].gameObject.SetActive(true);
+                shipGrade_Window[i].GetComponent<Scriptable_Matching>().Infomation_UpdateSet();
                 if (Build_Manager.instance.tab4)
                 {
                     Build_Manager.instance.KeepOpenState(3);

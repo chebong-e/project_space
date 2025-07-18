@@ -12,21 +12,22 @@ public static class PlayerAbilityInfo
         return Build_Manager.instance.scriptable_Group.tab3Groups[0].researches[index + 4].level;
     }
 
-    private static int GetElectricityProduction()
+    private static int GetMiningSpeed(int index)
     {
-        return Build_Manager.instance.scriptable_Group.tab3Groups[0].researches[0].level;
+        int lv = Build_Manager.instance.scriptable_Group.tab3Groups[0].researches[index].level;
+        if (lv > 0 && lv < 10)
+        {
 
+        }
+
+        return lv;
     }
-
-    /*private static float Get_HighTechMachine(int abilityIndex)
-    {
-        return Build_Manager.instance.scriptable_Group.tab2Groups[6].spacilAbility[abilityIndex];
-    }*/
 
 
     public static int BuildingSpeed => GetLevelSpeed(0);
     public static int ResearchSpeed => GetLevelSpeed(1);
     public static int MakingSpeed => GetLevelSpeed(4);
+    public static int MiningSpeed => GetMiningSpeed(7);
     public static int ResourceMakingSpeed(int index) => GetMakingResourceLevel(index);
     
 

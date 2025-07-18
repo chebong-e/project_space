@@ -10,6 +10,8 @@ public class MainTabCategory : MonoBehaviour
     public GameObject sliderContainer;
     public BuildResource buildResource; // private으로 나중 교체
 
+    Button btn;
+
     void Awake()
     {
         switch (category)
@@ -28,6 +30,9 @@ public class MainTabCategory : MonoBehaviour
                 sliderContainer = transform.GetChild(1).GetChild(1).gameObject;
                 break;
         }
+
+        btn = GetComponent<Button>();
+        /*btn.onClick.AddListener(Build_Manager.instance.InfomationUpdateForUpgrade);*/
     }
 
     // 메인탭의 정보 연동 및 이미지 등을 연동

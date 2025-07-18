@@ -18,6 +18,8 @@ public class Ship : ScriptableObject
     public float ship_Damage; // 공격
     public float ship_Armor; // 장갑
     public float ship_Speed; // 이동속도
+    public int ship_Cago; // 함선 저장능력
+    public float miningRate;
     public Ship_Engine ship_Engine;
 
     [Header("Datas")]

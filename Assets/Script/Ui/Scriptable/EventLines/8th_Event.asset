@@ -15,3 +15,4 @@ MonoBehaviour:
   eventType: 0
   timer: 0
   coordinate: '{0},{1}'
+  isUsed: 0

@@ -13,8 +13,13 @@ public class PlayerInfomation : ScriptableObject
 
     // key값 : 홈플래닛과 콜로니 여부 확인하는 인덱스값
     // value값 : 첫번째 인덱스: tab1~5, 두번째 인덱스: 첫번째 인덱스에 해당하는 건물들의 레벨(순차적)
-    public BuildingLevels build_Levels;
+    //public BuildingLevels build_Levels;
     public BuildLevels[] planets;
+
+
+    public int mining_Fleet;
+
+
 
     //ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
     /*public static float buildingSpeed 
@@ -49,7 +54,7 @@ public class BuildLevels
 [System.Serializable]
 public class TabWindows
 {
-    public int[] lv;
+    public int[] lv; // tab에 해당하는 건물들의 레벨(순차적으로 적용)
     public Int_Grade[] gradeLv; // tabwindow3,4,5만 활용하도록
 }
 
