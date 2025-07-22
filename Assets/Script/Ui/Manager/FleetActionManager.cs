@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,7 @@ public class FleetActionManager : MonoBehaviour
 
     public void Ex_FleetMission()
     {
+        // 함대의 미션을 설정
         Mission_Infomation mission_info = new Mission_Infomation();
 
         mission_info.event_Type = Event_Triggered.Event_Type.Missions;
@@ -18,9 +20,30 @@ public class FleetActionManager : MonoBehaviour
         mission_info.fleetTypeToCount[0] = new int[2] { 4, 10 };
         mission_info.fleetSpeed = 2;
         mission_info.distance = 30;
-        EventManager.instance.Add_Event(mission_info);
+
+        // 설정된 미션 등을 전달
+        int index = 0;
+        for (int i = 0; i < EventManager.instance.dropDown.dropDown_List.Length; i++)
+        {
+            if (EventManager.instance.dropDown.dropDown_List[i].GetComponent<EventLine>().event_Triggered.isUsed)
+            {
+                continue;
+            }
+
+            index = i;
+            Debug.Log($"비어있는 슬롯: {index}");
+            break;
+        }
+        Event_Triggered event_Triggered = EventManager.instance.dropDown.dropDown_List[index].GetComponent<EventLine>().event_Triggered;
+        event_Triggered.baseLocate = $"HomePlanet(111,222)";
+        event_Triggered.coordinate = mission_info.coordinate;
+
+        // 아래는 실험
+        event_Triggered.mission = mission_info;
+
+        EventManager.instance.Add_Event(event_Triggered, index);
     }
-    public void MiningFleetAction()
+    /*public void MiningFleetAction()
     {
         float spd = 1f;
 
@@ -44,7 +67,7 @@ public class FleetActionManager : MonoBehaviour
         EventManager.instance.Add_Event();
         // 이벤트 슬롯에 좌표 및 타이머 정보 전달하기
         drop.dropDown_List[index].GetComponent<EventLine>().targetText.text = $"적대행성 (123,456)";
-        /*drop.dropDown_List[index].GetComponent<EventLine>().timer = 10 / spd;*/
+        *//*drop.dropDown_List[index].GetComponent<EventLine>().timer = 10 / spd;*//*
 
         // 이벤트 슬롯 활성화
         if (!drop.dropBtns[0].gameObject.activeSelf)
@@ -56,7 +79,7 @@ public class FleetActionManager : MonoBehaviour
             drop.EventWindowActivate();
         }
 
-    }
+    }*/
 
     // 함대수량, 함대속도(함대의 최저 이동속도로 계산), 목표 거리
     IEnumerator FleetMobilized(int fleetcount, float speed, float distance)

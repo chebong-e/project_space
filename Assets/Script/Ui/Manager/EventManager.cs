@@ -27,6 +27,9 @@ public class EventManager : MonoBehaviour
 
     public Event_Triggered[] events;
 
+    Coroutine[] eventCoroutine;
+    Coroutine[] miningSlot;
+
 
     void Awake()
     {
@@ -39,6 +42,9 @@ public class EventManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
+
+        eventCoroutine = new Coroutine[10];
+        miningSlot = new Coroutine[1];
     }
 
     public void Add_Event()
@@ -48,12 +54,12 @@ public class EventManager : MonoBehaviour
         dropDown.triggered_event = eventTriggered;
     }
 
-    public void Add_Event(Mission_Infomation mission)
+    public void Add_Event(Event_Triggered event_, int index)
     {
         eventTriggered++;
         dropDown.triggered_event = eventTriggered;
 
-        int index = 0;
+        /*int index = 0;
         for (int i = 0; i < dropDown.dropDown_List.Length; i++)
         {
             if (dropDown.dropDown_List[i].GetComponent<EventLine>().event_Triggered.isUsed)
@@ -64,29 +70,61 @@ public class EventManager : MonoBehaviour
             index = i;
             Debug.Log($"비어있는 슬롯: {index}");
             break;
-        }
+        }*/
 
         EventLine e_Line = dropDown.dropDown_List[index].GetComponent<EventLine>();
         e_Line.event_Triggered.isUsed = true;
-        e_Line.missionImg.sprite = imgs[(int)mission.event_Type];
-        e_Line.targetText.text = $"{mission.coordinate}";
+        e_Line.missionImg.sprite = imgs[(int)event_.mission.event_Type];
+        e_Line.targetText.text = $"{event_.mission.coordinate}";
         
         if (!dropDown.dropBtns[0].gameObject.activeSelf)
         {
-            dropDown.Add_LineDropDown(index, mission.distance / mission.fleetSpeed);
+            dropDown.Add_LineDropDown(index, event_.mission.distance / event_.mission.fleetSpeed);
         }
         else
         {
             dropDown.EventWindowActivate();
         }
 
-        StartCoroutine(MobilizeAFleet(mission, e_Line.timerText));
+
+        eventCoroutine[index] = StartCoroutine(MobilizeAFleet(event_, e_Line.timerText));
+        /*StartCoroutine(MobilizeAFleet(mission, e_Line.timerText));*/
     }
 
-    IEnumerator MobilizeAFleet(Mission_Infomation mission, TextMeshProUGUI timeText)
+    public void FleetReturnToBase(int index)
+    {
+        StopCoroutine(eventCoroutine[index]);
+
+
+        EventLine eLine = dropDown.dropDown_List[index].GetComponentInParent<EventLine>();
+
+        Debug.Log($"함대 귀환합니다.");
+        StartCoroutine(ReturnToBase(eLine.event_Triggered, eLine.timerText));
+    }
+    
+    IEnumerator ReturnToBase(Event_Triggered event_, TextMeshProUGUI timeText)
+    {
+        /*float sec = event_.mission.distance / event_.mission.fleetSpeed;*/
+        float timer = 0f;
+        float sec = event_.timer;
+        while (sec > 0)
+        {
+            timer = Time.deltaTime;
+            sec -= timer;
+            TimeSpan timespan = TimeSpan.FromSeconds(sec);
+            timeText.text = timespan.ToString(@"hh\:mm\:ss");
+
+            yield return null;
+        }
+
+        Debug.Log($"함대 귀환 완료!");
+    }
+
+    IEnumerator MobilizeAFleet(Event_Triggered event_, TextMeshProUGUI timeText)
     {
         Debug.Log("함대 출동");
-        float timer = 0;
+        float timer = 0f;
+        event_.timer = 0;
 
         // 실험적인 목표거리 계산법
         // 거리 = 1000일때 속도가 1이면 1000초가 걸린다는 단순계산 적용
@@ -95,25 +133,27 @@ public class EventManager : MonoBehaviour
         // 연소엔진 1, 램제트 1.5, 핵 추진 2, 힉스입자 3   => 실험하기 위한 단순 수치
         // 속도는 위의 엔진 나열 순서대로 1, 2, 2.5, 3
 
-        float distancePerSecond = mission.distance / mission.fleetSpeed;
+        float distancePerSecond = event_.mission.distance / event_.mission.fleetSpeed;
 
         while (distancePerSecond > 0)
         {
-            distancePerSecond -= Time.deltaTime;
-
+            timer = Time.deltaTime;
+            distancePerSecond -= timer;
+            event_.timer += timer;
             TimeSpan timespan = TimeSpan.FromSeconds(distancePerSecond);
             timeText.text = timespan.ToString(@"hh\:mm\:ss");
 
             yield return null;
         }
 
-        switch (mission.event_Type)
+        switch (event_.mission.event_Type)
         {
             case Event_Triggered.Event_Type.Attack:
                 MissionToAttack();
                 break;
             case Event_Triggered.Event_Type.Missions:
-                yield return StartCoroutine(MissionToMining(mission, timeText));
+                /*miningSlot = StartCoroutine(MissionToMining(mission, timeText));*/
+                yield return miningSlot[0] = StartCoroutine(MissionToMining(event_.mission, timeText));
                 Debug.Log("채굴완료. 귀환!");
                 break;
             case Event_Triggered.Event_Type.UnionSupport:
@@ -124,7 +164,6 @@ public class EventManager : MonoBehaviour
 
     }
 
-    
     void MissionToAttack()
     {
 

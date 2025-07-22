@@ -7,7 +7,11 @@ public class Event_Triggered : ScriptableObject
 
     [Header("# Event")]
     public Event_Type eventType;
-    public int timer;
+    public float timer;
+    public string baseLocate;
     public string coordinate;
     public bool isUsed;
+
+    // 실험적 확인
+    public Mission_Infomation mission;
 }
