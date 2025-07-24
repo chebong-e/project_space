@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEditor;
@@ -7,6 +8,7 @@ using UnityEngine.UI;
 public class DropDown : MonoBehaviour
 {
     public GameObject[] dropDown_List;
+    public GameObject[] sorting_DropDownList;
     public GameObject[] frame_Lines;
     public AnimationClip[] clip;
     public int triggered_event;
@@ -29,7 +31,8 @@ public class DropDown : MonoBehaviour
         dropDown_Box = transform.GetChild(0).GetComponent<GridLayoutGroup>();
         anim = GetComponent<Animator>();
         targetTexts = new TextMeshProUGUI[2];
-        reusableClip = new AnimationClip[3];
+        reusableClip = new AnimationClip[4];
+        sorting_DropDownList = new GameObject[10];
     }
 
     void Init()
@@ -43,6 +46,7 @@ public class DropDown : MonoBehaviour
         for (int i = 0; i < dropdownList; i++)
         {
             dropDown_List[i] = transform.GetChild(0).GetChild(i).gameObject;
+            sorting_DropDownList[i] = dropDown_List[i];
         }
         for (int i = 0; i < frame_Lines.Length; i++)
         {
@@ -114,10 +118,10 @@ public class DropDown : MonoBehaviour
         {
             /*// 7-18확인
             dropDown_List[i].GetComponent<EventLine>().event_Triggered.isUsed = true;*/
-            
-            
-            
-            dropDown_List[i].SetActive(true);
+
+
+
+            sorting_DropDownList[i].gameObject.SetActive(true);
         }
 
         FrameLineActiveReset();
@@ -125,16 +129,59 @@ public class DropDown : MonoBehaviour
         
     }
 
-    void Event_Trigger() // 이벤트 발생과 그에 따른 재정렬
+    
+    public void EventTerminate(GameObject obj)
     {
-        // 가중치를 확인하여 순서 정렬
-        if (triggered_event > 1)
-        {
-
-        }
+        obj.SetActive(false);
     }
 
-    public void Add_LineDropDown(int num, float time)
+
+    public void SlideEventProcess()
+    {
+        if (reusableClip[3] == null)
+        {
+            reusableClip[3] = Instantiate(clip[2]);
+            reusableClip[3].name = "ModifiedClip_3";
+        }
+
+        // 2. 바인딩 가져오기
+        var bindings = AnimationUtility.GetCurveBindings(reusableClip[3]);
+
+        foreach (var binding in bindings)
+        {
+            if (binding.propertyName == "m_SizeDelta.y")
+            {
+                AnimationCurve curve = AnimationUtility.GetEditorCurve(reusableClip[3], binding);
+
+                if (curve.length > 1)
+                {
+                    Keyframe firstKey = curve[0];
+                    firstKey.value = ((triggered_event) * dropdown_Box_Y_Size) + ((triggered_event - 1) * dropdown_Frame_Size);
+                    curve.MoveKey(0, firstKey);
+                    Debug.Log(firstKey.value);
+
+                    Keyframe lastKey = curve[curve.length - 1];
+                    lastKey.value = (triggered_event * dropdown_Box_Y_Size) + ((triggered_event - 2) * dropdown_Frame_Size); ;
+                    curve.MoveKey(curve.length - 1, lastKey);
+                    AnimationUtility.SetEditorCurve(reusableClip[3], binding, curve);
+                    Debug.Log(lastKey.value);
+                }
+            }
+        }
+
+        // 3. Animator Override Controller 사용
+        AnimatorOverrideController overrideController = new AnimatorOverrideController(anim.runtimeAnimatorController);
+        overrideController["AddDropUpClip"] = reusableClip[3];
+        anim.runtimeAnimatorController = overrideController;
+
+        // 4. 트리거 실행
+        anim.SetTrigger("addUp");
+
+
+    }
+
+
+    public void Add_LineDropDown(int num)
     {
 
         if (reusableClip[2] == null)
@@ -157,11 +204,11 @@ public class DropDown : MonoBehaviour
                 if (curve.length > 1)
                 {
                     Keyframe firstKey = curve[0];
-                    firstKey.value = windowSize = ((triggered_event - 1) * dropdown_Box_Y_Size) + ((triggered_event - 2) * dropdown_Frame_Size); ;
-                    curve.MoveKey(0, firstKey);
+                    firstKey.value = windowSize = ((triggered_event - 1) * dropdown_Box_Y_Size) + ((triggered_event - 2) * dropdown_Frame_Size);
+                    curve.MoveKey(0, firstKey); //curve.MoveKey(curve.length - 1, lastKey);
 
                     Keyframe lastKey = curve[curve.length - 1];
-                    lastKey.value = windowSize = (triggered_event * dropdown_Box_Y_Size) + ((triggered_event - 1) * dropdown_Frame_Size); ;
+                    lastKey.value = windowSize = (triggered_event * dropdown_Box_Y_Size) + ((triggered_event - 1) * dropdown_Frame_Size);
                     curve.MoveKey(curve.length - 1, lastKey);
                     AnimationUtility.SetEditorCurve(reusableClip[2], binding, curve);
                 }
@@ -177,7 +224,7 @@ public class DropDown : MonoBehaviour
         anim.SetTrigger("addDrop");
 
         // 
-        dropDown_List[num].GetComponent<EventLine>().ActionStart(time);
+        /*dropDown_List[num].GetComponent<EventLine>().ActionStart(time);*/
 
     }
 
@@ -227,8 +274,96 @@ public class DropDown : MonoBehaviour
         anim.SetTrigger("drop");
     }
 
+    public void AnimEx_(int index)
+    {
+
+        windowSize = (triggered_event * dropdown_Box_Y_Size) + ((triggered_event - 1) * dropdown_Frame_Size);
+        EventWindowActivate();
+
+        // 1. Clip 복사
+        if (reusableClip[3] == null)
+        {
+            reusableClip[3] = Instantiate(clip[3]);
+            reusableClip[3].name = "ModifiedClip";
+        }
+
+        // 2. 바인딩 가져오기
+        var bindings = AnimationUtility.GetCurveBindings(reusableClip[3]);
+
+        foreach (var binding in bindings)
+        {
+            if (binding.propertyName == "m_SizeDelta.y")
+            {
+                AnimationCurve curve = AnimationUtility.GetEditorCurve(reusableClip[3], binding);
+
+                if (index == 0) // down
+                {
+                    
+                    Keyframe firstKey = curve[0];
+                    firstKey.value = 0;
+                    curve.MoveKey(0, firstKey);
+
+                    Keyframe lastKey = curve[curve.length - 1];
+                    lastKey.value = windowSize;
+                    curve.MoveKey(curve.length - 1, lastKey);
+                    Debug.Log("dd");
+                }
+                else if (index == 1) // up
+                {
+                    Keyframe lastKey = curve[curve.length - 1];
+                    lastKey.value = 0;
+                    curve.MoveKey(curve.length - 1, lastKey);
+
+
+                    Keyframe firstKey = curve[0];
+                    firstKey.value = windowSize;
+                    curve.MoveKey(0, firstKey);
+                    Debug.Log("aa");
+                }
+                else if (index == 2) // Add_LineDropDown
+                {
+                    Keyframe firstKey = curve[0];
+                    firstKey.value = ((triggered_event - 1) * dropdown_Box_Y_Size) + ((triggered_event - 2) * dropdown_Frame_Size);
+                    curve.MoveKey(0, firstKey); //curve.MoveKey(curve.length - 1, lastKey);
+
+                    Keyframe lastKey = curve[curve.length - 1];
+                    lastKey.value = (triggered_event * dropdown_Box_Y_Size) + ((triggered_event - 1) * dropdown_Frame_Size);
+                    curve.MoveKey(curve.length - 1, lastKey);
+                }
+                else
+                {
+                    Keyframe firstKey = curve[0];
+                    firstKey.value = windowSize;
+                    curve.MoveKey(0, firstKey);
+
+                    Keyframe lastKey = curve[curve.length - 1];
+                    lastKey.value = ((triggered_event) * dropdown_Box_Y_Size) + ((triggered_event - 2) * dropdown_Frame_Size); ;
+                    curve.MoveKey(curve.length - 1, lastKey);
+                }
+                AnimationUtility.SetEditorCurve(reusableClip[3], binding, curve);
+
+
+
+
+                
+            }
+        }
+
+        // 3. Animator Override Controller 사용
+        AnimatorOverrideController overrideController = new AnimatorOverrideController(anim.runtimeAnimatorController);
+        overrideController["DropDownClip"] = reusableClip[3];
+        anim.runtimeAnimatorController = overrideController;
+
+        // 4. 트리거 실행
+        anim.SetTrigger("drop");
+    }
+
     public void Btn_DropUp()
     {
+        if (triggered_event < 1)
+        {
+            return;
+        }
         // 1. Clip 복사
         if (reusableClip[1] == null)
         {

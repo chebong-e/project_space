@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FleetActionManager : MonoBehaviour
@@ -15,11 +14,27 @@ public class FleetActionManager : MonoBehaviour
 
         mission_info.event_Type = Event_Triggered.Event_Type.Missions;
         mission_info.coordinate = "콜로니 (999 , 999)";
-        mission_info.fleetCount = 10;
-        mission_info.fleetTypeToCount = new Dictionary<int, int[]>(); 
-        mission_info.fleetTypeToCount[0] = new int[2] { 4, 10 };
+        /*mission_info.fleetTypeAndCount = new Dictionary<int, int[]>(); */
+        mission_info.fleetTypeAndCount = new FleetTypeAndCount();
+        mission_info.fleetTypeAndCount[0] = new int[3] { 0, 4, 10 };
+        mission_info.fleetTypeAndCount[1] = new int[3] { 0, 0, 30 };
+
+        int shipsCount = 0;
+        /*foreach (int key in mission_info.fleetTypeAndCount.Keys)
+        {
+            Debug.Log(Build_Manager.instance.scriptable_Group
+                .shipGroups[mission_info.fleetTypeAndCount[key][0]]
+                .ships[mission_info.fleetTypeAndCount[key][1]].name + $"의 함선수는 {mission_info.fleetTypeAndCount[key][2]}");
+            shipsCount += mission_info.fleetTypeAndCount[key][2];
+        }
+        Debug.Log($"총 함선수 : {shipsCount}");*/
+        mission_info.fleetCount = shipsCount;
         mission_info.fleetSpeed = 2;
         mission_info.distance = 30;
+
+        System.Random rnd = new System.Random();
+        int val = rnd.Next(30, 100);
+        mission_info.distance = val;
 
         // 설정된 미션 등을 전달
         int index = 0;
@@ -31,18 +46,27 @@ public class FleetActionManager : MonoBehaviour
             }
 
             index = i;
-            Debug.Log($"비어있는 슬롯: {index}");
+            /*Debug.Log($"비어있는 슬롯: {index}");*/
             break;
         }
         Event_Triggered event_Triggered = EventManager.instance.dropDown.dropDown_List[index].GetComponent<EventLine>().event_Triggered;
+
+        // 함대 출발 지점 
         event_Triggered.baseLocate = $"HomePlanet(111,222)";
-        event_Triggered.coordinate = mission_info.coordinate;
 
         // 아래는 실험
         event_Triggered.mission = mission_info;
-
+        event_Triggered.timer = mission_info.distance / mission_info.fleetSpeed;
         EventManager.instance.Add_Event(event_Triggered, index);
     }
+
+    public void FleetReturnToBase(int index)
+    {
+        
+
+    }
+
+
     /*public void MiningFleetAction()
     {
         float spd = 1f;

@@ -12,7 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f7576d893220649aba891e39018f3f, type: 3}
   m_Name: 1st_Event
   m_EditorClassIdentifier: 
-  eventType: 0
-  timer: 0
-  coordinate: '{0},{1}'
+  timer: -0.00077697076
+  baseLocate: HomePlanet(111,222)
   isUsed: 0
+  mission:
+    event_Type: 2
+    coordinate: "\uCF5C\uB85C\uB2C8 (999 , 999)"
+    fleetCount: 0
+    fleetTypeAndCount:
+      m_keys: 0000000001000000
+    fleetSpeed: 2
+    distance: 79

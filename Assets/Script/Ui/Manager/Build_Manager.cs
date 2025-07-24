@@ -682,6 +682,7 @@ public class Build_Manager : MonoBehaviour
         }
 
         float timer = 0f;
+        int remaining_curTime = 0;
         while (timer < targetTimer)
         {
             timer += Time.deltaTime;
@@ -691,7 +692,7 @@ public class Build_Manager : MonoBehaviour
             }
             maintab_slider.value = timer;
 
-            int remaining_curTime = Mathf.CeilToInt(Mathf.Clamp(targetTimer - timer, 0f, targetTimer));
+            remaining_curTime = Mathf.CeilToInt(Mathf.Clamp(targetTimer - timer, 0f, targetTimer));
 
             foreach (TextMeshProUGUI tt in info.timeText)
             {
