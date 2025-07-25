@@ -49,31 +49,10 @@ public class EventManager : MonoBehaviour
         miningSlot = new Coroutine[1];
     }
 
-    /*public void Add_Event()
-    {
-        eventCount++;
-
-        dropDown.triggered_event = eventCount;
-    }*/
-
     public void Add_Event(Event_Triggered event_, int index)
     {
         eventCount++;
         dropDown.triggered_event = eventCount;
-        
-        /*int index = 0;
-        for (int i = 0; i < dropDown.dropDown_List.Length; i++)
-        {
-            if (dropDown.dropDown_List[i].GetComponent<EventLine>().event_Triggered.isUsed)
-            {
-                continue;
-            }
-
-            index = i;
-            Debug.Log($"비어있는 슬롯: {index}");
-            break;
-        }*/
-
 
         EventLine e_Line = dropDown.dropDown_List[index].GetComponent<EventLine>();
         e_Line.transform.GetChild(2).gameObject.SetActive(true);
@@ -83,7 +62,7 @@ public class EventManager : MonoBehaviour
         
         if (!dropDown.dropBtns[0].gameObject.activeSelf)
         {
-            dropDown.AnimEx_(2);
+            dropDown.SlideEventImplement(2);
         }
         else
         {
@@ -93,28 +72,23 @@ public class EventManager : MonoBehaviour
         // 순차정렬 확인
         EventSequence_Realignment();
 
-        eventCoroutine[index] = StartCoroutine(MobilizeAFleet(event_, e_Line.timerText));
-        /*StartCoroutine(MobilizeAFleet(mission, e_Line.timerText));*/
+        eventCoroutine[index] = StartCoroutine(MobilizeAFleet(e_Line));
     }
 
     public void FleetReturnToBase(int index)
     {
-        Debug.Log($"{index}번 종료");
         StopCoroutine(eventCoroutine[index]);
 
-
         EventLine eLine = dropDown.dropDown_List[index].GetComponent<EventLine>();
+        eLine.missionImg.sprite = imgs[4];
         eLine.transform.GetChild(2).gameObject.SetActive(false);
 
-        StartCoroutine(ReturnToBase(eLine, index));
-
+        StartCoroutine(ReturnToBase(eLine));
     }
     
-    IEnumerator ReturnToBase(EventLine eventLine, int index)
+    IEnumerator ReturnToBase(EventLine eventLine)
     {
-        /*float sec = event_.mission.distance / event_.mission.fleetSpeed;*/
         float timer = 0f;
-        Debug.Log(eventLine.name);
 
         float sec = (eventLine.event_Triggered.mission.distance / eventLine.event_Triggered.mission.fleetSpeed)
             - eventLine.event_Triggered.timer;
@@ -138,18 +112,16 @@ public class EventManager : MonoBehaviour
         dropDown.triggered_event = eventCount;
         eventLine.event_Triggered.isUsed = false;
 
-        /*eventLine.event_Triggered.mission = null;*/
         eventLine.gameObject.SetActive(false);
-        Debug.Log($"{index}번 함대 귀환 완료!");
         // 이벤트 슬롯 슬라이드 처리 해야함.
-        dropDown.AnimEx_(3);
+        dropDown.SlideEventImplement(3);
     }
 
-    IEnumerator MobilizeAFleet(Event_Triggered event_, TextMeshProUGUI timeText)
+    IEnumerator MobilizeAFleet(EventLine eventLine)
     {
         Debug.Log("함대 출동");
         float timer = 0f;
-        event_.timer = 0;
+        eventLine.event_Triggered.timer = 0;
 
         // 실험적인 목표거리 계산법
         // 거리 = 1000일때 속도가 1이면 1000초가 걸린다는 단순계산 적용
@@ -158,31 +130,30 @@ public class EventManager : MonoBehaviour
         // 연소엔진 1, 램제트 1.5, 핵 추진 2, 힉스입자 3   => 실험하기 위한 단순 수치
         // 속도는 위의 엔진 나열 순서대로 1, 2, 2.5, 3
 
-        float distancePerSecond = event_.mission.distance / event_.mission.fleetSpeed;
+        float distancePerSecond = eventLine.event_Triggered.mission.distance / eventLine.event_Triggered.mission.fleetSpeed;
         int remainingTime = 0;
         while (distancePerSecond > 0)
         {
             timer = Time.deltaTime;
             distancePerSecond -= timer;
-            event_.timer = distancePerSecond;
+            eventLine.event_Triggered.timer = distancePerSecond;
 
             remainingTime = Mathf.CeilToInt(distancePerSecond);
             /*distancePerSecond = Mathf.CeilToInt(Mathf.Clamp(distancePerSecond - timer, 0f, distancePerSecond));*/
 
             TimeSpan timespan = TimeSpan.FromSeconds(remainingTime);
-            timeText.text = timespan.ToString(@"hh\:mm\:ss");
-
+            eventLine.timerText.text = timespan.ToString(@"hh\:mm\:ss");
             yield return null;
         }
 
-        switch (event_.mission.event_Type)
+        switch (eventLine.event_Triggered.mission.event_Type)
         {
             case Event_Triggered.Event_Type.Attack:
                 MissionToAttack();
                 break;
             case Event_Triggered.Event_Type.Missions:
                 /*miningSlot = StartCoroutine(MissionToMining(mission, timeText));*/
-                yield return miningSlot[0] = StartCoroutine(MissionToMining(event_.mission, timeText));
+                yield return miningSlot[0] = StartCoroutine(MissionToMining(eventLine));
                 Debug.Log("채굴완료. 귀환!");
                 break;
             case Event_Triggered.Event_Type.UnionSupport:
@@ -198,10 +169,9 @@ public class EventManager : MonoBehaviour
 
     }
 
-    IEnumerator MissionToMining(Mission_Infomation mission, TextMeshProUGUI timeText)
+    IEnumerator MissionToMining(EventLine eventLine)
     {
-        Debug.Log(mission.fleetTypeAndCount[0][0]);
-        timeText.text = " - ";
+        eventLine.timerText.text = " - ";
 
         float timer = 0;
 
@@ -209,7 +179,7 @@ public class EventManager : MonoBehaviour
         // 자원확인로직();
         // 우선 로직 작성전 예시로 1000의 자원이 있다는 가정
         float mineVolume = 1000;
-        float perSec = mineVolume / Build_Manager.instance.scriptable_Group.shipGroups[0].ships[mission.fleetTypeAndCount[0][1]].miningRate;
+        float perSec = mineVolume / Build_Manager.instance.scriptable_Group.shipGroups[0].ships[eventLine.event_Triggered.mission.fleetTypeAndCount[0][1]].miningRate;
         while (timer < perSec)
         {
             timer += Time.deltaTime;
@@ -218,8 +188,8 @@ public class EventManager : MonoBehaviour
             {
                 timer = 0f;
                 perSec -= 1f;
-                mineVolume -= Build_Manager.instance.scriptable_Group.shipGroups[0].ships[mission.fleetTypeAndCount[0][1]].miningRate;
-                Debug.Log($"초당 광물을 {Build_Manager.instance.scriptable_Group.shipGroups[0].ships[mission.fleetTypeAndCount[0][1]].miningRate} 채굴중입니다.");
+                mineVolume -= Build_Manager.instance.scriptable_Group.shipGroups[0].ships[eventLine.event_Triggered.mission.fleetTypeAndCount[0][1]].miningRate;
+                Debug.Log($"초당 광물을 {Build_Manager.instance.scriptable_Group.shipGroups[0].ships[eventLine.event_Triggered.mission.fleetTypeAndCount[0][1]].miningRate} 채굴중입니다.");
                 Debug.Log($"총 광물 {mineVolume} 남아 있습니다.");
                 Debug.Log($"남은 시간:{perSec}");
             }
