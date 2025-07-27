@@ -12,7 +12,7 @@ public class FleetActionManager : MonoBehaviour
         // 함대의 미션을 설정
         Mission_Infomation mission_info = new Mission_Infomation();
 
-        mission_info.event_Type = Event_Triggered.Event_Type.Missions;
+        mission_info.event_Type = Event_Triggered.Event_Type.Nuetral_Missions;
         mission_info.coordinate = "콜로니 (999 , 999)";
         /*mission_info.fleetTypeAndCount = new Dictionary<int, int[]>(); */
         mission_info.fleetTypeAndCount = new FleetTypeAndCount();

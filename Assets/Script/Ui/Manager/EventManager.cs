@@ -11,18 +11,17 @@ public class EventManager : MonoBehaviour
     public int eventCount;
     public DropDown dropDown;
 
-    //확인용
-    public GameObject[] Ex_contentsCheck;
+    public Missions missions;
     public GameObject canvas;
 
 
     public GameObject[] TabContainer;
+    public TextMeshProUGUI[] missionsCountText;
 
-
-    public float metal_RefillTimer;
+    /*public float metal_RefillTimer;
     public float cristal_RefillTimer;
     public float gas_RefillTimer;
-    public float total_Timer;
+    public float total_Timer;*/
 
     public Sprite[] imgs;
 
@@ -32,6 +31,7 @@ public class EventManager : MonoBehaviour
     Coroutine[] eventCoroutine;
     Coroutine[] miningSlot;
 
+    int nuetral, friendly, hostile;
 
     void Awake()
     {
@@ -47,6 +47,7 @@ public class EventManager : MonoBehaviour
 
         eventCoroutine = new Coroutine[10];
         miningSlot = new Coroutine[1];
+        missions = new Missions();
     }
 
     public void Add_Event(Event_Triggered event_, int index)
@@ -71,6 +72,7 @@ public class EventManager : MonoBehaviour
 
         // 순차정렬 확인
         EventSequence_Realignment();
+
 
         eventCoroutine[index] = StartCoroutine(MobilizeAFleet(e_Line));
     }
@@ -123,6 +125,25 @@ public class EventManager : MonoBehaviour
         float timer = 0f;
         eventLine.event_Triggered.timer = 0;
 
+        // 인포메이션 연동용
+        // 추후 아래의 로직과 중복점이 많으니 정리할것
+        switch (eventLine.event_Triggered.mission.event_Type)
+        {
+            case Event_Triggered.Event_Type.Attack:
+
+                break;
+            case Event_Triggered.Event_Type.Nuetral_Missions:
+                nuetral++;
+                missionsCountText[0].text = $"[ {nuetral} ]";
+                break;
+            case Event_Triggered.Event_Type.UnionSupport:
+
+                break;
+        }
+
+
+
+
         // 실험적인 목표거리 계산법
         // 거리 = 1000일때 속도가 1이면 1000초가 걸린다는 단순계산 적용
         // 즉 거리 / 속도
@@ -151,8 +172,9 @@ public class EventManager : MonoBehaviour
             case Event_Triggered.Event_Type.Attack:
                 MissionToAttack();
                 break;
-            case Event_Triggered.Event_Type.Missions:
+            case Event_Triggered.Event_Type.Nuetral_Missions:
                 /*miningSlot = StartCoroutine(MissionToMining(mission, timeText));*/
+
                 yield return miningSlot[0] = StartCoroutine(MissionToMining(eventLine));
                 Debug.Log("채굴완료. 귀환!");
                 break;
@@ -289,4 +311,12 @@ public struct Mission_Infomation
     public FleetTypeAndCount fleetTypeAndCount;
     public float fleetSpeed;
     public float distance;
+}
+
+[System.Serializable]
+public class Missions
+{
+    public int neutral_Mission; // 중립미션
+    public int friendly_Mission; // 우호미션
+    public int hostile_Mission; // 적대미션
 }
