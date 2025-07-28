@@ -7,6 +7,70 @@ public class FleetActionManager : MonoBehaviour
     public float miningspeed;
     public Ship[] ships;
 
+    public void FleetMissionToAttack()
+    {
+        Mission_Infomation mission_info = new Mission_Infomation();
+
+        mission_info.event_Type = Event_Triggered.Event_Type.Attack;
+        mission_info.coordinate = "적대행성 (123 , 123)";
+
+        mission_info.fleetTypeAndCount = new FleetTypeAndCount();
+        mission_info.fleetTypeAndCount[0] = new int[3] { 1, 7, 10 };
+
+        int shipsCount = 0;
+
+        mission_info.fleetCount = shipsCount;
+        mission_info.fleetSpeed = 2;
+        mission_info.distance = new System.Random().Next(30, 100);
+
+        int index = 0;
+        for (int i = 0; i < EventManager.instance.dropDown.dropDown_List.Length; i++)
+        {
+            if (EventManager.instance.dropDown.dropDown_List[i].GetComponent<EventLine>().event_Triggered.isUsed)
+            {
+                continue;
+            }
+
+            index = i;
+
+            break;
+        }
+        Event_Triggered event_Triggered = EventManager.instance.dropDown.dropDown_List[index].GetComponent<EventLine>().event_Triggered;
+
+        // 함대 출발 지점 
+        event_Triggered.baseLocate = $"HomePlanet(111,222)";
+
+        // 아래는 실험
+        event_Triggered.mission = mission_info;
+        event_Triggered.timer = mission_info.distance / mission_info.fleetSpeed;
+        EventManager.instance.Add_Event(event_Triggered, index);
+    }
+
+
+    public void FindSelectedShips()
+    {
+
+    }
+
+    // index : 이벤트 발생값 (0 = 중립미션, 1 = 우호미션, 2 = 적대미션)
+    // targetName은 타겟이 유저라면 유저이름, 아니라면 행성 이름
+    // targetCoordinate : 타겟 좌표
+    public void FleetMission(int index, string targetName, Vector2Int targetCoordinate, ShipSelected shipSelce)
+    {
+        // 함대의 미션을 설정
+        Mission_Infomation mission_info = new Mission_Infomation();
+
+        mission_info.event_Type = (Event_Triggered.Event_Type)index;
+
+        /*mission_info.event_Type = index == 0 ? Event_Triggered.Event_Type.Nuetral_Missions : index == 1
+            ? Event_Triggered.Event_Type.UnionSupport : Event_Triggered.Event_Type.Attack;*/
+        
+        mission_info.coordinate = $"{targetName} ({targetCoordinate.x} , {targetCoordinate.y})";
+        
+        mission_info.fleetTypeAndCount = new FleetTypeAndCount();
+        mission_info.fleetTypeAndCount[0] = new int[3] { 0, 4, 10 };
+        mission_info.fleetTypeAndCount[1] = new int[3] { 0, 0, 30 };
+    }
     public void Ex_FleetMission()
     {
         // 함대의 미션을 설정
@@ -14,24 +78,18 @@ public class FleetActionManager : MonoBehaviour
 
         mission_info.event_Type = Event_Triggered.Event_Type.Nuetral_Missions;
         mission_info.coordinate = "콜로니 (999 , 999)";
-        /*mission_info.fleetTypeAndCount = new Dictionary<int, int[]>(); */
+
         mission_info.fleetTypeAndCount = new FleetTypeAndCount();
         mission_info.fleetTypeAndCount[0] = new int[3] { 0, 4, 10 };
         mission_info.fleetTypeAndCount[1] = new int[3] { 0, 0, 30 };
 
         int shipsCount = 0;
-        /*foreach (int key in mission_info.fleetTypeAndCount.Keys)
-        {
-            Debug.Log(Build_Manager.instance.scriptable_Group
-                .shipGroups[mission_info.fleetTypeAndCount[key][0]]
-                .ships[mission_info.fleetTypeAndCount[key][1]].name + $"의 함선수는 {mission_info.fleetTypeAndCount[key][2]}");
-            shipsCount += mission_info.fleetTypeAndCount[key][2];
-        }
-        Debug.Log($"총 함선수 : {shipsCount}");*/
+
         mission_info.fleetCount = shipsCount;
         mission_info.fleetSpeed = 2;
-        mission_info.distance = 30;
+        /*mission_info.distance = 30;*/
 
+        // 현재는 도달 좌표를 알수 없기에 시간을 랜덤한 값으로 설정
         System.Random rnd = new System.Random();
         int val = rnd.Next(30, 100);
         mission_info.distance = val;
@@ -46,7 +104,7 @@ public class FleetActionManager : MonoBehaviour
             }
 
             index = i;
-            /*Debug.Log($"비어있는 슬롯: {index}");*/
+
             break;
         }
         Event_Triggered event_Triggered = EventManager.instance.dropDown.dropDown_List[index].GetComponent<EventLine>().event_Triggered;
@@ -160,5 +218,20 @@ public class FleetActionManager : MonoBehaviour
         Debug.Log("채굴완료! 귀환합니다");
 
 
+    }
+}
+
+
+public struct ShipSelected
+{
+    public int shipGrade;
+    public int shipGradeToNumber;
+    public int shipCount;
+
+    public ShipSelected(int shipGrade, int shipGradeToNumber, int shipCount)
+    {
+        this.shipGrade = shipGrade;
+        this.shipGradeToNumber = shipGradeToNumber;
+        this.shipCount = shipCount;
     }
 }

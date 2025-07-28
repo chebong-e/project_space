@@ -55,6 +55,28 @@ public class EventManager : MonoBehaviour
         eventCount++;
         dropDown.triggered_event = eventCount;
 
+
+        // 0: 중립 미션
+        // 1: 우호 미션
+        // 2: 적대 미션
+        switch (event_.mission.event_Type)
+        {
+            case Event_Triggered.Event_Type.Nuetral_Missions:
+                missions.neutral_Mission++;
+                missionsCountText[0].text = $"[ {missions.neutral_Mission} ]";
+                break;
+            case Event_Triggered.Event_Type.UnionSupport:
+                missions.friendly_Mission++;
+                missionsCountText[1].text = $"[ {missions.friendly_Mission} ]";
+                break;
+            case Event_Triggered.Event_Type.Attack:
+            case Event_Triggered.Event_Type.UnderAttack:
+                missions.hostile_Mission++;
+                missionsCountText[2].text = $"[ {missions.hostile_Mission} ]";
+                break;
+        }
+
+
         EventLine e_Line = dropDown.dropDown_List[index].GetComponent<EventLine>();
         e_Line.transform.GetChild(2).gameObject.SetActive(true);
         e_Line.event_Triggered.isUsed = true;
@@ -74,7 +96,7 @@ public class EventManager : MonoBehaviour
         EventSequence_Realignment();
 
 
-        eventCoroutine[index] = StartCoroutine(MobilizeAFleet(e_Line));
+        eventCoroutine[index] = StartCoroutine(MobilizeAFleet(e_Line, index));
     }
 
     public void FleetReturnToBase(int index)
@@ -82,9 +104,11 @@ public class EventManager : MonoBehaviour
         StopCoroutine(eventCoroutine[index]);
 
         EventLine eLine = dropDown.dropDown_List[index].GetComponent<EventLine>();
+
         eLine.missionImg.sprite = imgs[4];
         eLine.transform.GetChild(2).gameObject.SetActive(false);
 
+        Debug.Log("귀환 합니다!");
         StartCoroutine(ReturnToBase(eLine));
     }
     
@@ -112,6 +136,25 @@ public class EventManager : MonoBehaviour
 
         eventCount--;
         dropDown.triggered_event = eventCount;
+
+        switch (eventLine.event_Triggered.mission.event_Type)
+        {
+            case Event_Triggered.Event_Type.Nuetral_Missions:
+                missions.neutral_Mission--;
+                missionsCountText[0].text = $"[ {missions.neutral_Mission} ]";
+                break;
+            case Event_Triggered.Event_Type.UnionSupport:
+                missions.friendly_Mission--;
+                missionsCountText[1].text = $"[ {missions.friendly_Mission} ]";
+                break;
+            case Event_Triggered.Event_Type.Attack:
+            case Event_Triggered.Event_Type.UnderAttack:
+                missions.hostile_Mission--;
+                missionsCountText[2].text = $"[ {missions.hostile_Mission} ]";
+                break;
+        }
+
+
         eventLine.event_Triggered.isUsed = false;
 
         eventLine.gameObject.SetActive(false);
@@ -119,30 +162,11 @@ public class EventManager : MonoBehaviour
         dropDown.SlideEventImplement(3);
     }
 
-    IEnumerator MobilizeAFleet(EventLine eventLine)
+    IEnumerator MobilizeAFleet(EventLine eventLine, int index)
     {
         Debug.Log("함대 출동");
         float timer = 0f;
         eventLine.event_Triggered.timer = 0;
-
-        // 인포메이션 연동용
-        // 추후 아래의 로직과 중복점이 많으니 정리할것
-        switch (eventLine.event_Triggered.mission.event_Type)
-        {
-            case Event_Triggered.Event_Type.Attack:
-
-                break;
-            case Event_Triggered.Event_Type.Nuetral_Missions:
-                nuetral++;
-                missionsCountText[0].text = $"[ {nuetral} ]";
-                break;
-            case Event_Triggered.Event_Type.UnionSupport:
-
-                break;
-        }
-
-
-
 
         // 실험적인 목표거리 계산법
         // 거리 = 1000일때 속도가 1이면 1000초가 걸린다는 단순계산 적용
@@ -170,7 +194,7 @@ public class EventManager : MonoBehaviour
         switch (eventLine.event_Triggered.mission.event_Type)
         {
             case Event_Triggered.Event_Type.Attack:
-                MissionToAttack();
+                MissionToAttack(index);
                 break;
             case Event_Triggered.Event_Type.Nuetral_Missions:
                 /*miningSlot = StartCoroutine(MissionToMining(mission, timeText));*/
@@ -186,9 +210,15 @@ public class EventManager : MonoBehaviour
 
     }
 
-    void MissionToAttack()
+    // 조우한 적대 함선과 공수 로직 후 귀환
+    void MissionToAttack(int index)
     {
+        Debug.Log("전투개시!");
+        // 총 4라운드까지 전투
+        // 전투로직 작성
 
+
+        FleetReturnToBase(index);
     }
 
     IEnumerator MissionToMining(EventLine eventLine)
@@ -302,6 +332,7 @@ public class FleetTypeAndCount : SerializableDictionary<int, int[]> { };
 public struct Mission_Infomation
 {
     public Event_Triggered.Event_Type event_Type;
+    public Event_Triggered.NuetralCategory nuetralCategory;
     public string coordinate;
     public int fleetCount;
     // key: 순번,

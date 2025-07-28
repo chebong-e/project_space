@@ -3,7 +3,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "EventTriggered", menuName = "Scriptble Object/Event Triggered")]
 public class Event_Triggered : ScriptableObject
 {
-    public enum Event_Type { Attack, UnderAttack, Nuetral_Missions, UnionSupport }
+    public enum Event_Type { Nuetral_Missions, UnionSupport, Attack, UnderAttack }
+    public enum NuetralCategory { Mining, Move, Transport }
 
     [Header("# Event")]
     /*public Event_Type eventType;*/
