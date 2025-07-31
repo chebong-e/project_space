@@ -6,6 +6,8 @@ public class FleetActionManager : MonoBehaviour
 {
     public float miningspeed;
     public Ship[] ships;
+    public GameObject answerCheckPanel;
+    int eventIndex;
 
     public void FleetMissionToAttack()
     {
@@ -46,6 +48,16 @@ public class FleetActionManager : MonoBehaviour
         EventManager.instance.Add_Event(event_Triggered, index);
     }
 
+    public void BackFleetConfirm(int index)
+    {
+        answerCheckPanel.SetActive(true);
+        eventIndex = index;
+    }
+
+    public void BackFleet()
+    {
+        EventManager.instance.FleetReturnToBase(eventIndex);
+    }
 
     public void FindSelectedShips()
     {

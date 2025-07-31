@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
+[System.Serializable]
+public class MiningDic : SerializableDictionary<int, Coroutine> { };
 public class EventManager : MonoBehaviour
 {
     public static EventManager instance;
@@ -17,21 +19,23 @@ public class EventManager : MonoBehaviour
 
     public GameObject[] TabContainer;
     public TextMeshProUGUI[] missionsCountText;
-
-    /*public float metal_RefillTimer;
-    public float cristal_RefillTimer;
-    public float gas_RefillTimer;
-    public float total_Timer;*/
-
     public Sprite[] imgs;
 
     public Event_Triggered[] events;
     public List<GameObject> Ex_To_events;
 
     Coroutine[] eventCoroutine;
-    Coroutine[] miningSlot;
+    /*Coroutine[] miningSlot;*/
+
+
+    public MiningDic miningSlot;
+    public Dictionary<int, int> mining_Resource;
+
+
 
     int nuetral, friendly, hostile;
+
+
 
     void Awake()
     {
@@ -46,8 +50,10 @@ public class EventManager : MonoBehaviour
         }
 
         eventCoroutine = new Coroutine[10];
-        miningSlot = new Coroutine[1];
         missions = new Missions();
+
+        miningSlot = new MiningDic();
+        mining_Resource = new Dictionary<int, int>(); //임시로 채광슬롯 2개로 지정
     }
 
     public void Add_Event(Event_Triggered event_, int index)
@@ -107,6 +113,13 @@ public class EventManager : MonoBehaviour
 
         eLine.missionImg.sprite = imgs[4];
         eLine.transform.GetChild(2).gameObject.SetActive(false);
+
+        if (miningSlot.ContainsKey(index))
+        {
+            Debug.Log($"총 {miningSlot.Count}채굴함대 중 {index}번호의 함대 귀환시작");
+            StopCoroutine(miningSlot[index]);
+            miningSlot.Remove(index);
+        }
 
         Debug.Log("귀환 합니다!");
         StartCoroutine(ReturnToBase(eLine));
@@ -197,9 +210,10 @@ public class EventManager : MonoBehaviour
                 MissionToAttack(index);
                 break;
             case Event_Triggered.Event_Type.Nuetral_Missions:
-                /*miningSlot = StartCoroutine(MissionToMining(mission, timeText));*/
+                // 중립 미션에서 단순 이동을 위함인지 채굴인지 구분해야함.
+                // 채굴 미션이라면
 
-                yield return miningSlot[0] = StartCoroutine(MissionToMining(eventLine));
+                yield return miningSlot[index] = StartCoroutine(MissionToMining(eventLine, index));
                 Debug.Log("채굴완료. 귀환!");
                 break;
             case Event_Triggered.Event_Type.UnionSupport:
@@ -215,23 +229,27 @@ public class EventManager : MonoBehaviour
     {
         Debug.Log("전투개시!");
         // 총 4라운드까지 전투
-        // 전투로직 작성
+        // 전투로직 작성해야함
 
 
+        //전투 종료 후 귀환로직
         FleetReturnToBase(index);
     }
 
-    IEnumerator MissionToMining(EventLine eventLine)
+    IEnumerator MissionToMining(EventLine eventLine, int index)
     {
         eventLine.timerText.text = " - ";
 
+
+        int cago = 0; // 임시로 카고 지정
         float timer = 0;
 
         // 해당 지점의 자원량 확인 로직
         // 자원확인로직();
         // 우선 로직 작성전 예시로 1000의 자원이 있다는 가정
         float mineVolume = 1000;
-        float perSec = mineVolume / Build_Manager.instance.scriptable_Group.shipGroups[0].ships[eventLine.event_Triggered.mission.fleetTypeAndCount[0][1]].miningRate;
+        float miningVolumePerSecond = Build_Manager.instance.scriptable_Group.shipGroups[0].ships[eventLine.event_Triggered.mission.fleetTypeAndCount[0][1]].miningRate;
+        float perSec = mineVolume / miningVolumePerSecond;
         while (timer < perSec)
         {
             timer += Time.deltaTime;
@@ -240,10 +258,12 @@ public class EventManager : MonoBehaviour
             {
                 timer = 0f;
                 perSec -= 1f;
-                mineVolume -= Build_Manager.instance.scriptable_Group.shipGroups[0].ships[eventLine.event_Triggered.mission.fleetTypeAndCount[0][1]].miningRate;
-                Debug.Log($"초당 광물을 {Build_Manager.instance.scriptable_Group.shipGroups[0].ships[eventLine.event_Triggered.mission.fleetTypeAndCount[0][1]].miningRate} 채굴중입니다.");
+                mineVolume -= miningVolumePerSecond;
+                cago += (int)miningVolumePerSecond;
+                Debug.Log($"초당 광물을 {miningVolumePerSecond} 채굴중입니다.");
                 Debug.Log($"총 광물 {mineVolume} 남아 있습니다.");
                 Debug.Log($"남은 시간:{perSec}");
+                mining_Resource[index] = cago;
             }
 
             
@@ -333,6 +353,7 @@ public struct Mission_Infomation
 {
     public Event_Triggered.Event_Type event_Type;
     public Event_Triggered.NuetralCategory nuetralCategory;
+    public int miningNumber;
     public string coordinate;
     public int fleetCount;
     // key: 순번,
