@@ -9,6 +9,8 @@ public class Planet_Tab_Info : Base_Planet_TabInfomations
     PlanetInfomation planetInfomation;
 
 
+
+
     protected override void VariableMatching()
     {
         text = GetComponentInChildren<TextMeshProUGUI>();

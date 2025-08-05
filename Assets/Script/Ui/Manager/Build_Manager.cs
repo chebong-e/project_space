@@ -718,17 +718,12 @@ public class Build_Manager : MonoBehaviour
         info.btns[1].gameObject.SetActive(false);
         info.btns[0].gameObject.SetActive(true);
 
-
         if (info.tabs == Base_Infomation.Tabs.Tab1) tab1 = false;
         else if (info.tabs == Base_Infomation.Tabs.Tab2) tab2 = false;
         else tab3 = false;
 
         // 메인탭의 이미지 기본사진으로 변경
         maintab_container.GetComponent<MainTabCategory>().Upgrading(null, false, info.tabs == Base_Infomation.Tabs.Tab1 ? tab2 : tab1);
-
-
-        /*Ex();*/
-
 
         InfomationUpdateForUpgrade();
     }

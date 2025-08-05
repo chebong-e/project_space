@@ -1,10 +1,6 @@
-using System;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using static Base_Infomation;
-using static BuildResource;
 
 [System.Serializable]
 public class Title_Text : SerializableDictionary<string, TextMeshProUGUI> { };

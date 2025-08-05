@@ -137,43 +137,7 @@ public class FleetActionManager : MonoBehaviour
     }
 
 
-    /*public void MiningFleetAction()
-    {
-        float spd = 1f;
-
-        int index = 0;
-        StartCoroutine(FleetMobilized(10, spd, 10f));
-        for (int i = 0; i < EventManager.instance.dropDown.dropDown_List.Length; i++)
-        {
-            if (EventManager.instance.dropDown.dropDown_List[i].GetComponent<EventLine>().event_Triggered.isUsed)
-                continue;
-
-            index = i;
-            Debug.Log($"비어있는 슬롯: {index}");
-
-            break;
-        }
-
-        DropDown drop = EventManager.instance.dropDown;
-        drop.dropDown_List[index].GetComponent<EventLine>().event_Triggered.isUsed = true;
-
-        // 이벤트 생성 또는 추가
-        EventManager.instance.Add_Event();
-        // 이벤트 슬롯에 좌표 및 타이머 정보 전달하기
-        drop.dropDown_List[index].GetComponent<EventLine>().targetText.text = $"적대행성 (123,456)";
-        *//*drop.dropDown_List[index].GetComponent<EventLine>().timer = 10 / spd;*//*
-
-        // 이벤트 슬롯 활성화
-        if (!drop.dropBtns[0].gameObject.activeSelf)
-        {
-            drop.Add_LineDropDown(index, 10 / spd);
-        }
-        else
-        {
-            drop.EventWindowActivate();
-        }
-
-    }*/
+  
 
     // 함대수량, 함대속도(함대의 최저 이동속도로 계산), 목표 거리
     IEnumerator FleetMobilized(int fleetcount, float speed, float distance)
