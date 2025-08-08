@@ -19,16 +19,9 @@ public class Base_Planet_TabInfomations : MonoBehaviour
         debris = new GameObject[2];
         debrisInResource = new TextMeshProUGUI[2];
 
-        /*SelectedTab();*/
-
         VariableMatching();
 
     }
-
-    /*protected virtual void SelectedTab()
-    {
-
-    }*/
 
     protected virtual void VariableMatching()
     {

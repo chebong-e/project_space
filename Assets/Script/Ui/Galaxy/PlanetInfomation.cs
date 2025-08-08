@@ -26,26 +26,31 @@ public class PlanetInfomation : MonoBehaviour
         infomation_Tabs = GetComponentsInChildren<Base_Planet_TabInfomations>();
         alienColonyLv = $"외계인 식민지Lv.{alienLv}";
 
-        // 자원행성의 자원 랜덤 배정
-        resource_Value = new int[,]
+        foreach (Base_Planet_TabInfomations baseInfo in infomation_Tabs)
         {
+            baseInfo.Init_Set();
+        }
+
+        if (planetType == PlanetType.Resource_Planet)
+        {
+            // 자원행성의 자원 랜덤 배정 목록
+            resource_Value = new int[,]
+            {
             { 100_000, 100_000, 100_000 },
             { 150_000, 75_000, 75_000 },
             { 75_000, 150_000, 75_000 },
             { 75_000, 75_000, 150_000 }
-        };
-        cyon_Value = new int[,]
-        {
+            };
+            cyon_Value = new int[,]
+            {
             { 1500, 1500, 1500 },
             { 2500, 1000, 1000 },
             { 1000, 2500, 1000 },
             { 1000, 1000, 2500 }
-        };
+            };
 
-
-        foreach (Base_Planet_TabInfomations baseInfo in infomation_Tabs)
-        {
-            baseInfo.Init_Set();
+            /*ResourcePlanet_GradeSet();*/
+            
         }
 
         // 보유중인 플레이어가 없다면 플레이어 이름을 표시할 필요가 없음으로
@@ -55,11 +60,13 @@ public class PlanetInfomation : MonoBehaviour
         }
 
         StartCoroutine(NumberingSetting());
-        
+
     }
 
+    // 행성별 고정 인덱스가 있음
     IEnumerator NumberingSetting()
     {
+        yield return new WaitForSeconds(0.05f);
         int num = 0;
 
         Transform parent = transform.parent;
@@ -85,12 +92,9 @@ public class PlanetInfomation : MonoBehaviour
             }
         }
 
-
-
         string myName = gameObject.name.Split(".")[1];
         gameObject.name = $"{num}.{myName}";
         infomation_Tabs[0].planet_coordinate.text = $"3:119:{num}";
-
     }
 
 
@@ -138,6 +142,45 @@ public class PlanetInfomation : MonoBehaviour
         haveResource[2].cyon_amount = cyon_Black;
 
     }
+
+    public void ResourcePlanet_GradeSet(int index)
+    {
+        int resIndex = Random.Range(0, 4);
+        int cyIndex = Random.Range(0, 4);
+        Debug.Log($"자원: {resIndex}, 시온: {cyIndex}");
+
+
+        int metal = resource_Value[resIndex, 0];
+        int cristal = resource_Value[resIndex, 1];
+        int gas = resource_Value[resIndex, 2];
+        int cyon_Red = cyon_Value[cyIndex, 0];
+        int cyon_Green = cyon_Value[cyIndex, 1];
+        int cyon_Black = cyon_Value[cyIndex, 2];
+
+        haveResource.Clear();
+        int grade = index;
+        int num = grade + 1;
+
+        resourcePlanet = (ResourcePlanet)grade;
+        infomation_Tabs[1].StarGradeSelect(num);
+
+        (metal, cristal, gas) = (metal * num, cristal * num, gas * num);
+        (cyon_Red, cyon_Green, cyon_Black) = (cyon_Red * num, cyon_Green * num, cyon_Black * num);
+
+        haveResource = new List<Planet_Resources>();
+        for (int i = 0; i < 3; i++)
+            haveResource.Add(new Planet_Resources());
+
+        haveResource[0].res_amount = metal;
+        haveResource[0].cyon_amount = cyon_Red;
+        haveResource[1].res_amount = cristal;
+        haveResource[1].cyon_amount = cyon_Green;
+        haveResource[2].res_amount = gas;
+        haveResource[2].cyon_amount = cyon_Black;
+
+    }
+
+
 
 
 
