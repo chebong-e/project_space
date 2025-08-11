@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlanetInfomation : MonoBehaviour
 {
@@ -59,28 +60,44 @@ public class PlanetInfomation : MonoBehaviour
             infomation_Tabs[4].transform.GetChild(0).gameObject.SetActive(false);
         }
 
-        StartCoroutine(NumberingSetting());
+       /* StartCoroutine(NumberingSetting());*/
 
     }
 
+    void SetAbsoluteSiblingIndex(Transform target, int absoluteIndex)
+    {
+        int currentIndex = target.GetSiblingIndex();
+
+        // 현재 위치보다 뒤쪽으로 이동 시, 한 칸 앞으로 당겨지는 문제 보정
+        if (currentIndex < absoluteIndex)
+        {
+            absoluteIndex--;
+        }
+
+        target.SetSiblingIndex(absoluteIndex);
+    }
+
     // 행성별 고정 인덱스가 있음
-    IEnumerator NumberingSetting()
+    public IEnumerator NumberingSetting(int coordi)
     {
         yield return new WaitForSeconds(0.05f);
         int num = 0;
 
         Transform parent = transform.parent;
 
-        if (planetType == PlanetType.Resource_Planet)
-        {
-            transform.SetSiblingIndex(9);
-        }
-        yield return new WaitForFixedUpdate();
-
+        
         if (planetType == PlanetType.AlienColony)
         {
-            transform.SetSiblingIndex(11);
+            transform.SetSiblingIndex(12);
+            /*SetAbsoluteSiblingIndex(transform, 12);*/
         }
+        yield return new WaitForFixedUpdate();
+        if (planetType == PlanetType.Resource_Planet)
+        {
+            /*transform.SetSiblingIndex(10);*/
+            SetAbsoluteSiblingIndex(transform, 10);
+        }
+
         yield return new WaitForFixedUpdate();
 
         for (int i = 0; i < parent.childCount; i++)
@@ -94,7 +111,12 @@ public class PlanetInfomation : MonoBehaviour
 
         string myName = gameObject.name.Split(".")[1];
         gameObject.name = $"{num}.{myName}";
-        infomation_Tabs[0].planet_coordinate.text = $"3:119:{num}";
+        string[] myCoordinate = infomation_Tabs[0].planet_coordinate.text.Split(":");
+        myCoordinate[0] = $"{1}";
+        myCoordinate[1] = $"{coordi}";
+        myCoordinate[2] = $"{num}";
+        infomation_Tabs[0].planet_coordinate.text = string.Join(":", myCoordinate);
+            /*$"3:119:{num}";*/
     }
 
 
