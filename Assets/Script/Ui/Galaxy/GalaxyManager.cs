@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class GalaxyManager : MonoBehaviour
@@ -12,6 +13,9 @@ public class GalaxyManager : MonoBehaviour
     int[,] cyon_Value;
     int[] grade;
 
+    public GameObject[] galaxyMapContainer;
+    public GameObject[] Galaxy_Map1;
+    public GalaxyMap[] galaxyMaps;
     public List<Planet_Resources> haveResource;
     public GameObject[] galaxyContainer; // 인덱스 별로 각 은하를 지정
     public GameObject galaxyMap_Prefab;
@@ -19,23 +23,15 @@ public class GalaxyManager : MonoBehaviour
     [SerializeField]
     [Range(10, 130)]
     private int galaxyMap = 10;
-
+    
     // ex
-    List<int> res_grade;
     public int[] finalCount;
 
     // 자원행성의 등급 설정 실험로직 08.07
     public List<GameObject> res_Planets = new List<GameObject>();
 
 
-
-
-    public int grade_0_Sum = 0;
-    public int grade_1_Sum = 0;
-    public int grade_2_Sum = 0;
-    public int grade_3_Sum = 0;
-    public int grade_4_Sum = 0;
-
+    public int[] grade_Sum = new int[5];
 
 
     // 자원행성의 그레이드 등급 설정 로직
@@ -86,7 +82,7 @@ public class GalaxyManager : MonoBehaviour
 
         ResourcePlanetGradeSet();
     }
-    public void ResourcePlanetGradeSet()
+    public void ResourcePlanetGradeSet() // 갯수 가중치 랜덤화 적용 잘되는지 확인 로직
     {
         int totalNum = galaxyMap;
         int[] baseCount = { 1, 1, 1, 1, 1 };
@@ -181,11 +177,9 @@ public class GalaxyManager : MonoBehaviour
         }
 
         // 7. 결과 출력
-        res_grade = new List<int>();
         for (int i = 0; i < 5; i++)
         {
             Debug.Log($"{i + 1}성: {finalCount[i]}개 (최대 {maxLimit[i]}개)");
-            res_grade.Add(finalCount[i]);
         }
             
 
@@ -206,121 +200,89 @@ public class GalaxyManager : MonoBehaviour
         }
 
         int len = res_Planets.Count;
-        
+
+        List<int> values = new List<int>() { 0, 1, 2, 3, 4 };
+        float[] weights = { 40f, 30f, 15f, 10f, 5f };
+
         for (int i = 0; i < len; i++)
         {
-            int index = UnityEngine.Random.Range(0, len + 1);
-
-
-
-
-
-            /*int ranGrade = UnityEngine.Random.Range(0, 5);
-
-            if (ranGrade == 0)
+            int getNumber = GetWeightedRandom(values, weights);
+            while (grade_Sum[getNumber] >= finalCount[getNumber])
             {
-                if (finalCount[ranGrade] > grade_0_Sum)
-                    grade_0_Sum++;
-                else
-                {
-                    ranGrade = UnityEngine.Random.Range(1, 5);
-                }
+                values.Remove(getNumber);
+                if (values.Count == 0)
+                    break;
+                getNumber = GetWeightedRandom(values, weights);
             }
-            else if (ranGrade == 1)
-            {
-                if (finalCount[ranGrade] > grade_1_Sum)
-                    grade_1_Sum++;
-            }
-            else if (ranGrade == 2) grade_2_Sum++;
-            else if (ranGrade == 3) grade_3_Sum++;
-            else grade_4_Sum++;
 
-            if (grade_0_Sum < finalCount[0])*/
-            res_Planets[i].GetComponent<PlanetInfomation>().ResourcePlanet_GradeSet(RandomSelected_To_Grade());
+            grade_Sum[getNumber]++;
+
+            res_Planets[i].GetComponent<PlanetInfomation>().ResourcePlanet_GradeSet(getNumber);
         }
+
+        GameObject[] gg = galaxyMapContainer[0].GetComponentsInChildren<ScrollRect>()
+            .Select(sr => sr.gameObject)
+            .ToArray();
+        galaxyMaps = new GalaxyMap[2];
+        galaxyMaps[0] = new GalaxyMap();
+        galaxyMaps[0].galaxy_Index = galaxyMapContainer[0];
+        galaxyMaps[0].galaxy_Index_To_Map = gg;
+        Array.Reverse(galaxyMaps[0].galaxy_Index_To_Map);
+
+
+        /*foreach (GameObject obj in galaxyMaps[0].galaxy_Index_To_Map)
+        {
+            obj.SetActive(false);
+        }*/
+        galaxyMaps[0].galaxy_Index_To_Map[0].SetActive(true);
     }
 
-    int RandomSelected_To_Grade()
+    public void NextMap_Or_Back(int num)
     {
-        int ranGrade = UnityEngine.Random.Range(0, 5);
-
-        List<int> ranGradeInt = new List<int>() { 0, 1, 2, 3, 4 };
-        int ran = ranGradeInt[UnityEngine.Random.Range(0, ranGradeInt.Count)];
-
-        if (ran == 0)
+        int index = 0;
+        for (int i = 0; i < galaxyMaps[0].galaxy_Index_To_Map.Length; i++)
         {
-            if (finalCount[ran] > grade_0_Sum)
+            if (galaxyMaps[0].galaxy_Index_To_Map[i].activeInHierarchy)
             {
-                ++grade_0_Sum;
-                Debug.Log($"최댓값:{finalCount[ran]} / {grade_0_Sum}");
-                
-            }
-            else
-            {
-                ranGradeInt.Remove(0);
-                ran = ranGradeInt[UnityEngine.Random.Range(0, ranGradeInt.Count)];
-            }
-        }
-        else if (ran == 1)
-        {
-            if (finalCount[ran] > grade_1_Sum)
-            {
-                ++grade_1_Sum;
-                Debug.Log($"최댓값:{finalCount[ran]} / {grade_1_Sum}");
-            }
-                
-            else
-            {
-                ranGradeInt.Remove(1);
-                ran = ranGradeInt[UnityEngine.Random.Range(0, ranGradeInt.Count)];
-            }
-        }
-        else if (ran == 2)
-        {
-            if (finalCount[ran] > grade_2_Sum)
-            {
-                ++grade_2_Sum;
-                Debug.Log($"최댓값:{finalCount[ran]} / {grade_2_Sum}");
-            }
-            else
-            {
-                ranGradeInt.Remove(2);
-                ran = ranGradeInt[UnityEngine.Random.Range(0, ranGradeInt.Count)];
-            }
-        }
-        else if (ran == 3)
-        {
-            if (finalCount[ran] > grade_3_Sum)
-            {
-                ++grade_3_Sum;
-                Debug.Log($"최댓값:{finalCount[ran]} / {grade_3_Sum}");
-            }
-            else
-            {
-                ranGradeInt.Remove(3);
-                ran = ranGradeInt[UnityEngine.Random.Range(0, ranGradeInt.Count)];
-            }
-        }
-        else
-        {
-            if (finalCount[ran] > grade_4_Sum)
-            {
-                ++grade_4_Sum;
-                Debug.Log($"최댓값:{finalCount[ran]} / {grade_4_Sum}");
-            }
-            else
-            {
-                ranGradeInt.Remove(4);
-                ran = ranGradeInt[UnityEngine.Random.Range(0, ranGradeInt.Count)];
+                index = i;
+                break;
             }
         }
 
-        Debug.Log(ran);
-        return ran;
+        galaxyMaps[0].galaxy_Index_To_Map[index].SetActive(false);
+        Debug.Log(index);
+        if (index == 0 && num == -1)
+        {
+            index = galaxyMaps[0].galaxy_Index_To_Map.Length;
+        }
+        else if (index == 29 && num == 1)
+        {
+            index = -1;
+        }
+        galaxyMaps[0].galaxy_Index_To_Map[index + num].SetActive(true);
+        
     }
 
 
 
+    int GetWeightedRandom(List<int> values, float[] weights)
+    {
+        float totalWeight = 0f;
+        for (int i = 0; i < weights.Length; i++)
+            totalWeight += weights[i];
+
+        float randomValue = UnityEngine.Random.Range(0, totalWeight);
+        float cumulative = 0f;
+
+        for (int i = 0; i < values.Count; i++)
+        {
+            cumulative += weights[i];
+            if (randomValue < cumulative)
+                return values[i];
+        }
+
+        return values[values.Count - 1]; // 예외 방지용
+    }
 
     private void Start()
     {
@@ -350,4 +312,11 @@ public class Planet_Resources
     public int res_amount;
     public int cyon_amount;
     public float fractionalCarry = 0f;
+}
+
+[System.Serializable]
+public class GalaxyMap
+{
+    public GameObject galaxy_Index;
+    public GameObject[] galaxy_Index_To_Map;
 }

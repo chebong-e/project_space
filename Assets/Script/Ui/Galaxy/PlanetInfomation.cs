@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class PlanetInfomation : MonoBehaviour
 {
@@ -64,7 +63,7 @@ public class PlanetInfomation : MonoBehaviour
 
     }
 
-    void SetAbsoluteSiblingIndex(Transform target, int absoluteIndex)
+    /*void SetAbsoluteSiblingIndex(Transform target, int absoluteIndex)
     {
         int currentIndex = target.GetSiblingIndex();
 
@@ -75,31 +74,27 @@ public class PlanetInfomation : MonoBehaviour
         }
 
         target.SetSiblingIndex(absoluteIndex);
-    }
+    }*/
 
     // 행성별 고정 인덱스가 있음
-    public IEnumerator NumberingSetting(int coordi)
+    /*public IEnumerator NumberingSetting(int coordi)
     {
         yield return new WaitForSeconds(0.05f);
+
         int num = 0;
-
         Transform parent = transform.parent;
-
-        
         if (planetType == PlanetType.AlienColony)
         {
             transform.SetSiblingIndex(12);
-            /*SetAbsoluteSiblingIndex(transform, 12);*/
         }
+
         yield return new WaitForFixedUpdate();
         if (planetType == PlanetType.Resource_Planet)
         {
-            /*transform.SetSiblingIndex(10);*/
             SetAbsoluteSiblingIndex(transform, 10);
         }
 
         yield return new WaitForFixedUpdate();
-
         for (int i = 0; i < parent.childCount; i++)
         {
             if (gameObject == parent.GetChild(i).gameObject)
@@ -116,8 +111,7 @@ public class PlanetInfomation : MonoBehaviour
         myCoordinate[1] = $"{coordi}";
         myCoordinate[2] = $"{num}";
         infomation_Tabs[0].planet_coordinate.text = string.Join(":", myCoordinate);
-            /*$"3:119:{num}";*/
-    }
+    }*/
 
 
 
@@ -169,8 +163,6 @@ public class PlanetInfomation : MonoBehaviour
     {
         int resIndex = Random.Range(0, 4);
         int cyIndex = Random.Range(0, 4);
-        Debug.Log($"자원: {resIndex}, 시온: {cyIndex}");
-
 
         int metal = resource_Value[resIndex, 0];
         int cristal = resource_Value[resIndex, 1];
